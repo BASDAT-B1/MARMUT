@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tambah Playlist</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: rgb(247, 231, 206);
+        }
+        .brand {
+            font-size: 20px;
+            font-weight: bold;
+            margin-top: 20px;
+            margin-bottom: 30px;
+        }
+        .background-container {
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+        .centered-text {
+            text-align: center;
+        }
+    </style>
+    <div class="container">
+        <div class="brand">Marmut</div>
+        <div class="row justify-content-center align-items-top min-vh-100">
+            <div class="col-md-6">
+                <div class="background-container">
+    
+                <h1 class="centered-text mb-4">Tambah Playlist</h1>
+    
+                <form action="form_process.php" method="POST">
+                    <div class="form-group">
+                        <label for="judul">Judul:</label>
+                        <input type="text" id="judul" name="judul" class="form-control" placeholder="Masukkan judul playlist">
+                    </div>
+                    <div class="form-group">
+                        <label for="deskripsi">Deskripsi:</label>
+                        <textarea id="deskripsi" name="deskripsi" class="form-control" placeholder="Masukkan deskripsi playlist"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Submit</button>
+                </form>
+            </div>
+            </div>
+        </div>
+    </div>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</html>
