@@ -1,0 +1,146 @@
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>User Playlist Detail</title>
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif&display=swap" rel="stylesheet">
+
+<style>
+    html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+    }
+    body {
+        background-color: rgb(247, 231, 206);
+    }
+    .custom-padding {
+        padding-right: 10px;
+    }
+    .noto-serif {
+        font-family: 'Noto Serif', serif;
+    }
+    .name-class {
+        margin-right: 10px;
+    }
+    .background-container {
+        background-color: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    table, th, td {
+        border: 1.5px solid #dedddd;
+        vertical-align: middle;
+        padding: 10px;
+        font-weight: 600;
+    }
+    th {
+        background-color: #151414;
+        color: #f7f7f7;
+        text-align: center;
+        font-weight: bold;
+    }
+    td {
+        vertical-align: top;
+    }
+    tr{
+        background-color: #f2f2f2;
+    }
+    .centered-text {
+            text-align: center;
+        }
+</style>
+
+<nav class="navbar navbar-expand-lg">
+    <span class="navbar-brand mb-0 h1" href="#" style="padding-left: 10px; padding-right: 10px;"><strong>Marmut</strong></span>
+    <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+        </li>
+    </ul>
+</nav>
+
+<div class="container mt-5 background-container">
+    <h1 class="mb-3 centered-text">User Playlist Detail</h1>
+    <div>
+        <h4>Judul: Playlist1</h4>
+        <p>Pembuat: Pembuat1</p>
+        <p>Jumlah Lagu: 12</p>
+        <p>Total Durasi: 8 jam 20 menit</p>
+        <p>Tanggal Dibuat: 18/03/24</p>
+        <p>Deskripsi: Lorem Ipsum ...</p>
+    </div>
+    <div class="mt-3 mb-3">
+        <div class="text-center">
+            <div class="btn-toolbar justify-content-center" role="toolbar">
+                <div class="btn-group mr-2" role="group">
+                    <button class="btn btn-primary btn-action">Shuffle Play</button>
+                </div>
+            </div>
+            <div class="btn-toolbar justify-content-center" role="toolbar">
+                <div class="btn-group mr-2" role="group">
+                    <button class="btn btn-secondary btn-action mt-2 mb-4">Kembali</button>
+                </div>
+            </div>
+    </div>
+    <h5 class="centered-text">DAFTAR LAGU</h5>
+    <table>
+        <thead>
+            <tr>
+                <th>Judul</th>
+                <th >Oleh</th>
+                <th>urasi</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody class="table-group-divider">
+            <tr>
+                <td>Song1</td>
+                <td>Artist1</td>
+                <td>2 menit</td>
+                <td>
+                    <a href="#" class="btn btn-info btn-action">Lihat</a>
+                    <a href="#" class="btn btn-success btn-action">Play</a>
+                    <a href="#" class="btn btn-danger btn-action">Hapus</a>
+                </td>
+            </tr>
+            <tr>
+                <td>Song2</td>
+                <td>Artist2</td>
+                <td>3 menit</td>
+                <td>
+                    <a href="#" class="btn btn-info btn-action">Lihat</a>
+                    <a href="#" class="btn btn-success btn-action">Play</a>
+                    <a href="#" class="btn btn-danger btn-action">Hapus</a>
+                </td>
+            </tr>
+            <tr>
+                <td>Song3</td>
+                <td>Artist3</td>
+                <td>4 menit</td>
+                <td>
+                    <a href="#" class="btn btn-info btn-action">Lihat</a>
+                    <a href="#" class="btn btn-success btn-action">Play</a>
+                    <a href="#" class="btn btn-danger btn-action">Hapus</a>
+                </td>
+            </tr>
+            <tr>
+                <td>Song4</td>
+                <td>Artist4</td>
+                <td>2 menit</td>
+                <td>
+                    <a href="#" class="btn btn-info btn-action">Lihat</a>
+                    <a href="#" class="btn btn-success btn-action">Play</a>
+                    <a href="#" class="btn btn-danger btn-action">Hapus</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <a href="form_playlist.php" class="btn btn-success mt-3">Tambah Lagu</a>
+</div>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>

@@ -1,0 +1,186 @@
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Play Song</title>
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif&display=swap" rel="stylesheet">
+<style>
+    body {
+        background-color: rgb(247, 231, 206);
+    }
+
+    .background-container {
+        background-color: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+    }
+
+    #progressSlider {
+        width: 100%;
+        margin-top: 20px;
+    }
+
+    .btn-toolbar {
+        margin-bottom: 10px;
+    }
+
+    .centered-text {
+        text-align: center;
+    }
+</style>
+
+<nav class="navbar navbar-expand-lg">
+    <span class="navbar-brand mb-0 h1" href="#" style="padding-left: 10px; padding-right: 10px;"><strong>Marmut</strong></span>
+    <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+        </li>
+    </ul>
+</nav>
+
+<div class="container background-container ">
+    <h1 class="mb-3 centered-text">Song Detail</h1>
+    <div class="song-detail">
+        <b style="display: inline-block; margin-right: 5px;">Judul:</b><p style="display: inline;">Song1</p><br>
+        <b>Genre(s):</b>
+        <ul>
+            <li>Genre1</li>
+            <li>Genre2</li>
+        </ul>
+        <b style="display: inline-block; margin-right: 5px;">Artist:</b><p style="display: inline;">Artist1</p><br>
+        <b>Songwriter(s):</b>
+        <ul>
+            <li>Songwriter1</li>
+            <li>Songwriter2</li>
+        </ul>
+        <b style="display: inline-block; margin-right: 5px;">Durasi:</b><p style="display: inline;">3 menit</p><br>
+        <b style="display: inline-block; margin-right: 5px;">Tanggal Rilis:</b><p style="display: inline;">18/03/24</p><br>
+        <b style="display: inline-block; margin-right: 5px;">Tahun:</b><p style="display: inline;">2024</p><br>
+        <b style="display: inline-block; margin-right: 5px;">Total Play:</b><p style="display: inline;">34</p><br>
+        <b style="display: inline-block; margin-right: 5px;">Total Download:</b><p style="display: inline;">0</p><br>
+        <b style="display: inline-block; margin-right: 5px;">Album:</b><p style="display: inline;">Album1</p><br>
+        <hr>
+        <div>
+            <input type="range" id="progressSlider" min="0" max="100" step="1" value="0">
+        </div>                           
+    </div>
+    <div class="text-center">
+        <div class="btn-toolbar justify-content-center" role="toolbar">
+            <div class="btn-group mr-2" role="group">
+                <button class="btn btn-primary btn-action" onclick="playSong()">Play</button>
+            </div>
+        </div>
+        <div class="btn-toolbar justify-content-center" role="toolbar">
+            <div class="btn-group mr-2" role="group">
+                <button class="btn btn-success btn-action" onclick="openAddToPlaylistModal()">Add to Playlist</button>
+            </div>
+        </div>
+        <div class="btn-toolbar justify-content-center" role="toolbar">
+            <div class="btn-group mr-2" role="group">
+                <button class="btn btn-secondary btn-action" onclick="goBack()">Kembali</button>
+            </div>
+        </div>
+    </div> 
+    <div class="modal fade" id="addToPlaylistModal" tabindex="-1" role="dialog" aria-labelledby="addToPlaylistModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addToPlaylistModalLabel">ADD SONG TO USER PLAYLIST</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Judul: Song1</p>
+                    <p>Artist: Artist1</p>
+                    <form id="addToPlaylistForm">
+                        <div class="form-group">
+                            <label for="playlistSelect">Playlist:</label>
+                            <select class="form-control" id="playlistSelect" required>
+                                <option value="" disabled selected>Pilih Playlist</option>
+                                <option value="Playlist1">Playlist1</option>
+                                <option value="Playlist2">Playlist2</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div>
+                    <div class="text-center">
+                        <div class="btn-toolbar justify-content-center" role="toolbar">
+                            <div class="btn-group mr-2" role="group">
+                                <button class="btn btn-primary btn-action" onclick="addToPlaylistSubmit()">Tambah</button>
+                            </div>
+                        </div>
+                        <div class="btn-toolbar justify-content-center" role="toolbar">
+                            <div class="btn-group mr-2" role="group">
+                                <button class="btn btn-secondary btn-action mt-2 mb-4" data-dismiss="modal">Kembali</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>              
+            </div>
+        </div>
+    </div>    
+    <div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="successModalLabel">Berhasil!</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Berhasil menambahkan Lagu dengan judul 'Song1' ke 'Playlist1'!</p>
+                </div>
+                <div>
+                    <div class="text-center">
+                        <div class="btn-toolbar justify-content-center" role="toolbar">
+                            <div class="btn-group mr-2" role="group">
+                                <button class="btn btn-primary btn-action" onclick="goToPlaylist()">Ke Playlist</button>
+                            </div>
+                        </div>
+                        <div class="btn-toolbar justify-content-center" role="toolbar">
+                            <div class="btn-group mr-2" role="group">
+                                <button class="btn btn-secondary btn-action mt-2 mb-4" data-dismiss="modal">Kembali</button>
+                            </div>
+                        </div>
+                    </div>
+                </div> 
+            </div>
+        </div>
+    </div> 
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script>
+    function openAddToPlaylistModal() {
+        $('#addToPlaylistModal').modal('show');
+    }
+
+    function addToPlaylistSubmit() {
+        let playlist = document.getElementById("playlistSelect").value;
+        if (!playlist) {
+            alert("Field Playlist harus diisi!");
+            return false;
+        }
+
+        $('#addToPlaylistModal').modal('hide');
+
+        $('#successModal').modal('show');
+
+        return false;
+    }
+
+    function playSong() {
+        let progress = document.getElementById("progressSlider").value;
+        if (progress > 70) {
+            alert("Song played more than 70%. Adding to play history.");
+        } else {
+            alert("Song played less than 70%. No action taken.");
+        }
+    }
+</script>

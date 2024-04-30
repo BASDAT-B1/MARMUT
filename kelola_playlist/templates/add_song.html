@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tambah Lagu</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: rgb(247, 231, 206);
+        }
+        .brand {
+            font-size: 20px;
+            font-weight: bold;
+            margin-top: 20px;
+            margin-bottom: 30px;
+        }
+        .background-container {
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+        .centered-text {
+            text-align: center;
+        }
+    </style>
+    <div class="container">
+        <div class="brand">Marmut</div>
+        <div class="row justify-content-center align-items-top min-vh-100">
+            <div class="col-md-6">
+                <div class="background-container">
+    
+                <h1 class="centered-text mb-4">Tambah Lagu</h1>
+    
+                <form action="form_process.php" method="POST">
+                    <div class="form-group">
+                        <label for="lagu">Lagu:</label>
+                        <select id="lagu" name="lagu" class="form-control">
+                            <option value="" disabled selected>Pilih lagu</option>
+                            <option value="lagu1">Judul Lagu 1 - Nama Artis 1</option>
+                            <option value="lagu2">Judul Lagu 2 - Nama Artis 2</option>
+                            <option value="lagu3">Judul Lagu 3 - Nama Artis 3</option>
+                            <option value="lagu4">Judul Lagu 3 - Nama Artis 4</option>
+                            <option value="lagu5">Judul Lagu 5 - Nama Artis 5</option>
+                    
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Submit</button>
+                </form>
+            </div>
+            </div>
+        </div>
+    </div>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</html>
