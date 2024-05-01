@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+{% include 'navbar2.html' %}
+<style>
+    .outerDiv {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 2rem;
+        text-align: center;
+    }
+</style>
+<div class="outerDiv">
+    <div>
+        <h2 style="text-align: center;padding-bottom: 1rem;">Downloaded Songs</h2>
+        <table class="table">
+            <th>No. </th>
+            <th>Judul Lagu</th>
+            <th>Oleh</th>
+            <th>Tanggal Download</th>
+            <th>Actions</th>
+            <tr>
+                <td>1. </td>
+                <td class="judul">Lagu Spakbor</td>
+                <td>Rhuizi Bayu</td>
+                <td>20/04/2024</td>
+                <td>
+                    <button class="btn btn-outline-danger">Lihat</button>
+                    <button class="btn btn-outline-danger hapus">Hapus</button>
+                </td>
+            </tr>
+            <tr>
+                <td>2. </td>
+                <td class="judul">Diblokir Bencong</td>
+                <td>Akmal Irfan</td>
+                <td>23/04/2024</td>
+                <td>
+                    <button class="btn btn-outline-danger">Lihat</button>
+                    <button class="btn btn-outline-danger hapus">Hapus</button>
+                </td>
+            </tr>
+        </table>
+        <button class="btn btn-outline-dark">Kembali</button>
+    </div>
+</div>
+<script>
+    function deleteSong(songName) {
+        alert("Berhasil menghapus Lagu dengan judul " + songName + " dari daftar unduhan!")
+    }
+
+    var deleteButtons = document.querySelectorAll(".hapus");
+
+deleteButtons.forEach(function(button) {
+    button.addEventListener("click", function() {
+        var titleElement = this.parentNode.parentNode.querySelector(".judul");
+        var songTitle = titleElement.textContent;
+        deleteSong(songTitle);
+    });
+});
+</script>
+{% endblock content %}

@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block meta %}
+    <title>Login</title>
+{% endblock meta %}
+
+{% block content %}
+
+<div class = "d-flex justify-content-center align-items-center" style="min-height: 100vh;min-width: 100vw;background-color: #F0F0F0;">
+    <div class = "login shadow p-4 mb-5 bg-body rounded" style="width: 25rem;margin-bottom: 5rem;">
+    
+        <h1 class="text-center">Login</h1>
+        <br>
+    
+        <form method="POST" action="">
+            {% csrf_token %}
+            <table>
+                <tr>
+                    <td>Username: </td>
+                    <td><input style="margin-left: 0.8rem;" type="text" name="username" placeholder="Username" class="form-control"></td>
+                </tr>
+                        
+                <tr>
+                    <td>Password: </td>
+                    <td><input style="margin-left: 0.8rem;" type="password" name="password" placeholder="Password" class="form-control"></td>
+                </tr>
+
+            </table>
+            <div class="text-center" style="margin: 0.6rem;">   
+                <input class="btn login_btn btn-outline-dark" type="submit" value="Login">
+            </div>
+        </form>
+    
+        <!-- {% if messages %}
+            <ul>
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}      -->
+            
+        {% comment %} <p class="text-center">Don't have an account yet? <a class="link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover" href="{% url 'main:register' %}">Register Now</a></p> {% endcomment %}
+    
+    </div>
+</div>
+
+{% endblock content %}
