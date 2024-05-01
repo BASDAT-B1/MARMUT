@@ -1,0 +1,115 @@
+{% extends 'base.html' %} 
+
+{% block content %}
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Create Album</title>
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif&display=swap" rel="stylesheet">
+
+<style>
+    html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+    }
+    body {
+        background-color: rgb(247, 231, 206);
+    }
+    .custom-padding {
+        padding-right: 10px;
+    }
+    .name-class {
+        margin-right: 10px;
+    }
+    .background-container {
+        background-color: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+    }
+    table {
+        margin: auto; 
+        width: 80%; 
+        border-collapse: collapse;
+    }
+    table, th, td {
+        border: 1.5px solid #dedddd;
+        vertical-align: middle;
+        padding: 10px;
+        font-weight: 600;
+    }
+    th {
+        background-color: #151414;
+        color: #f7f7f7;
+        text-align: center;
+        font-weight: bold;
+    }
+    td {
+        vertical-align: top;
+    }
+    tr {
+        background-color: #f2f2f2;
+        text-align: center;
+    }
+    .centered-text {
+        text-align: center;
+    }
+
+    h1.centered-text {
+        margin-bottom: 50px; 
+        margin-top: 50px;
+    }
+
+    form {
+        margin-top: 20px;
+    }
+
+    form td {
+        text-align: right;
+        padding-right: 20px; 
+    }
+
+    form td input[type="text"],
+    form td select {
+        width: 300px; 
+    }
+
+    form td:last-child {
+        text-align: left;
+        padding-right: 0; 
+    }
+</style>
+
+<h1 class="centered-text">CREATE ALBUM</h1>
+
+<form method="POST" action="{% url 'kelola_album_song:list_album' %}">
+    {% csrf_token %}
+    <table>
+        {{ form.as_table }}
+        <tr>
+            <td>Judul:</td>
+            <td><input type="text" name="Judul"></td> 
+        </tr>
+        <tr>
+            <td>Label:</td>
+            <td>
+                <select name="label">
+                    <option value="LabelA">LabelA</option>
+                    <option value="LabelB">LabelB</option>
+                    <option value="LabelC">LabelC</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><input type="submit" value="Submit"></td>
+        </tr>
+    </table>
+</form>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+{% endblock %}

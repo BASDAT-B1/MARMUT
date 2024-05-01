@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% include 'navbar2.html' %}
+<style>
+    .content {
+        height: 90vh;    
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .table {
+        width: 40vh;
+        text-align: center;
+    }
+
+    /* Make dropdown button fill its parent container */
+    .dropdown-btn {
+        width: 100%;
+        height: 100%;
+        padding: 10px 20px;
+        border: none;
+    }
+
+    .li-dropdown {
+        padding: 3px;
+    }
+
+    /* Align the "Submit" button to the bottom */
+    .content > .dropdown + .btn {
+        margin-top: auto;
+    }
+</style>
+
+<div class="demdud">
+    <div class="content">
+        <h2 style="text-align: center;padding-bottom: 3rem;margin-top: 2rem;">Pembayaran Paket</h2>
+        <p style="margin-right: 25rem;">Informasi Paket yang Ingin Dibeli:</p>
+
+        <table class="table table-light">
+            <tr>
+                <td>Jenis</td>
+                <td>Harga</td>
+            </tr>
+            <tr>
+                <td>1 Bulan</td>
+                <td>Rp54.900</td>
+            </tr>
+        </table>
+        <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" id="dropdownMenuButton">Metode Pembayaran</button>
+            <ul class="dropdown-menu" id="dropdownMenu">
+                <li class="li-dropdown"><button class="btn dropdown-btn btn-outline-dark">Transfer Bank</button></li>
+                <li class="li-dropdown"><button class="btn dropdown-btn btn-outline-dark">Kartu Kredit</button></li>
+                <li class="li-dropdown"><button class="btn dropdown-btn btn-outline-dark">E-Wallet</button></li>
+            </ul>
+        </div>
+
+        <!-- "Submit" button placed here -->
+        <button class="btn btn-outline-dark">Submit</button>
+    </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    var dropdownToggle = document.getElementById("dropdownMenuButton");
+    var dropdownMenu = document.getElementById("dropdownMenu");
+
+    dropdownToggle.addEventListener("click", function() {
+        if (dropdownMenu.style.display === "block") {
+            dropdownMenu.style.display = "none";
+        } else {
+            dropdownMenu.style.display = "block";
+        }
+    });
+
+    // Close dropdown when clicking outside
+    document.addEventListener("click", function(event) {
+        if (!dropdownToggle.contains(event.target) && !dropdownMenu.contains(event.target)) {
+            dropdownMenu.style.display = "none";
+        }
+    });
+});
+</script>
+
+{% endblock content %}

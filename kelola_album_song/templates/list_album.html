@@ -1,0 +1,179 @@
+{% extends 'base.html' %}
+{% block content %}
+<!-- page untuk Artist & Songwriter -->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>List Album</title>
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif&display=swap" rel="stylesheet">
+
+<style>
+    html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+    }
+    body {
+        background-color: rgb(247, 231, 206);
+    }
+    .custom-padding {
+        padding-right: 10px;
+    }
+    .noto-serif {
+        font-family: 'Noto Serif', serif;
+    }
+    .name-class {
+        margin-right: 10px;
+    }
+    .background-container {
+        background-color: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+    }
+    table {
+        margin : auto;
+        width: 100%;
+        border-collapse: collapse;
+    }
+    table, th, td {
+        border: 1.5px solid #dedddd;
+        vertical-align: middle;
+        padding: 10px;
+        font-weight: 600;
+    }
+    th {
+        background-color: #151414;
+        color: #f7f7f7;
+        text-align: center;
+        font-weight: bold;
+    }
+    td {
+        vertical-align: top;
+        text-align : center;
+    }
+
+    .action-buttons {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+    tr{
+        background-color: #f2f2f2;
+    }
+    .centered-text {
+            text-align: center;
+        }
+
+    h1.centered-text {
+    margin-bottom: 30px; 
+    margin-top: 40px;
+    }
+</style>
+
+
+<h1 class ="centered-text">LIST ALBUM MARMUT</h1>
+
+<table>
+<tr>
+    <th>Judul</th>
+    <th>Label</th>
+    <th>Jumlah Lagu</th>
+    <th>Total Durasi</th>
+    <th>Action</th>
+</tr>
+
+
+<!-- {% for album in albums %}
+    <tr>
+        <td>{{ album.judul }}</td>
+        <td>{{ album.id_label }}</td>
+        <td>{{ album.jumlah_lagu }}</td>
+        <td>{{ album.total_durasi }}</td>
+        <td>
+            <a href="{% url 'daftar_lagu' %}" class="btn btn-info btn-sm">Lihat Daftar Lagu</a>
+            <a href="{% url 'create_lagu' %}" class="btn btn-success btn-sm">Tambah Lagu</a>
+            <a href="{% url 'create_lagu' %}" class="btn btn-danger btn-sm">Hapus</a>
+        </td>
+        </td>
+    </tr>
+{% endfor %} -->
+<tr>
+    <td>Album1</td>
+    <td>LabelA</td>
+    <td>0</td>
+    <td >0</td>
+    <td>
+        <a href="{% url 'kelola_album_song:daftar_lagu' %}" class="btn btn-info btn-sm">Lihat Daftar Lagu</a>
+        <a href="{% url 'kelola_album_song:create_lagu_artist' %}" class="btn btn-success btn-sm">Tambah Lagu</a>
+        <a href="{% url 'kelola_album_song:hapus_album' %}" class="btn btn-danger btn-sm">Hapus</a>
+    </td>
+    </td>
+</tr>
+
+<tr>
+    <td>Album2</td>
+    <td>LabelB</td>
+    <td>2</td>
+    <td>4</td>
+    <td>
+        <a href="{% url 'kelola_album_song:daftar_lagu' %}" class="btn btn-info btn-sm">Lihat Daftar Lagu</a>
+        <a href="{% url 'kelola_album_song:create_lagu_songwriter' %}" class="btn btn-success btn-sm">Tambah Lagu</a>
+        <a href="{% url 'kelola_album_song:hapus_album' %}" class="btn btn-danger btn-sm">Hapus</a>
+    </td>
+    </td>
+</tr>
+
+<tr>
+    <td>Album3</td>
+    <td>LabelC</td>
+    <td>3</td>
+    <td>6</td>
+    <td>
+        <a href="{% url 'kelola_album_song:daftar_lagu' %}" class="btn btn-info btn-sm">Lihat Daftar Lagu</a>
+        <a href="{% url 'kelola_album_song:create_lagu_artist' %}" class="btn btn-success btn-sm">Tambah Lagu</a>
+        <a href="{% url 'kelola_album_song:hapus_album' %}" class="btn btn-danger btn-sm">Hapus</a>
+    </td>
+    </td>
+</tr>
+
+<tr>
+    <td>Album4</td>
+    <td>LabelD</td>
+    <td>4</td>
+    <td>8</td>
+    <td>
+        <a href="{% url 'kelola_album_song:daftar_lagu' %}" class="btn btn-info btn-sm">Lihat Daftar Lagu</a>
+        <a href="{% url 'kelola_album_song:create_lagu_songwriter' %}" class="btn btn-success btn-sm">Tambah Lagu</a>
+        <a href="{% url 'kelola_album_song:hapus_album' %}" class="btn btn-danger btn-sm">Hapus</a>
+    </td>
+</tr>
+
+<tr>
+    <td>Album5</td>
+    <td>LabelE</td>
+    <td>5</td>
+    <td>10</td>
+    <td>
+        <a href="{% url 'kelola_album_song:daftar_lagu' %}" class="btn btn-info btn-sm">Lihat Daftar Lagu</a>
+        <a href="{% url 'kelola_album_song:create_lagu_artist' %}" class="btn btn-success btn-sm">Tambah Lagu</a>
+        <a href="{% url 'kelola_album_song:hapus_album' %}" class="btn btn-danger btn-sm">Hapus</a>
+    </td>
+    </td>
+</tr>
+</table>
+
+<div class="centered-text" style = "margin-top: 40px;">
+    <a href="{% url 'kelola_album_song:create_album' %}" class="btn btn-danger btn-sm">Create Album</a>
+</div>
+
+<br /> 
+
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+
+{% endblock content %}

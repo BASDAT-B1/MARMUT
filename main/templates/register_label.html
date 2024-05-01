@@ -60,50 +60,27 @@
 </nav>
 
 <div class="container mt-5 background-container">
-    <h1 class="mb-3 centered-text">User Playlist</h1>
-    <table>
-        <thead>
-            <tr>
-                <th>Judul</th>
-                <th >Jumlah Lagu</th>
-                <th>Total Durasi</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody class="table-group-divider last-table">
-            <tr>
-                <td>Playlist1</td>
-                <td>5</td>
-                <td>15 menit</td>
-                <td>
-                    <a href="#" class="btn btn-info btn-action">Detail</a>
-                    <a href="#" class="btn btn-warning btn-action">Ubah</a>
-                    <a href="#" class="btn btn-danger btn-action">Hapus</a>
-                </td>
-            </tr>
-            <tr>
-                <td>Playlist2</td>
-                <td>2</td>
-                <td>4 menit</td>
-                <td>
-                    <a href="#" class="btn btn-info btn-action">Detail</a>
-                    <a href="#" class="btn btn-warning btn-action">Ubah</a>
-                    <a href="#" class="btn btn-danger btn-action">Hapus</a>
-                </td>
-            </tr>
-            <tr>
-                <td>Playlist3</td>
-                <td>35</td>
-                <td>105 menit</td>
-                <td>
-                    <a href="#" class="btn btn-info btn-action">Detail</a>
-                    <a href="#" class="btn btn-warning btn-action">Ubah</a>
-                    <a href="#" class="btn btn-danger btn-action">Hapus</a>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-    <a href="form_playlist.php" class="btn btn-success mt-3">Tambah Playlist</a>
+    <h1 class="mb-3 centered-text">Form</h1>
+    <h1 class="mb-3 centered-text">Registrasi</h1>
+    <form>
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" class="form-control" id="email" placeholder="Masukkan Email" required>
+        </div>
+        <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="password" class="form-control" id="password" placeholder="Masukkan Password" required>
+        </div>
+        <div class="form-group">
+            <label for="nama">Nama:</label>
+            <input type="text" class="form-control" id="nama" placeholder="Masukkan Nama Lengkap" required>
+        </div>
+        <div class="form-group">
+            <label for="nama">Kontak:</label>
+            <input type="text" class="form-control" id="kontak" placeholder="Masukkan Kontak" required>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Register</button>
+    </form>
 </div>
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
