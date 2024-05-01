@@ -1,5 +1,5 @@
 from django.urls import path
-from main.views import show_main
+from main.views import show_main, login_user
 
 app_name = 'main'
 
