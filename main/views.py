@@ -16,6 +16,15 @@ def login(request):
     context = {}
     return render (request, 'login.html', context)
 
+def register(request):
+    return render (request, 'register.html')
+
+def register_label(request):
+    return render (request, 'register_label.html')
+
+def register_pengguna(request):
+    return render (request, 'register_pengguna.html')
+
 def langganan_paket(request):
     return render(request, 'langganan_paket.html')
 
