@@ -36,3 +36,15 @@ def dashboard_penggunabiasa(request):
 
 def dashboard_artist_atau_songwriter(request):
     return render(request, 'dashboard_artist_atau_songwriter.html')
+
+def dashboard_label_with_album(request):
+    return render(request, 'dashboard_label_with_album.html')
+
+def dashboard_podcaster_with_podcast(request):
+    return render(request, 'dashboard_podcaster_with_podcast.html')
+
+def dashboard_penggunabiasa_with_playlist(request):
+    return render(request, 'dashboard_penggunabiasa_with_playlist.html')
+
+def dashboard_artist_atau_songwriter_with_playlist(request):
+    return render(request, 'dashboard_artist_atau_songwriter_with_playlist.html')

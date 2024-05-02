@@ -1,5 +1,5 @@
 from django.urls import include, path
-from main.views import dashboard_artist_atau_songwriter, dashboard_label, dashboard_penggunabiasa, dashboard_podcaster, show_main, login, langganan_paket, downloaded_songs, pembayaran_paket
+from main.views import *
 
 app_name = 'main'
 
@@ -14,4 +14,9 @@ urlpatterns = [
     path('dashboard_label/', dashboard_label, name='dashboard_label'),
     path('dashboard_penggunabiasa/', dashboard_penggunabiasa, name='dashboard_penggunabiasa'),
     path('dashboard_podcaster/', dashboard_podcaster, name='dashboard_podcaster'),
+    path('dashboard_label_with_album/', dashboard_label_with_album, name='dashboard_label_with_album'),
+    path('dashboard_podcaster_with_podcast/', dashboard_podcaster_with_podcast, name='dashboard_podcaster_with_podcast'),
+    path('dashboard_penggunabiasa_with_playlist/', dashboard_penggunabiasa_with_playlist, name='dashboard_penggunabiasa_with_playlist'),
+    path('dashboard_artist_atau_songwriter_with_playlist/', dashboard_artist_atau_songwriter_with_playlist, name='dashboard_artist_atau_songwriter_with_playlist')
+    
 ]
