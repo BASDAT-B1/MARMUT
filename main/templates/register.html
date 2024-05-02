@@ -1,10 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% extends 'base.html' %}
+
+{% block meta %}
     <title>Register</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+{% endblock meta %}
+
+{% block content %}
+{% include 'navbar.html' %}
     <style>
         body {
             background-color: rgb(247, 231, 206);
@@ -41,16 +42,13 @@
             width: 200px; 
         }
     </style>
-</head>
-<body>
-<div class="container">
-    <div class="brand">Marmut</div>
+<div class="container mt-4">
     <div class="row justify-content-center align-items-top">
         <div class="col-md-6">
             <div class="main background-container">
                 <h1 class="centered-text mb-4">Register</h1>
                 <button type="submit" class="btn btn-primary btn-block mt-4">Pengguna</button><br>
-                <button type="submit" class="btn btn-primary btn-block">Label</button>
+                <button type="submit" class="btn btn-primary btn-block mt-2">Label</button>
                 </div>
             </div>
         </div>
@@ -59,5 +57,4 @@
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-</body>
-</html>
+{% endblock content %}
