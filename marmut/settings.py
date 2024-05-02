@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'main',
     'kelola_album_song',
+    'melihat_chart',
 ]
 
 MIDDLEWARE = [
