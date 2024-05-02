@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+<style>
+    .content {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+    }
+
+    .table-transaksi {
+        margin-top: 5rem;
+    }
+</style>
+{% include 'navbar2.html' %}
+<div class="content">
+    <h2 style="text-align: center;padding-top: 3rem;">RIWAYAT TRANSAKSI PAKET</h2>
+    <div class="table-transaksi">
+        <table class="table">
+            <th>Jenis</th>
+            <th>Tanggal Dimulai</th>
+            <th>Tanggal Berakhir</th>
+            <th>Metode Pembayaran</th>
+            <th>Nominal</th>
+            <tr>
+                <td>1 Bulan</td>
+                <td>8 April 2024, 23:00</td>
+                <td>8 Mei 2024, 23:00</td>
+                <td>Transfer Bank</td>
+                <td>Rp54.900</td>
+            </tr>
+        </table>
+    </div>
+    <button class="btn btn-outline-dark">Kembali</button>
+</div>
+{% endblock content %}

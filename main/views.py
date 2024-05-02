@@ -45,3 +45,6 @@ def dashboard_penggunabiasa(request):
 
 def dashboard_artist_atau_songwriter(request):
     return render(request, 'dashboard_artist_atau_songwriter.html')
+
+def riwayat_transaksi(request):
+    return render(request, 'riwayat_transaksi.html')
