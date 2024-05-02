@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <style>
+        .navContent {
+            display: flex;
+        }
+
+        .buttonnavContent {
+            padding-left: 2rem;
+            margin: 5px;
+        }
+    </style>
+    <nav class="navbar" style="background-color: #e3f2fd;">
+        <div class="container-fluid">
+            <div class="navContent">
+            <a class="navbar-brand" href="">Marmut</a>
+            <div class="buttonnavContent">
+                <button class="btn btn-outline-dark">Kelola Playlist</button>
+                <button class="btn btn-outline-dark">Langganan Paket</button>
+                <button class="btn btn-outline-dark">Downloaded songs</button>
+                <button class="btn btn-outline-dark">Chart</button>
+                <button class="btn btn-outline-dark">Logout</button>
+            </div>
+            </div>
+            <form class="d-flex" role="search">
+            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-dark" type="submit">Search</button>
+        </form>
+        </div>
+    </nav>
+{% endblock %}
