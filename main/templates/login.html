@@ -5,6 +5,7 @@
 {% endblock meta %}
 
 {% block content %}
+{% include 'navbar.html' %}
 
 <div class = "d-flex justify-content-center align-items-center" style="min-height: 100vh;min-width: 100vw;background-color: #F0F0F0;">
     <div class = "login shadow p-4 mb-5 bg-body rounded" style="width: 25rem;margin-bottom: 5rem;">
@@ -16,8 +17,8 @@
             {% csrf_token %}
             <table>
                 <tr>
-                    <td>Username: </td>
-                    <td><input style="margin-left: 0.8rem;" type="text" name="username" placeholder="Username" class="form-control"></td>
+                    <td>Email: </td>
+                    <td><input style="margin-left: 0.8rem;" type="text" name="username" placeholder="Email" class="form-control"></td>
                 </tr>
                         
                 <tr>
@@ -39,7 +40,7 @@
             </ul>
         {% endif %}      -->
             
-        {% comment %} <p class="text-center">Don't have an account yet? <a class="link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover" href="{% url 'main:register' %}">Register Now</a></p> {% endcomment %}
+        <p class="text-center">Don't have an account yet? <a class="link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover"">Register Now</a></p>
     
     </div>
 </div>
