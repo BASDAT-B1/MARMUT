@@ -34,6 +34,9 @@ def downloaded_songs(request):
 def pembayaran_paket(request):
     return render(request, 'pembayaran_paket.html')
 
+def melihat_chart(request):
+    return render(request,'melihat_chart.html')
+
 def dashboard_label(request):
     return render(request, 'dashboard_label.html')
 
