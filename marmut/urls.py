@@ -22,4 +22,7 @@ from django.urls import path, include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('main.urls')),
+    path('kelola_playlist/', include('kelola_playlist.urls')),
+    path('play_user_playlist/', include('play_user_playlist.urls')),
+    path('play_song/', include('play_song.urls'))
 ]
