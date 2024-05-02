@@ -1,8 +1,8 @@
 {% extends 'base.html' %}
 
-
 {% block content %}
-{% include 'navbar6.html' %}
+{% include 'navbar5.html' %}
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
@@ -185,8 +185,24 @@ section {
                 <td>marmutbasdat@example.com</td>
             </tr>
             <tr>
-                <th>Kontak</th>
-                <td>08123456789</td>
+                <th>Kota Asal</th>
+                <td>Jakarta</td>
+            </tr>
+            <tr>
+                <th>Gender</th>
+                <td>Laki-laki</td>
+            </tr>
+            <tr>
+                <th>Tempat Lahir</th>
+                <td>Bandung</td>
+            </tr>
+            <tr>
+                <th>Tanggal Lahir</th>
+                <td>1 Januari 2004</td>
+            </tr>
+            <tr>
+                <th>Role</th>
+                <td>Artist, Songwriter</td>
             </tr>
         </table>
                                     </div>
@@ -201,11 +217,20 @@ section {
     </div>
 
     <div class="background-container">
-        <h1 class="centered-text">Daftar Album</h1>
+        <h1 class="centered-text">Daftar Lagu</h1>
         <table>
-            <tr>
-                <th>Belum Memiliki Album</th>
-            </tr>
+            <thead>
+                <th scope="col">#</th>
+                <th scope="col">Judul Lagu</th>
+            </thead>
+            <tbody>
+                <tr>
+                    <th scope="row">1</th>
+                    <td>JudulLagu</td>
+                </tr>
+
+            </tbody>
+            
         </table>
     </div>
 </body>
