@@ -1,3 +1,8 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+{% include 'navbar2.html' %}
 <!doctype html>
 <html lang="en">
 
@@ -8,6 +13,11 @@
         crossorigin="anonymous">
     <link rel="stylesheet" href="styles.css">
     <title>Marmut | Charts</title>
+    <style>
+        body {
+            background-color: rgb(247, 231, 206);
+        }
+    </style>
 </head>
 
 <body>
@@ -73,3 +83,4 @@
 </body>
 
 </html>
+{% endblock content %}

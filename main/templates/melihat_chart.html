@@ -1,3 +1,8 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+{% include 'navbar2.html' %}
 <!doctype html>
 <html lang="en">
 <head>
@@ -5,6 +10,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" crossorigin="anonymous">
     <title>Marmut | Charts</title>
+    <style>
+        body {
+            background-color: rgb(247, 231, 206);
+        }
+    </style>
 </head>
 <body>
     <div class="container mt-5">
@@ -45,3 +55,4 @@
     </div>
 </body>
 </html>
+{% endblock content %}
