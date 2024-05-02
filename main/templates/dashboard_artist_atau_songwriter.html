@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+{% block content %}
+{% include 'navbar5.html' %}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif&display=swap" rel="stylesheet">
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            background-color: rgb(247, 231, 206);
+        }
+        .background-container {
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin: auto;
+            width: 80%;
+            margin-top: 50px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1.5px solid #dedddd;
+            vertical-align: middle;
+            padding: 10px;
+            font-weight: 600;
+        }
+        th {
+            background-color: #151414;
+            color: #f7f7f7;
+            text-align: center;
+            font-weight: bold;
+        }
+        td {
+            background-color: #f2f2f2;
+            text-align: left;
+        }
+        .centered-text {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1 class="centered-text">Dashboard</h1>
+    <div class="background-container">
+        <h1 class="centered-text">Profil Pengguna</h1>
+        <table>
+            <tr>
+                <th>Nama</th>
+                <td>Marmut Basdat</td>
+            </tr>
+            <tr>
+                <th>Email</th>
+                <td>marmutbasdat@example.com</td>
+            </tr>
+            <tr>
+                <th>Kota Asal</th>
+                <td>Jakarta</td>
+            </tr>
+            <tr>
+                <th>Gender</th>
+                <td>Laki-laki</td>
+            </tr>
+            <tr>
+                <th>Tempat Lahir</th>
+                <td>Bandung</td>
+            </tr>
+            <tr>
+                <th>Tanggal Lahir</th>
+                <td>1 Januari 2004</td>
+            </tr>
+            <tr>
+                <th>Role</th>
+                <td>Artist, Songwriter</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="background-container">
+        <h1 class="centered-text">Daftar Lagu</h1>
+        <table>
+            <tr>
+                <th>Belum Memiliki Lagu</th>
+            </tr>
+        </table>
+    </div>
+</body>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+{% endblock content %}

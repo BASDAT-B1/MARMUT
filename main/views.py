@@ -16,6 +16,15 @@ def login(request):
     context = {}
     return render (request, 'login.html', context)
 
+def register(request):
+    return render (request, 'register.html')
+
+def register_label(request):
+    return render (request, 'register_label.html')
+
+def register_pengguna(request):
+    return render (request, 'register_pengguna.html')
+
 def langganan_paket(request):
     return render(request, 'langganan_paket.html')
 
@@ -27,3 +36,18 @@ def pembayaran_paket(request):
 
 def melihat_chart(request):
     return render(request,'melihat_chart.html')
+
+def dashboard_label(request):
+    return render(request, 'dashboard_label.html')
+
+def dashboard_podcaster(request):
+    return render(request, 'dashboard_podcaster.html')
+
+def dashboard_penggunabiasa(request):
+    return render(request, 'dashboard_penggunabiasa.html')
+
+def dashboard_artist_atau_songwriter(request):
+    return render(request, 'dashboard_artist_atau_songwriter.html')
+
+def riwayat_transaksi(request):
+    return render(request, 'riwayat_transaksi.html')
