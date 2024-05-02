@@ -24,3 +24,15 @@ def downloaded_songs(request):
 
 def pembayaran_paket(request):
     return render(request, 'pembayaran_paket.html')
+
+def dashboard_label(request):
+    return render(request, 'dashboard_label.html')
+
+def dashboard_podcaster(request):
+    return render(request, 'dashboard_podcaster.html')
+
+def dashboard_penggunabiasa(request):
+    return render(request, 'dashboard_penggunabiasa.html')
+
+def dashboard_artist_atau_songwriter(request):
+    return render(request, 'dashboard_artist_atau_songwriter.html')
