@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+{% include 'navbar2.html' %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+  <title>Podcast Card</title>
+  <style>
+    body {
+            background-color: rgb(247, 231, 206);
+        }
+  </style>
+</head>
+<body>
+  <div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-5">
+        <h1>Marmut | Podcast</h1>
+        <a href="{% url 'main:show_main' %}" class="btn btn-secondary">Back</a>
+    </div>
+      <hr>
+    <div class="row justify-content-center">
+      <div class="col-sm-12 col-md-6">
+        <div class="card" style="flex-grow: 1; margin-left: 10px;">
+          <div class="card-body">
+            <h5 class="card-title">Judul Podcast 2</h5>
+            <img src="https://png.pngtree.com/png-clipart/20230926/original/pngtree-flat-podcast-microphone-icon-with-audio-interview-vector-illustration-vector-png-image_12873021.png" alt="Weekly Top 20 Icon" style="width: 100%; max-width: 128px; height: auto; display: block; margin: 0 auto;">
+            <p class="card-text mt-5">Jumlah Episode</p>
+            <p class="card-text mt-5">Total Durasi</p>
+            <div class="d-flex justify-content-between mb-3">
+              <a href="{% url 'kelola_podcast:podcast_detail'%}" class="btn btn-outline-secondary">Episode List</a>
+              <a href="{% url 'kelola_podcast:add_episode'%}" class="btn btn-outline-primary">Tambah Episode</a>
+              <a href="#" class="btn btn-outline-danger">Hapus Podcast</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <div class="card" style="flex-grow: 1; margin-left: 10px;">
+          <div class="card-body">
+            <h5 class="card-title">Judul Podcast 1</h5>
+            <img src="https://png.pngtree.com/png-clipart/20230926/original/pngtree-flat-podcast-microphone-icon-with-audio-interview-vector-illustration-vector-png-image_12873021.png" alt="Weekly Top 20 Icon" style="width: 100%; max-width: 128px; height: auto; display: block; margin: 0 auto;">
+            <p class="card-text mt-5">Jumlah Episode</p>
+            <p class="card-text mt-5">Total Durasi</p>
+            <div class="d-flex justify-content-between mb-3">
+              <a href="{% url 'kelola_podcast:podcast_detail'%}" class="btn btn-outline-secondary">Episode List</a>
+              <a href="{% url 'kelola_podcast:add_episode'%}" class="btn btn-outline-primary">Tambah Episode</a>
+              <a href="#" class="btn btn-outline-danger">Hapus Podcast</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <a href="{% url 'kelola_podcast:add_podcast'%}" class="btn btn-primary mt-5">Tambah Podcast</a>
+  </div>
+
+  <!-- Optional JavaScript -->
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+</body>
+</html>
+{% endblock content %}
