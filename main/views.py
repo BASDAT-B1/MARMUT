@@ -62,3 +62,15 @@ def dashboard_artist_atau_songwriter_with_playlist(request):
     return render(request, 'dashboard_artist_atau_songwriter_with_playlist.html')
 def riwayat_transaksi(request):
     return render(request, 'riwayat_transaksi.html')
+
+def dashboard_label_with_album(request):
+    return render(request, 'dashboard_label_with_album.html')
+
+def dashboard_podcaster_with_podcast(request):
+    return render(request, 'dashboard_podcaster_with_podcast.html')
+
+def dashboard_penggunabiasa_with_playlist(request):
+    return render(request, 'dashboard_penggunabiasa_with_playlist.html')
+
+def dashboard_artist_atau_songwriter_with_playlist(request):
+    return render(request, 'dashboard_artist_atau_songwriter_with_playlist.html')
