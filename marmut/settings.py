@@ -82,8 +82,13 @@ WSGI_APPLICATION = 'marmut.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        # 'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': 'railway',
+        'USER': 'postgres',
+        'PASSWORD': 'pSCVrMlLkOtuPZKNAyonsdEqkTtsyZuW',
+        'HOST': 'monorail.proxy.rlwy.net',
+        'PORT': '54486',
     }
 }
 
