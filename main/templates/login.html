@@ -18,7 +18,7 @@
             <table>
                 <tr>
                     <td>Email: </td>
-                    <td><input style="margin-left: 0.8rem;" type="text" name="username" placeholder="Email" class="form-control"></td>
+                    <td><input style="margin-left: 0.8rem;" type="text" name="email" placeholder="Email" class="form-control"></td>
                 </tr>
                         
                 <tr>
@@ -40,7 +40,7 @@
             </ul>
         {% endif %}      -->
             
-        <p class="text-center">Don't have an account yet? <a class="link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover"">Register Now</a></p>
+        <p class="text-center">Don't have an account yet? <a class="link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover" href="{% url 'main:register' %}">Register Now</a></p>
     
     </div>
 </div>

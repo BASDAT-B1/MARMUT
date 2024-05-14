@@ -1,9 +1,10 @@
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.contrib.auth import authenticate, login
-from django.http import HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.db import connection
 
 
 # @login_required(login_url='/login')
@@ -12,9 +13,44 @@ from django.contrib.auth.decorators import login_required
 def show_main(request):
     return render(request, "main.html")
 
+def authenticate(email, password):
+    # print(f"cek email {email}")
+    # print(f"cek password {password}")
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT password FROM AKUN WHERE email = %s", [email])
+        row = cursor.fetchone()
+        print(row)
+    
+    if row is None:
+        print(f"No user found with email: {email}")
+        return None  # User does not exist
+
+    stored_password = row[0]
+    # print(stored_password)
+    if password == stored_password:
+        # print("Password match!")
+        return email  # Authentication successful
+    else:
+        # print("Password does not match")
+        return None  # Authentication failed
+
 def login(request):
-    context = {}
-    return render (request, 'login.html', context)
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        
+        user = authenticate(email, password)
+        if user is not None:
+            print("success login broooooooooo")
+            request.session['email'] = user
+            return redirect('main:show_main')
+        else:
+            return HttpResponse("Invalid credentials")
+
+    return render(request, 'login.html')
+
+# def login(request):
+#     return render (request, 'login.html')
 
 def register(request):
     return render (request, 'register.html')
