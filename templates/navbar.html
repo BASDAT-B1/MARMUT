@@ -17,8 +17,8 @@
             <div class="navContent">
             <a class="navbar-brand" href="">Marmut</a>
             <div class="buttonnavContent">
-                <button class="btn btn-outline-dark">Login</button>
-                <button class="btn btn-outline-dark">Registrasi</button>
+                <button class="btn btn-outline-dark" onclick="toLogin()">Login</button>
+                <button class="btn btn-outline-dark" onclick="toRegister()">Registrasi</button>
             </div>
             </div>
             {% comment %} <form class="d-flex" role="search">
@@ -27,4 +27,14 @@
         </form>{% endcomment %}
         </div>
     </nav>
+
+<script>
+    function toLogin() {
+        window.location.href = "{% url 'main:login' %}";
+    }
+
+    function toRegister() {
+        window.location.href = "{% url 'main:register' %}"
+    }
+</script>
 {% endblock %}
