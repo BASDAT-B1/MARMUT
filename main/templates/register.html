@@ -47,14 +47,21 @@
         <div class="col-md-6">
             <div class="main background-container">
                 <h1 class="centered-text mb-4">Register</h1>
-                <button type="submit" class="btn btn-primary btn-block mt-4">Pengguna</button><br>
-                <button type="submit" class="btn btn-primary btn-block mt-2">Label</button>
+                <button type="submit" class="btn btn-primary btn-block mt-4" onclick="toRegisPengguna()">Pengguna</button><br>
+                <button type="submit" class="btn btn-primary btn-block mt-2" onclick="toRegisLabel()">Label</button>
                 </div>
             </div>
         </div>
     </div>
 </div>
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script>
+    function toRegisPengguna() {
+        window.location.href = "{% url 'main:register_pengguna' %}";
+    }
+
+    function toRegisLabel() {
+        window.location.href = "{% url 'main:register_label' %}"
+    }
+</script>
 {% endblock content %}

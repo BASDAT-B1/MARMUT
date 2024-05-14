@@ -59,22 +59,23 @@
 <div class="container mt-5 background-container">
     <h1 class="mb-3 centered-text">Form</h1>
     <h1 class="mb-3 centered-text">Registrasi</h1>
-    <form>
+    <form method="POST">
+        {% csrf_token %}
         <div class="form-group">
             <label for="email">Email:</label>
-            <input type="email" class="form-control" id="email" placeholder="Masukkan Email" required>
+            <input type="email" class="form-control" id="email" name="email" placeholder="Masukkan Email" required>
         </div>
         <div class="form-group">
             <label for="password">Password:</label>
-            <input type="password" class="form-control" id="password" placeholder="Masukkan Password" required>
+            <input type="password" class="form-control" id="password" name="password" placeholder="Masukkan Password" required>
         </div>
         <div class="form-group">
             <label for="nama">Nama:</label>
-            <input type="text" class="form-control" id="nama" placeholder="Masukkan Nama Lengkap" required>
+            <input type="text" class="form-control" id="nama" name="nama" placeholder="Masukkan Nama Lengkap" required>
         </div>
         <div class="form-group">
             <label for="gender">Gender:</label>
-            <select class="form-control" id="gender" required>
+            <select class="form-control" id="gender" name="gender" required>
                 <option value="" disabled selected>Pilih Gender</option>
                 <option value="Laki-laki">Laki-laki</option>
                 <option value="Perempuan">Perempuan</option>
@@ -82,35 +83,32 @@
         </div>
         <div class="form-group">
             <label for="tempatLahir">Tempat Lahir:</label>
-            <input type="text" class="form-control" id="tempatLahir" placeholder="Masukkan Tempat Lahir" required>
+            <input type="text" class="form-control" id="tempatLahir" name="tempatLahir" placeholder="Masukkan Tempat Lahir" required>
         </div>
         <div class="form-group">
             <label for="tanggalLahir">Tanggal Lahir:</label>
-            <input type="date" class="form-control" id="tanggalLahir" required>
+            <input type="date" class="form-control" id="tanggalLahir" name="tanggalLahir" required>
         </div>
         <div class="form-group">
             <label for="kotaAsal">Kota Asal:</label>
-            <input type="text" class="form-control" id="kotaAsal" placeholder="Masukkan Kota Asal" required>
+            <input type="text" class="form-control" id="kotaAsal" name="kotaAsal" placeholder="Masukkan Kota Asal" required>
         </div>
         <div class="form-group">
             <label for="role">Role:</label>
             <div class="form-check">
-                <input type="checkbox" class="form-check-input" id="podcaster">
+                <input type="checkbox" class="form-check-input" id="podcaster" name="role" value="Podcaster">
                 <label class="form-check-label" for="podcaster">Podcaster</label>
             </div>
             <div class="form-check">
-                <input type="checkbox" class="form-check-input" id="artist">
+                <input type="checkbox" class="form-check-input" id="artist" name="role" value="Artist">
                 <label class="form-check-label" for="artist">Artist</label>
             </div>
             <div class="form-check">
-                <input type="checkbox" class="form-check-input" id="songwriter">
+                <input type="checkbox" class="form-check-input" id="songwriter" name="role" value="Songwriter">
                 <label class="form-check-label" for="songwriter">Songwriter</label>
             </div>
         </div>
         <button type="submit" class="btn btn-primary btn-block">Register</button>
-    </form>
+    </form>    
 </div>
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 {% endblock content %}
