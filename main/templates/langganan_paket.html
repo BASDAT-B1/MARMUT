@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+{% include 'navbar2.html' %}
+<style>
+    .allCard {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+
+</style>
+    <div class="allCard">
+        <div class="card" style="width: 18rem;">
+            <div class="card-body">
+                <h3>Premium</h3>
+                <h5>1 Bulan</h5>
+                <button type="button" class="btn btn-outline-dark">Dapatkan Premium 1 Bulan</button>
+            </div>
+        </div>
+        <div class="card" style="width: 18rem;">
+            <div class="card-body">
+                <h3>Premium</h3>
+                <h5>3 Bulan</h5>
+                <button type="button" class="btn btn-outline-dark">Dapatkan Premium 3 Bulan</button>
+            </div>
+        </div>
+        <div class="card" style="width: 18rem;">
+            <div class="card-body">
+                <h3>Premium</h3>
+                <h5>6 Bulan</h5>
+                <button type="button" class="btn btn-outline-dark">Dapatkan Premium 6 Bulan</button>
+            </div>
+        </div>
+        <div class="card" style="width: 18rem;">
+            <div class="card-body">
+                <h3>Premium</h3>
+                <h5>1 Tahun</h5>
+                <button type="button" class="btn btn-outline-dark">Dapatkan Premium 1 Tahun</button>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

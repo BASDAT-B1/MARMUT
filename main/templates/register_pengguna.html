@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+
+{% block meta %}
+    <title>Register</title>
+{% endblock meta %}
+
+{% block content %}
+{% include 'navbar.html' %}
+
+
+<style>
+    html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+    }
+    body {
+        background-color: rgb(247, 231, 206);
+    }
+    .custom-padding {
+        padding-right: 10px;
+    }
+    .name-class {
+        margin-right: 10px;
+    }
+    .background-container {
+        background-color: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    table, th, td {
+        border: 1.5px solid #dedddd;
+        vertical-align: middle;
+        padding: 10px;
+        font-weight: 600;
+    }
+    th {
+        background-color: #151414;
+        color: #f7f7f7;
+        text-align: center;
+        font-weight: bold;
+    }
+    td {
+        vertical-align: top;
+    }
+    tr{
+        background-color: #f2f2f2;
+    }
+    .centered-text {
+            text-align: center;
+        }
+</style>
+
+<div class="container mt-5 background-container">
+    <h1 class="mb-3 centered-text">Form</h1>
+    <h1 class="mb-3 centered-text">Registrasi</h1>
+    <form method="POST">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" class="form-control" id="email" name="email" placeholder="Masukkan Email" required>
+        </div>
+        <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="password" class="form-control" id="password" name="password" placeholder="Masukkan Password" required>
+        </div>
+        <div class="form-group">
+            <label for="nama">Nama:</label>
+            <input type="text" class="form-control" id="nama" name="nama" placeholder="Masukkan Nama Lengkap" required>
+        </div>
+        <div class="form-group">
+            <label for="gender">Gender:</label>
+            <select class="form-control" id="gender" name="gender" required>
+                <option value="" disabled selected>Pilih Gender</option>
+                <option value="Laki-laki">Laki-laki</option>
+                <option value="Perempuan">Perempuan</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="tempatLahir">Tempat Lahir:</label>
+            <input type="text" class="form-control" id="tempatLahir" name="tempatLahir" placeholder="Masukkan Tempat Lahir" required>
+        </div>
+        <div class="form-group">
+            <label for="tanggalLahir">Tanggal Lahir:</label>
+            <input type="date" class="form-control" id="tanggalLahir" name="tanggalLahir" required>
+        </div>
+        <div class="form-group">
+            <label for="kotaAsal">Kota Asal:</label>
+            <input type="text" class="form-control" id="kotaAsal" name="kotaAsal" placeholder="Masukkan Kota Asal" required>
+        </div>
+        <div class="form-group">
+            <label for="role">Role:</label>
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="podcaster" name="role" value="Podcaster">
+                <label class="form-check-label" for="podcaster">Podcaster</label>
+            </div>
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="artist" name="role" value="Artist">
+                <label class="form-check-label" for="artist">Artist</label>
+            </div>
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="songwriter" name="role" value="Songwriter">
+                <label class="form-check-label" for="songwriter">Songwriter</label>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Register</button>
+    </form>    
+</div>
+{% endblock content %}

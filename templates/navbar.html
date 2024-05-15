@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <style>
+        .navContent {
+            display: flex;
+        }
+
+        .buttonnavContent {
+            padding-right: 2rem; 
+            margin: 5px;
+        }
+    </style>
+    </style>
+    <nav class="navbar" style="background-color: #e3f2fd;">
+        <div class="container-fluid" style="margin-left: 1rem;">
+            <div class="navContent">
+            <a class="navbar-brand" href="">Marmut</a>
+            <div class="buttonnavContent">
+                <button class="btn btn-outline-dark" onclick="toLogin()">Login</button>
+                <button class="btn btn-outline-dark" onclick="toRegister()">Registrasi</button>
+            </div>
+            </div>
+            {% comment %} <form class="d-flex" role="search">
+            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-dark" type="submit">Search</button>
+        </form>{% endcomment %}
+        </div>
+    </nav>
+
+<script>
+    function toLogin() {
+        window.location.href = "{% url 'main:login' %}";
+    }
+
+    function toRegister() {
+        window.location.href = "{% url 'main:register' %}"
+    }
+</script>
+{% endblock %}

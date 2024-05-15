@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+{% include 'navbar2.html' %}
+<style>
+    html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+    }
+    body {
+        background-color: rgb(247, 231, 206);
+    }
+    .custom-padding {
+        padding-right: 10px;
+    }
+    .name-class {
+        margin-right: 10px;
+    }
+    .background-container {
+        background-color: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    table, th, td {
+        border: 1.5px solid #dedddd;
+        vertical-align: middle;
+        padding: 10px;
+        font-weight: 600;
+    }
+    th {
+        background-color: #151414;
+        color: #f7f7f7;
+        text-align: center;
+        font-weight: bold;
+    }
+    td {
+        vertical-align: top;
+    }
+    tr{
+        background-color: #f2f2f2;
+    }
+    .centered-text {
+            text-align: center;
+        }
+</style>
+
+<div class="container mt-5 background-container">
+    <h1 class="mb-3 centered-text">User Playlist</h1>
+    {% if error %}
+        <p>{{ error }}</p>
+    {% endif %}
+    {% if playlists %}
+    <table>
+        <thead>
+            <tr>
+                <th>Judul</th>
+                <th>Jumlah Lagu</th>
+                <th>Total Durasi</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody class="table-group-divider last-table">
+            {% for playlist in playlists %}
+            <tr>
+                <td>{{ playlist.judul }}</td>
+                <td>{{ playlist.jumlah_lagu }}</td>
+                <td>{{ playlist.total_durasi }} menit</td>
+                <td>
+                    <a href="#" class="btn btn-info btn-action">Detail</a>
+                    <a href="#" class="btn btn-warning btn-action">Ubah</a>
+                    <a href="#" class="btn btn-danger btn-action">Hapus</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        <p>No playlists found.</p>
+    {% endif %}
+    <a href="#" class="btn btn-success mt-3">Tambah Playlist</a>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+{% endblock content %}
