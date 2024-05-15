@@ -15,6 +15,13 @@ import random
 def show_main(request):
     return render(request, "main.html")
 
+def logout(request):
+    try:
+        del request.session['email']
+    except KeyError:
+        pass
+    return redirect('main:login')
+
 def authenticate(email, password):
     # print(f"cek email {email}")
     # print(f"cek password {password}")
@@ -43,9 +50,11 @@ def login(request):
         
         user = authenticate(email, password)
         if user is not None:
-            print("success login broooooooooo")
+            # with connection.cursor() as cursor:
+            #     cursor.execute("SELECT * FROM AKUN WHERE email = %s", [email])
+            #     row = cursor.fetchone()
             request.session['email'] = user
-            return redirect('main:show_main')
+            return redirect('main:dashboard_penggunabiasa')
         else:
             return HttpResponse("Invalid credentials")
 
@@ -148,7 +157,22 @@ def dashboard_podcaster(request):
     return render(request, 'dashboard_podcaster.html')
 
 def dashboard_penggunabiasa(request):
-    return render(request, 'dashboard_penggunabiasa.html')
+    if 'email' in request.session:
+        user_email = request.session['email']
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT * FROM AKUN WHERE EMAIL = %s", [user_email])
+            row = cursor.fetchone()
+            print(row)
+        gender = "Laki-laki" if row[3] else "Perempuan"
+        context = {
+            'nama' : row[2],
+            'email' : row[0],
+            'kota_asal' : row[7],
+            'gender' : gender,
+            'tempat_lahir': row[4],
+            'tanggal_lahir': row[5],
+        }
+    return render(request, 'dashboard_penggunabiasa.html', context)
 
 def dashboard_artist_atau_songwriter(request):
     return render(request, 'dashboard_artist_atau_songwriter.html')
