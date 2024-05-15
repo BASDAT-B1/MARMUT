@@ -5,7 +5,7 @@ from django.db import connection
 def add_playlist(request):
     return render(request, 'add_playlist.html')
 
-def detail_playlist(request, playlist_id):
+def detail_playlist(request, id_playlist):
     if request.method == 'GET':
         if 'email' in request.session:
             user_email = request.session['email']
@@ -15,17 +15,22 @@ def detail_playlist(request, playlist_id):
                 FROM USER_PLAYLIST up
                 JOIN AKUN a ON up.email_pembuat = a.email
                 WHERE up.id_user_playlist = %s AND a.email = %s
-            """, [playlist_id, user_email])
+            """, [id_playlist, user_email])
             playlist_detail = cursor.fetchone()
+            print(playlist_detail)
         
-        cursor.execute("""
-            SELECT s.judul, ar.nama, s.durasi
-            FROM PLAYLIST_SONG ps
-            JOIN SONG s ON ps.id_song = s.id_konten
-            JOIN ARTIST ar ON s.id_artist = ar.id
-            WHERE ps.id_playlist = %s
-        """, [playlist_id])
-        songs = cursor.fetchall()
+        with connection.cursor() as cursor:
+            cursor.execute("""
+                SELECT k.judul, ak.nama, k.durasi
+                FROM PLAYLIST_SONG ps
+                JOIN KONTEN k ON ps.id_song = k.id
+                JOIN SONG s ON k.id = s.id_konten
+                JOIN ARTIST ar ON s.id_artist = ar.id
+                JOIN AKUN ak ON ak.email = ar.email_akun
+                WHERE ps.id_playlist = %s
+            """, [id_playlist])
+            songs = cursor.fetchall()
+            print(songs)
         
         song_data = []
         for song in songs:
@@ -35,7 +40,7 @@ def detail_playlist(request, playlist_id):
                 'durasi': song[2]
             })
         
-        return render(request, 'playlist_detail.html', {
+        return render(request, 'detail_playlist.html', {
             'playlist_detail': playlist_detail,
             'songs': song_data
         })
