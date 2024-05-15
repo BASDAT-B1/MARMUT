@@ -5,7 +5,8 @@ from django.urls import reverse
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db import connection
-# import uuid
+import uuid
+import random
 
 
 # @login_required(login_url='/login')
@@ -74,29 +75,27 @@ def register_pengguna(request):
         kota_asal = request.POST.get('kotaAsal')
         roles = request.POST.getlist('role')
 
-        print(f'Email: {email}')
-        print(f'Password: {password}')
-        print(f'Nama: {nama}')
-        print(f'Gender: {gender}')
-        print(f'Tempat Lahir: {tempat_lahir}')
-        print(f'Tanggal Lahir: {tanggal_lahir}')
-        print(f'Kota Asal: {kota_asal}')
-        print(f'Roles: {roles}')
-
         with connection.cursor() as cursor:
             cursor.execute("SELECT EMAIL FROM AKUN WHERE email = %s", [email])
             row = cursor.fetchone()
         if row != None :
             return HttpResponse("Email Already Registered")
         else :
-            is_verified = False
+            if len(roles) == 0:
+                is_verified = False
+            else: 
+                is_verified = True
             with connection.cursor() as cursor:
                 cursor.execute("""
                     INSERT INTO AKUN (email, password, nama, gender, tempat_lahir, tanggal_lahir, is_verified, kota_asal)
                     VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
                 """, [email, password, nama, gender, tempat_lahir, tanggal_lahir, is_verified, kota_asal])
-            if roles.length() > 0 :
-                # new_uuid = uuid.uuid4()
+            if len(roles) > 0 :
+                new_uuid = uuid.uuid4()
+                uuid_pemilik_hak_cipta = uuid.uuid4()
+                    
+                rate_royalti = random.randint(1_000_000, 10_000000)
+                pemilik_created = False
                 for role in roles: 
                     role = role.upper()
                     if(role == "PODCASTER"):
@@ -105,12 +104,27 @@ def register_pengguna(request):
                                 INSERT INTO PODCASTER (email)
                                 VALUES (%s)
                             """, [email])
-                    # if(role == "ARTIST"):
-                    #     with connection.cursor() as cursor:
-                    #         cursor.execute("""
-                    #             INSERT INTO ARTIST (id, email_akun, id_pemilik_hak_cipta)
-                    #             VALUES (%s)
-                    #         """, [email])
+                    if(role == "ARTIST" or role == "SONGWRITER"):
+                        if pemilik_created == False:
+                            with connection.cursor() as cursor:
+                                cursor.execute("""
+                                    INSERT INTO PEMILIK_HAK_CIPTA (id, rate_royalti)
+                                    VALUES (%s, %s)
+                                """, [uuid_pemilik_hak_cipta, rate_royalti])
+                            pemilik_created = True
+                        if(role == "ARTIST"):
+                            with connection.cursor() as cursor:
+                                cursor.execute("""
+                                    INSERT INTO ARTIST (id, email_akun, id_pemilik_hak_cipta)
+                                    VALUES (%s, %s, %s)
+                                """, [new_uuid, email, uuid_pemilik_hak_cipta])
+                        else:
+                            with connection.cursor() as cursor:
+                                cursor.execute("""
+                                    INSERT INTO SONGWRITER (id, email_akun, id_pemilik_hak_cipta)
+                                    VALUES (%s, %s, %s)
+                                """, [new_uuid, email, uuid_pemilik_hak_cipta])
+
                     
                 return redirect('main:login')
     return render (request, 'register_pengguna.html')
