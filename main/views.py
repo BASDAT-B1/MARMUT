@@ -67,6 +67,35 @@ def register(request):
     return render (request, 'register.html')
 
 def register_label(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        nama = request.POST.get('nama')
+        kontak = request.POST.get('kontak')
+        uuid_label = uuid.uuid4()
+
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT EMAIL FROM LABEL WHERE EMAIL = %s", email)
+            row = cursor.fetchone()
+
+        if row == email:
+            return HttpResponse("Email Already Exist")
+
+        uuid_pemilik_hak_cipta = uuid.uuid4()
+        rate_royalti = random.randint(1_000_000, 100_000_000)
+        with connection.cursor() as cursor:
+            cursor.execute("""
+                INSERT INTO PEMILIK_HAK_CIPTA (id, rate_royalti)
+                VALUES (%s, %s)
+            """, [uuid_pemilik_hak_cipta, rate_royalti])
+
+        with connection.cursor() as cursor:
+            cursor.execute("""
+                INSERT INTO LABEL (id, nama, email, kontak, id_pemilik_hak_cipta, password)
+                VALUES (%s, %s, %s, %s, %s, %s)
+            """, [uuid_label, nama, email, kontak, uuid_pemilik_hak_cipta, password])
+        return redirect('main:login')
+
     return render (request, 'register_label.html')
 
 def register_pengguna(request):
@@ -103,7 +132,7 @@ def register_pengguna(request):
                 new_uuid = uuid.uuid4()
                 uuid_pemilik_hak_cipta = uuid.uuid4()
                     
-                rate_royalti = random.randint(1_000_000, 10_000000)
+                rate_royalti = random.randint(1_000_000, 100_000_000)
                 pemilik_created = False
                 for role in roles: 
                     role = role.upper()
