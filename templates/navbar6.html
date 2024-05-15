@@ -16,13 +16,9 @@
             <div class="navContent">
             <a class="navbar-brand" href="">Marmut</a>
             <div class="buttonnavContent">
-                <button class="btn btn-outline-dark">Dashboard</button>
-                <button class="btn btn-outline-dark">Kelola Playlist</button>
-                <button class="btn btn-outline-dark">Langganan Paket</button>
-                <button class="btn btn-outline-dark">Chart</button>
-                <button class="btn btn-outline-dark">Kelola Album</button>
-                <button class="btn btn-outline-dark">Cek Royalti</button>
-                <button class="btn btn-outline-dark">Logout</button>
+                <button class="btn btn-outline-dark" onclick="toDashboard()">Dashboard</button>
+                <button class="btn btn-outline-dark" onclick="toAlbumSongs()">Cek Royalti</button>
+                <button class="btn btn-outline-dark" onclick="toRoyalti()">Logout</button>
             </div>
             </div>
             <form class="d-flex" role="search">
@@ -31,4 +27,21 @@
         </form>
         </div>
     </nav>
+    <script>
+        function toDashboard() {
+            window.location.href = "{% url 'main:dashboard_penggunabiasa' %}";
+        }
+
+        function toAlbumSongs() {
+            window.location.href = "{% url 'kelola_album_song:list_album' %}";
+        }
+
+        function toRoyalti() {
+            window.location.href = "{% url 'kelola_album_song:cek_royalti' %}";
+        }
+
+        function logoutButton() {
+            window.location.href = "{% url 'main:logout' %}";
+        }
+    </script>
 {% endblock %}
