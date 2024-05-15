@@ -73,7 +73,7 @@
                 <td>{{ playlist.jumlah_lagu }}</td>
                 <td>{{ playlist.total_durasi }} menit</td>
                 <td>
-                    <a href="#" class="btn btn-info btn-action">Detail</a>
+                    <a href="{% url 'kelola_playlist:detail_playlist' playlist.id %}" class="btn btn-info btn-action">Detail</a>
                     <a href="#" class="btn btn-warning btn-action">Ubah</a>
                     <a href="#" class="btn btn-danger btn-action">Hapus</a>
                 </td>
@@ -87,7 +87,10 @@
     <a href="#" class="btn btn-success mt-3">Tambah Playlist</a>
 </div>
 
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+    function detailPlaylist(id_playlist) {
+
+    }
+</script>
+
 {% endblock content %}

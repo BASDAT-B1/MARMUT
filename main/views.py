@@ -51,7 +51,7 @@ def login(request):
         user = authenticate(email, password)
         if user is not None:
             # with connection.cursor() as cursor:
-            #     cursor.execute("SELECT * FROM AKUN WHERE email = %s", [email])
+            #     cursor.execute("SELECT ID FROM AKUN WHERE email = %s", [email])
             #     row = cursor.fetchone()
             request.session['email'] = user
             return redirect('main:dashboard_penggunabiasa')
