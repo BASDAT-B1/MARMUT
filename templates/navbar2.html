@@ -16,10 +16,10 @@
             <div class="navContent">
             <a class="navbar-brand" href="">Marmut</a>
             <div class="buttonnavContent">
-                <button class="btn btn-outline-dark">Dashboard</button>
-                <button class="btn btn-outline-dark">Chart</button>
-                <button class="btn btn-outline-dark">Kelola Playlist</button>
-                <button class="btn btn-outline-dark">Langganan Paket</button>
+                <button class="btn btn-outline-dark" onclick="toDashboard()">Dashboard</button>
+                <button class="btn btn-outline-dark" onclick="toChart()">Chart</button>
+                <button class="btn btn-outline-dark" onclick="toKelolaPlaylist()">Kelola Playlist</button>
+                <button class="btn btn-outline-dark" onclick="toSubscribe()">Langganan Paket</button>
                 <button class="btn btn-outline-dark" onclick="logoutButton()">Logout</button>
             </div>
             </div>
@@ -31,6 +31,22 @@
     </nav>
 
     <script>
+        function toDashboard() {
+            window.location.href = "{% url 'main:dashboard_penggunabiasa' %}";
+        }
+
+        function toChart() {
+            window.location.href = "{% url 'melihat_chart:show_daily' %}";
+        }
+
+        function toKelolaPlaylist() {
+            window.location.href = "{% url 'kelola_playlist:playlist' %}";
+        }
+
+        function toSubscribe() {
+            window.location.href = "{% url 'main:langganan_paket' %}";
+        }
+        
         function logoutButton() {
             window.location.href = "{% url 'main:logout' %}";
         }
