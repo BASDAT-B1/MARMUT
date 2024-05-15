@@ -20,7 +20,7 @@
                 <button class="btn btn-outline-dark">Chart</button>
                 <button class="btn btn-outline-dark">Kelola Playlist</button>
                 <button class="btn btn-outline-dark">Langganan Paket</button>
-                <button class="btn btn-outline-dark">Logout</button>
+                <button class="btn btn-outline-dark" onclick="logoutButton()">Logout</button>
             </div>
             </div>
             <form class="d-flex" role="search">
@@ -29,4 +29,10 @@
         </form>
         </div>
     </nav>
+
+    <script>
+        function logoutButton() {
+            window.location.href = "{% url 'main:logout' %}";
+        }
+    </script>
 {% endblock %}
