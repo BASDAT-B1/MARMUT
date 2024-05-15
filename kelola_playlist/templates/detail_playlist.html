@@ -1,6 +1,5 @@
 {% extends 'base.html' %}
 
-
 {% block content %}
 {% include 'navbar2.html' %}
 <meta charset="UTF-8">
@@ -49,23 +48,23 @@
     td {
         vertical-align: top;
     }
-    tr{
+    tr {
         background-color: #f2f2f2;
     }
     .centered-text {
-            text-align: center;
-        }
+        text-align: center;
+    }
 </style>
 
 <div class="container mt-5 background-container">
     <h1 class="mb-3 centered-text">User Playlist Detail</h1>
     <div>
-        <h4>Judul: Playlist1</h4>
-        <p>Pembuat: Pembuat1</p>
-        <p>Jumlah Lagu: 12</p>
-        <p>Total Durasi: 8 jam 20 menit</p>
-        <p>Tanggal Dibuat: 18/03/24</p>
-        <p>Deskripsi: Lorem Ipsum ...</p>
+        <h4>Judul: {{ playlist_detail.0 }}</h4>
+        <p>Pembuat: {{ playlist_detail.1 }}</p>
+        <p>Jumlah Lagu: {{ playlist_detail.2 }}</p>
+        <p>Total Durasi: {{ playlist_detail.3 }} menit</p>
+        <p>Tanggal Dibuat: {{ playlist_detail.4 }}</p>
+        <p>Deskripsi: {{ playlist_detail.5 }}</p>
     </div>
     <div class="mt-3 mb-3">
         <div class="text-center">
@@ -76,61 +75,34 @@
             </div>
             <div class="btn-toolbar justify-content-center" role="toolbar">
                 <div class="btn-group mr-2" role="group">
-                    <button class="btn btn-secondary btn-action mt-2 mb-4">Kembali</button>
+                    <a href="{% url 'playlist' %}" class="btn btn-secondary btn-action mt-2 mb-4">Kembali</a>
                 </div>
             </div>
+        </div>
     </div>
     <h5 class="centered-text">DAFTAR LAGU</h5>
     <table>
         <thead>
             <tr>
-                <th>Judul</th>
-                <th >Oleh</th>
-                <th>urasi</th>
+                <th>Judul Lagu</th>
+                <th>Oleh</th>
+                <th>Durasi</th>
                 <th>Actions</th>
             </tr>
         </thead>
         <tbody class="table-group-divider">
+            {% for song in songs %}
             <tr>
-                <td>Song1</td>
-                <td>Artist1</td>
-                <td>2 menit</td>
+                <td>{{ song.judul }}</td>
+                <td>{{ song.artist }}</td>
+                <td>{{ song.durasi }} menit</td>
                 <td>
                     <a href="#" class="btn btn-info btn-action">Lihat</a>
                     <a href="#" class="btn btn-success btn-action">Play</a>
                     <a href="#" class="btn btn-danger btn-action">Hapus</a>
                 </td>
             </tr>
-            <tr>
-                <td>Song2</td>
-                <td>Artist2</td>
-                <td>3 menit</td>
-                <td>
-                    <a href="#" class="btn btn-info btn-action">Lihat</a>
-                    <a href="#" class="btn btn-success btn-action">Play</a>
-                    <a href="#" class="btn btn-danger btn-action">Hapus</a>
-                </td>
-            </tr>
-            <tr>
-                <td>Song3</td>
-                <td>Artist3</td>
-                <td>4 menit</td>
-                <td>
-                    <a href="#" class="btn btn-info btn-action">Lihat</a>
-                    <a href="#" class="btn btn-success btn-action">Play</a>
-                    <a href="#" class="btn btn-danger btn-action">Hapus</a>
-                </td>
-            </tr>
-            <tr>
-                <td>Song4</td>
-                <td>Artist4</td>
-                <td>2 menit</td>
-                <td>
-                    <a href="#" class="btn btn-info btn-action">Lihat</a>
-                    <a href="#" class="btn btn-success btn-action">Play</a>
-                    <a href="#" class="btn btn-danger btn-action">Hapus</a>
-                </td>
-            </tr>
+            {% endfor %}
         </tbody>
     </table>
     <div class="modal fade" id="tambahLaguModal" tabindex="-1" role="dialog" aria-labelledby="tambahLaguModalLabel" aria-hidden="true">
@@ -155,10 +127,10 @@
                             </select>
                         </div>
                     </form>
-                <div class="mt-3 mb-3">
-                    <div class="text-center">
-                        <div class="btn-toolbar justify-content-center" role="toolbar">
-                            <div class="btn-group mr-2" role="group">
+                    <div class="mt-3 mb-3">
+                        <div class="text-center">
+                            <div class="btn-toolbar justify-content-center" role="toolbar">
+                                <div class="btn-group mr-2" role="group">
                                     <button type="button" class="btn btn-primary" data-dismiss="modal">Submit</button>
                                 </div>
                             </div>
