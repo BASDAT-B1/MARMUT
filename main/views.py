@@ -16,6 +16,7 @@ def show_main(request):
 def logout(request):
     try:
         del request.session['email']
+        del request.session['roles']
     except KeyError:
         pass
     return redirect('main:login')
@@ -178,19 +179,49 @@ def register_pengguna(request):
     return render (request, 'register_pengguna.html')
 
 def search_bar(request):
-    search_query = request.GET.get('search', '')  # Get the search query from the GET request
-    data = []
+    search_query = request.GET.get('search')  # Get the search query from the GET request
+    user_playlists = []
+    podcasts = []
+    songs = []
     
-    if search_query:  # Only execute the query if there is a search term
+    if search_query != '':  # Only execute the query if there is a search term
         with connection.cursor() as cursor:
             cursor.execute("""
-                SELECT k.JUDUL ak.NAMA
-                FROM KONTEN as k, AKUN as ak, 
-                WHERE judul ILIKE %s
+                SELECT up.JUDUL, ak.NAMA
+                FROM USER_PLAYLIST as up, AKUN as ak
+                WHERE judul ILIKE %s AND up.EMAIL_PEMBUAT = ak.EMAIL;
             """, [f'%{search_query}%'])
-            data = cursor.fetchall()
-        print(data)
-    return render(request, 'search_page.html', {'data': data, 'search_query': search_query})
+            user_playlists_data = cursor.fetchall()
+
+            cursor.execute("""
+                SELECT k.JUDUL, ak.NAMA
+                FROM PODCAST as p, AKUN as ak, KONTEN as k
+                WHERE judul ILIKE %s AND p.EMAIL_PODCASTER = ak.EMAIL AND p.id_konten = k.id;
+            """, [f'%{search_query}%'])
+            podcasts_data = cursor.fetchall()
+
+            cursor.execute("""
+                SELECT k.JUDUL, ak.NAMA
+                FROM SONG as s, AKUN as ak, KONTEN as k, ARTIST as ar
+                WHERE judul ILIKE %s AND s.id_konten = k.id AND ar.email_akun = ak.email AND s.id_artist = ar.id;
+            """, [f'%{search_query}%'])
+            songs_data = cursor.fetchall()
+        for song in songs_data:
+            songs.append({
+                'judul': song[0],
+                'nama': song[1],
+            })
+        for podcast in podcasts_data:
+            podcasts.append({
+                'judul': podcast[0],
+                'nama': podcast[1],
+            })
+        for playlist in user_playlists_data:
+            user_playlists.append({
+                'judul': playlist[0],
+                'nama': playlist[1],
+            })
+    return render(request, 'search_page.html', {'user_playlists': user_playlists, 'podcasts': podcasts, 'songs': songs,'search_query': search_query})
 
     
 
