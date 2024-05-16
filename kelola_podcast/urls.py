@@ -5,7 +5,7 @@ app_name = 'kelola_podcast'
 
 urlpatterns = [
     path('', list_podcast, name='list_podcast'),
-    path('podcast/id/', podcast_detail, name='podcast_detail'),
+    path('podcast/<uuid:id>/', podcast_detail, name='podcast_detail'),
     path('add/', add_podcast, name='add_podcast'),
-    path('episode/add/', add_episode, name='add_episode'),
+     path('episode/<uuid:id>/add', add_episode, name='add_episode'),
 ]
