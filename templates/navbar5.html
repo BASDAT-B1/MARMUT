@@ -22,13 +22,10 @@
                 <button class="btn btn-outline-dark" onclick="toSubscribe()">Langganan Paket</button>
                 <button class="btn btn-outline-dark" onclick="toAlbumSongs()">Kelola Album & Songs</button>
                 <button class="btn btn-outline-dark" onclick="toRoyalti()">Cek Royalti</button>
+                <button class="btn btn-outline-dark" onclick="toSearchPage()">Search</button>
                 <button class="btn btn-outline-dark" onclick="logoutButton()">Logout</button>
             </div>
             </div>
-            <form class="d-flex" role="search">
-            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-            <button class="btn btn-outline-dark" type="submit">Search</button>
-        </form>
         </div>
     </nav>
     <script>
@@ -46,6 +43,10 @@
 
         function toSubscribe() {
             window.location.href = "{% url 'main:langganan_paket' %}";
+        }
+
+        function toSearchPage() {
+            window.location.href = "{% url 'main:search_bar' %}";
         }
 
         function toAlbumSongs() {

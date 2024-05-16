@@ -21,6 +21,7 @@
                 <button class="btn btn-outline-dark" onclick="toKelolaPlaylist()">Kelola Playlist</button>
                 <button class="btn btn-outline-dark" onclick="toSubscribe()">Langganan Paket</button>
                 <button class="btn btn-outline-dark" onclick="toDownloadedSongs()">Downloaded songs</button>
+                <button class="btn btn-outline-dark" onclick="toSearchPage()">Search</button>
                 <button class="btn btn-outline-dark" onclick="logoutButton()">Logout</button>
             </div>
             </div>
@@ -50,6 +51,10 @@
 
         function toSubscribe() {
             window.location.href = "{% url 'main:langganan_paket' %}";
+        }
+
+        function toSearchPage() {
+            window.location.href = "{% url 'main:search_bar' %}";
         }
 
         function logoutButton() {
