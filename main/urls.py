@@ -24,4 +24,5 @@ urlpatterns = [
     path('dashboard_penggunabiasa_with_playlist/', dashboard_penggunabiasa_with_playlist, name='dashboard_penggunabiasa_with_playlist'),
     path('dashboard_artist_atau_songwriter_with_playlist/', dashboard_artist_atau_songwriter_with_playlist, name='dashboard_artist_atau_songwriter_with_playlist'),
     path('logout/', logout, name='logout'),
+    path('search/', search_bar, name='search_bar'),
 ]
