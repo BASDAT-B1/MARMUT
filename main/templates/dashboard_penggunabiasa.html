@@ -251,7 +251,11 @@
                                             </tr>
                                             <tr>
                                                 <th>Role</th>
-                                                <td>Pengguna Reguler</td>
+                                                <td>
+                                                    {% for role in roles %}
+                                                        {{ role }}{% if not forloop.last %}, {% endif %}
+                                                    {% endfor %}
+                                                </td>
                                             </tr>
                                         </table>
                                     </div>

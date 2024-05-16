@@ -113,31 +113,30 @@
         </tr>
         <tr>
             <td>Artist:</td>
+            {% if user_role == 'Artist' %}
             <td>ArtistX</td> 
+            {% else %}
+            <td>
+                <select name="Artist[]">
+                    {% for artist in artists %}
+                        <option value="{{ artist }}">{{ artist }}</option>
+                    {% endfor %}
+                </select>
+            </td>
         </tr>
         <tr>
+        <tr>
             <td>Songwriter:</td>
+            {% if user_role == 'Songwriter' %}
+            <td>SongwriterX</td> 
+            {% else %}
             <td>
-            <div class="form-check">
-                <input type="checkbox" class="form-check-input" id="songwriter">
-                <label class="form-check-label" for="songwriter">Songwriter1</label>
-            </div>
-            <div class="form-check">
-                <input type="checkbox" class="form-check-input" id="songwriter">
-                <label class="form-check-label" for="songwriter">Songwriter2</label>
-            </div>
-            <div class="form-check">
-                <input type="checkbox" class="form-check-input" id="songwriter">
-                <label class="form-check-label" for="songwriter">Songwriter3</label>
-            </div>
-            <div class="form-check">
-                <input type="checkbox" class="form-check-input" id="songwriter">
-                <label class="form-check-label" for="songwriter">Songwriter4</label>
-            </div>
-            <div class="form-check">
-                <input type="checkbox" class="form-check-input" id="songwriter">
-                <label class="form-check-label" for="songwriter">Songwriter5</label>
-            </div>   
+                {% for songwriter in songwriters %}
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" id="songwriter{{ forloop.counter }}" name="songwriters[]" value="{{ songwriter }}">
+                    <label class="form-check-label" for="songwriter{{ forloop.counter }}">{{ songwriter }}</label>
+                </div>
+            {% endfor %}
             </td>
         </tr>
         <tr>

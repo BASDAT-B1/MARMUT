@@ -52,19 +52,33 @@ def login(request):
         if user is not None:
             with connection.cursor() as cursor:
                 cursor.execute("SELECT EMAIL FROM PODCASTER WHERE email = %s", [email])
-                if cursor.fetchone() == email :
+                row = cursor.fetchone()
+                if row and row[0] == email:
                     roles.append('Podcaster')
+
+            with connection.cursor() as cursor:
                 cursor.execute("SELECT email_akun FROM ARTIST WHERE email_akun = %s", [email])
-                if cursor.fetchone() == email :
+                row = cursor.fetchone()
+                print(row)
+                if row and row[0] == email:
                     roles.append('Artis')
+
+            with connection.cursor() as cursor:
                 cursor.execute("SELECT email_akun FROM SONGWRITER WHERE email_akun = %s", [email])
-                if cursor.fetchone() == email :
+                row = cursor.fetchone()
+                if row and row[0] == email:
                     roles.append('Songwriter')
+
+            with connection.cursor() as cursor:
                 cursor.execute("SELECT EMAIL FROM LABEL WHERE email = %s", [email])
-                if cursor.fetchone() == email :
+                row = cursor.fetchone()
+                if row and row[0] == email:
                     roles.append('Label')
+
+            with connection.cursor() as cursor:
                 cursor.execute("SELECT EMAIL FROM PREMIUM WHERE email = %s", [email])
-                if cursor.fetchone() == email :
+                row = cursor.fetchone()
+                if row and row[0] == email:
                     roles.append('Premium')
                 else:
                     roles.append('Pengguna Biasa')
@@ -246,10 +260,11 @@ def dashboard_podcaster(request):
 def dashboard_penggunabiasa(request):
     if 'email' in request.session:
         user_email = request.session['email']
+        roles = request.session['roles']
+        print(roles)
         with connection.cursor() as cursor:
             cursor.execute("SELECT * FROM AKUN WHERE EMAIL = %s", [user_email])
             row = cursor.fetchone()
-            print(row)
         gender = "Laki-laki" if row[3] else "Perempuan"
         context = {
             'nama' : row[2],
@@ -258,6 +273,7 @@ def dashboard_penggunabiasa(request):
             'gender' : gender,
             'tempat_lahir': row[4],
             'tanggal_lahir': row[5],
+            'roles': roles
         }
     return render(request, 'dashboard_penggunabiasa.html', context)
 

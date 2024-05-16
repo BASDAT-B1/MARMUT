@@ -57,49 +57,75 @@ def list_album_label(request):
             })
             
             return render(request, 'list_album_label.html', {'albums': album_data})
-
+        
+def artist_data(request):
+     
 
 def create_album(request):
-   if request.method == 'POST':
-        album = request.POST.get('Judul')
-        label = request.POST.get("label")
-        judul_lagu = request.POST.get("judul_lagu")
-        artist = request.POST.get("artist")
-        songwriter = request.POST.get("songwriter")
-        genre = request.POST.get("genre")
-        durasi = request.POST.get("durasi")
-        id_album = uuid.uuid4()
+    roles = request.session.get('roles', [])
+    if 'Artist' in roles or 'Songwriter' in roles :
+        if request.method == 'POST':
+            label_email = request.session.get('email', None)
 
-        id_konten = uuid.uuid4()
-        with connection.cursor() as cursor:
-                cursor.execute("""
-                    SELECT L.id 
-                    FROM LABEL L
-                    WHERE L.nama = %s    
-                """, [label])
-        id_label = cursor.fetchone()[0]
+            if label_email:
+                album = request.POST.get('Judul')
+                label = request.POST.get("label")
+                judul_lagu = request.POST.get("judul_lagu")
+                artist = request.POST.get("artist")
+                songwriter = request.POST.get("songwriter")
+                aos_data = []
+                if 'Artist' not in roles :
+                    with connection.cursor() as cursor:
+                        cursor.execute("""
+                            SELECT A.nama
+                            FROM  ARTIST A
+                        """)
+                        artist_data = cursor.fetchall()
+                        aos_data.append(artist_data)
 
-        with connection.cursor() as cursor:
-                cursor.execute("""
-                    SELECT A.id 
-                    FROM  ARTIST A
-                    WHERE A.nama = %s    
-                """, [artist])
-        id_artist = cursor.fetchone()[0]
+                if 'Songwriter' not in roles :
+                    with connection.cursor() as cursor:
+                        cursor.execute("""
+                            SELECT S.nama
+                            FROM SONGWRITER S 
+                        """)
+                        songwriter_data = cursor.fetchall()
+                        aos_data.append(songwriter_data)
+                
+                genre = request.POST.get("genre")
+                durasi = request.POST.get("durasi")
+                id_album = uuid.uuid4()
 
-        with connection.cursor() as cursor:
-                cursor.execute("""
-                    INSERT INTO ALBUM (id, judul, jumlah_lagu, id_label, total_durasi)
-                    VALUES (%s, %s, %d, %s, %d)
-                """, [id_album, album, 1, id_label , durasi])
+                id_konten = uuid.uuid4()
+                with connection.cursor() as cursor:
+                        cursor.execute("""
+                            SELECT L.id 
+                            FROM LABEL L
+                            WHERE L.nama = %s    
+                        """, [label])
+                id_label = cursor.fetchone()[0]
 
-       
-        with connection.cursor() as cursor:
-                cursor.execute("""
-                    INSERT INTO SONG (id_konten, id_artist, id_album, total_play, total_download)
-                    VALUES (%s, %s, %s, %d, %d)
-                """, [id_konten, id_artist, id_album, 0 , 0])     
-        return render(request, "create_album.html")
+                with connection.cursor() as cursor:
+                        cursor.execute("""
+                            SELECT A.id 
+                            FROM  ARTIST A
+                            WHERE A.nama = %s    
+                        """, [artist])
+                id_artist = cursor.fetchone()[0]
+
+                with connection.cursor() as cursor:
+                        cursor.execute("""
+                            INSERT INTO ALBUM (id, judul, jumlah_lagu, id_label, total_durasi)
+                            VALUES (%s, %s, %d, %s, %d)
+                        """, [id_album, album, 1, id_label , durasi])
+
+            
+                with connection.cursor() as cursor:
+                        cursor.execute("""
+                            INSERT INTO SONG (id_konten, id_artist, id_album, total_play, total_download)
+                            VALUES (%s, %s, %s, %d, %d)
+                        """, [id_konten, id_artist, id_album, 0 , 0])     
+                return render(request, "create_album.html",{'artist_or_songwriter': aos_data})
 
 def create_lagu_artist(request):
     if request.method == 'POST':
@@ -132,6 +158,7 @@ def create_lagu_songwriter(request):
         songwriter = request.POST.get("songwriter")
         genre = request.POST.get("genre")
         durasi = request.POST.get("durasi")
+        id_album = request.POST.get("id_album")
         with connection.cursor() as cursor:
                 cursor.execute("""
                     SELECT A.id 
