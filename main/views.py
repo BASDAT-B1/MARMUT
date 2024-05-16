@@ -240,13 +240,33 @@ def search_bar(request):
     
 
 def langganan_paket(request):
-    return render(request, 'langganan_paket.html')
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT * FROM PAKET;")
+        row = cursor.fetchall()
+    paket = []
+    for paket_data in row:
+        paket.append({
+            'jenis': paket_data[0],
+            'harga': paket_data[1]
+        })
+
+    if request.method == 'POST':
+        print(request.POST)
+        selected_jenis = request.POST['selected_jenis']
+        selected_harga = request.POST['selected_harga']
+        return redirect('main:pembayaran_paket', jenis=selected_jenis, harga=selected_harga)
+    return render(request, 'langganan_paket.html', {'paket': paket})
 
 def downloaded_songs(request):
     return render(request, 'downloaded_songs.html')
 
-def pembayaran_paket(request):
-    return render(request, 'pembayaran_paket.html')
+def pembayaran_paket(request, jenis, harga):
+    context = {
+        'jenis': jenis,
+        'harga': harga
+    }
+
+    return render(request, 'pembayaran_paket.html', context)
 
 def melihat_chart(request):
     return render(request,'melihat_chart.html')
