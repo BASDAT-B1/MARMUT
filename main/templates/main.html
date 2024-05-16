@@ -47,14 +47,22 @@
         <div class="col-md-6">
             <div class="main background-container">
                 <h1 class="centered-text mb-4">Marmut - 1</h1>
-                <button type="submit" class="btn btn-primary btn-block mt-4">Login</button><br>
-                <button type="submit" class="btn btn-primary btn-block mt-2">Register</button>
+                <button type="submit" class="btn btn-primary btn-block mt-4" onclick="toLogin()">Login</button><br>
+                <button type="submit" class="btn btn-primary btn-block mt-2" onclick="toRegister()">Register</button>
                 </div>
             </div>
         </div>
     </div>
 </div>
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script>
+    function toLogin() {
+        window.location.href = "{% url 'main:login' %}";
+    }
+
+    function toRegister() {
+        window.location.href = "{% url 'main:register' %}"
+    }
+</script>
+
 {% endblock content %}
