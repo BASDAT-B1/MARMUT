@@ -1,6 +1,6 @@
 from datetime import datetime
 import uuid
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseForbidden
 from django.shortcuts import redirect, render
 from django.shortcuts import render
 from django.db import connection
@@ -123,3 +123,30 @@ def get_podcast_title(podcast_id):
         """, [str(podcast_id)])
         row = cursor.fetchone()
     return row[0] if row else 'Podcast'
+
+def delete_podcast(request, id):
+    user_email = request.session.get('email')
+    if not user_email:
+        return HttpResponseForbidden("You are not allowed to delete this podcast")
+
+    with connection.cursor() as cursor:
+        cursor.execute("""
+            SELECT email_podcaster
+            FROM podcast
+            WHERE id_konten = %s
+        """, [str(id)])
+        row = cursor.fetchone()
+        
+        if row is None:
+            return HttpResponseForbidden("Podcast not found")
+        
+        podcaster_email = row[0]
+        
+        if podcaster_email != user_email:
+            return HttpResponseForbidden("You are not allowed to delete this podcast")
+        
+        if request.method == 'POST':
+            cursor.execute("DELETE FROM konten WHERE id = %s", [str(id)])
+            return redirect('kelola_podcast:list_podcast')
+    
+    return redirect('kelola_podcast:list_podcast')

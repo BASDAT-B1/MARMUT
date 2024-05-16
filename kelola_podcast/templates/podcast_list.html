@@ -35,7 +35,10 @@
               <a href="{% url 'kelola_podcast:podcast_detail' id=podcast.0 %}" class="btn btn-outline-secondary">Episode List</a>
               {% if podcast.5 == user_email %}
               <a href="{% url 'kelola_podcast:add_episode' id=podcast.0 %}" class="btn btn-outline-primary">Tambah Episode</a>
-              <a href="#" class="btn btn-outline-danger">Hapus Podcast</a>
+              <form method="POST" action="{% url 'kelola_podcast:delete_podcast' id=podcast.0 %}" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-outline-danger">Hapus Podcast</button>
+              </form>
               {% endif %}
             </div>
           </div>
