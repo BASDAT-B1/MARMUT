@@ -1,6 +1,5 @@
 {% extends 'base.html' %}
 
-
 {% block content %}
 {% include 'navbar2.html' %}
 <style>
@@ -43,12 +42,12 @@
     td {
         vertical-align: top;
     }
-    tr{
+    tr {
         background-color: #f2f2f2;
     }
     .centered-text {
-            text-align: center;
-        }
+        text-align: center;
+    }
 </style>
 
 <div class="container mt-5 background-container">
@@ -74,23 +73,20 @@
                 <td>{{ playlist.total_durasi }} menit</td>
                 <td>
                     <a href="{% url 'kelola_playlist:detail_playlist' playlist.id %}" class="btn btn-info btn-action">Detail</a>
-                    <a href="#" class="btn btn-warning btn-action">Ubah</a>
-                    <a href="#" class="btn btn-danger btn-action">Hapus</a>
+                    <a href="{% url 'kelola_playlist:edit_playlist' playlist.id %}" class="btn btn-warning btn-action">Ubah</a>
+                    <form action="{% url 'kelola_playlist:delete_playlist' playlist.id %}" method="post" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger btn-action">Hapus</button>
+                    </form>
                 </td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
     {% else %}
-        <p>No playlists found.</p>
+        <h5 class="centered-text mb-3">Anda Belum Memiliki Playlist</h5>
     {% endif %}
-    <a href="#" class="btn btn-success mt-3">Tambah Playlist</a>
+    <a href="{% url 'kelola_playlist:add_playlist'%}" class="btn btn-success mt-3">Tambah Playlist</a>
 </div>
-
-<script>
-    function detailPlaylist(id_playlist) {
-
-    }
-</script>
 
 {% endblock content %}

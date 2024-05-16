@@ -32,18 +32,18 @@
 </style>
 
 <div class="container mt-5 background-container">
-    <h1 class="mb-3 centered-text">Tambah Playlist Baru</h1>
-    <form method="post" action="{% url 'kelola_playlist:add_playlist' %}">
+    <h1 class="mb-3 centered-text">Ubah Playlist</h1>
+    <form method="post" action="{% url 'kelola_playlist:edit_playlist' id_playlist %}">
         {% csrf_token %}
         <div class="form-group">
             <label for="judul" class="form-label">Judul Playlist:</label>
-            <input type="text" class="form-control" id="judul" name="judul" required>
+            <input type="text" class="form-control" id="judul" name="judul" value="{{ judul }}" required>
         </div>
         <div class="form-group">
             <label for="deskripsi" class="form-label">Deskripsi Playlist:</label>
-            <textarea class="form-control" id="deskripsi" name="deskripsi" rows="3" required></textarea>
+            <textarea class="form-control" id="deskripsi" name="deskripsi" rows="3" required>{{ deskripsi }}</textarea>
         </div>
-        <button type="submit" class="btn btn-primary">Tambah</button>
+        <button type="submit" class="btn btn-primary">Ubah</button>
     </form>
 </div>
 
