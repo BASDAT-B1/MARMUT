@@ -12,34 +12,32 @@
     }
 
 </style>
-    <div class="allCard">
-        <div class="card" style="width: 18rem;">
-            <div class="card-body">
-                <h3>Premium</h3>
-                <h5>1 Bulan</h5>
-                <button type="button" class="btn btn-outline-dark">Dapatkan Premium 1 Bulan</button>
-            </div>
-        </div>
-        <div class="card" style="width: 18rem;">
-            <div class="card-body">
-                <h3>Premium</h3>
-                <h5>3 Bulan</h5>
-                <button type="button" class="btn btn-outline-dark">Dapatkan Premium 3 Bulan</button>
-            </div>
-        </div>
-        <div class="card" style="width: 18rem;">
-            <div class="card-body">
-                <h3>Premium</h3>
-                <h5>6 Bulan</h5>
-                <button type="button" class="btn btn-outline-dark">Dapatkan Premium 6 Bulan</button>
-            </div>
-        </div>
-        <div class="card" style="width: 18rem;">
-            <div class="card-body">
-                <h3>Premium</h3>
-                <h5>1 Tahun</h5>
-                <button type="button" class="btn btn-outline-dark">Dapatkan Premium 1 Tahun</button>
-            </div>
-        </div>
+    <div class="d-flex justify-content-center flex-direction-row align-items-center" style="width: 100vw; height: 80vh;">
+        {% for data in paket %}
+            <form method="POST">
+                {% csrf_token %}
+                <div class="card" style="width: 18rem;">
+                    <div class="card-body">
+                        <h3>Premium</h3>
+                        <h5>{{ data.jenis }}</h5>
+                        <h5>{{ data.harga }}</h5>
+                        <input type="hidden" name="selected_jenis" value="{{ data.jenis }}">
+                        <input type="hidden" name="selected_harga" value="{{ data.harga }}">
+                        <input class="btn login_btn btn-outline-dark" type="submit" value="{{ data.jenis }}">
+                    </div>
+                </div>
+            </form>
+            {% endfor %}
     </div>
+
+    <!-- <script>
+        function getPremium(jenis, harga) {
+            const url = `pembayaran-paket/${jenis}/${harga}`
+            fetch(url, {
+                method: "GET",
+            })
+
+            return false
+        }
+    </script> -->
 {% endblock content %}
