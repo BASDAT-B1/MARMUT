@@ -213,8 +213,10 @@
                                     <div class="col-lg-6 px-xl-10">
                                         <div
                                             class="bg-secondary d-lg-inline-block py-1-9 px-1-9 px-sm-6 mb-1-9 rounded w-100">
-                                            <h3 class="h2 text-white mb-0">Pengguna</h3>
-                                            <span class="text-primary">Role</span>
+                                            <h3 class="h2 text-white mb-0">{{nama}}</h3>
+                                            <span class="text-primary">{% for role in roles %}
+                                                {{ role }}{% if not forloop.last %}, {% endif %}
+                                            {% endfor %}</span>
                                         </div>
 
                                         <table>
@@ -272,7 +274,4 @@
     </div>
 </body>
 
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 {% endblock content %}

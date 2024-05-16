@@ -13,11 +13,16 @@
         height: 50vh;
         border: 3px solid #ccc;
         display: flex;
+        flex-direction: column;
         align-items: center;
-        justify-content: center;
+        justify-content: flex-start;
         text-align: center;
-        overflow-y: scroll;
+        overflow-y: auto;
         overflow-x: hidden;
+    }
+    .table {
+        width: 100%;
+        margin: auto;
     }
 </style>
 
@@ -28,71 +33,45 @@
         <button class="btn btn-outline-dark" type="submit">Search</button>
     </form>
     
-        <div class = "d-flex justify-content-center flex-row" style="min-height: max-content;min-width: max-content;">
-            <div class = "d-flex justify-content-center flex-column" style="padding: 0;">
-                <h2 style="text-align: center;">
-                    Song
-                </h2>
-                <div class="result-box d-flex flex-column" >
-                    {% if songs %}
-                        {% for song in songs %}
-                            <div class="song d-flex" style="width: inherit; height: fit-content; justify-content: space-between; padding-left: 20px; border: 2px solid #ccc;">
-                                <div>
-                                    {{ song.judul }} - {{ song.nama }}
-                                </div>
-                                <div style="padding-right: 10px;">
-                                    <a href="#" class="btn btn-action btn-outline-dark">Lihat</a>
-                                </div>
-                            </div>
-                        {% endfor %}
-                    {% else %}
-                        <p>Maaf, tidak ada judul lagu yang mengandung kata “{{ search_query }}” </p>
+    <div class="d-flex justify-content-center flex-row" style="min-height: max-content; min-width: max-content;">
+        <div class="d-flex justify-content-center flex-column" style="padding: 0;">
+            {% if search_query %}
+            <h5 style="text-align: center; margin-top: 1rem;">
+                Hasil Pencarian "{{ search_query }}"
+            </h5>
+            {% else %}
+            <h5 style="text-align: center; margin-top: 1rem;">Masukkan input di kolom pencarian!</h5>
+            {% endif %}
+            <div class="result-box">
+                {% if data %}
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Tipe</th>
+                                <th>Judul</th>
+                                <th>Oleh</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for d in data %}
+                                <tr>
+                                    <td>{{ d.jenis }}</td>
+                                    <td>{{ d.judul }}</td>
+                                    <td>{{ d.nama }}</td>
+                                    <td>
+                                        <a href="#" class="btn btn-action btn-outline-dark">Lihat</a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    {% if search_query %}
+                        <p>Maaf, pencarian untuk "{{ search_query }}" tidak ditemukan</p>
                     {% endif %}
-                </div>
-            </div>
-            <div class = "d-flex justify-content-center flex-column">
-                <h2 style="text-align: center;">
-                    User Playlist
-                </h2>
-                <div class="result-box d-flex flex-column" >
-                    {% if user_playlists %}
-                        {% for up in user_playlists %}
-                            <div class="song d-flex" style="width: inherit; height: fit-content; justify-content: space-between; padding-left: 20px; border: 2px solid #ccc;">
-                                <div>
-                                    {{ up.judul }} - {{ up.nama }}
-                                </div>
-                                <div style="padding-right: 10px;">
-                                    <a href="#" class="btn btn-action btn-outline-dark">Lihat</a>
-                                </div>
-                            </div>
-                        {% endfor %}
-                    {% else %}
-                        <p>Maaf, tidak ada judul playlist yang mengandung kata “{{ search_query }}” </p>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
-        <div class="d-flex justify-content-center parent-result">
-            <div class = "d-flex justify-content-center flex-column">
-                <h2 style="text-align: center;">
-                    Podcast
-                </h2>
-                <div class="result-box d-flex flex-column" >
-                    {% if podcasts %}
-                        {% for podcast in podcasts %}
-                            <div class="song d-flex" style="width: inherit; height: fit-content; justify-content: space-between; padding-left: 20px; border: 2px solid #ccc;">
-                                <div>
-                                    {{ podcast.judul }} - {{ podcast.nama }}
-                                </div>
-                                <div style="padding-right: 10px;">
-                                    <a href="#" class="btn btn-action btn-outline-dark">Lihat</a>
-                                </div>
-                            </div>
-                        {% endfor %}
-                    {% else %}
-                        <p>Maaf, tidak ada judul podcast yang mengandung kata “{{ search_query }}” </p>
-                    {% endif %}
-                </div>
+
+                {% endif %}
             </div>
         </div>
     </div>

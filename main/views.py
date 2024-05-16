@@ -6,6 +6,7 @@ from django.contrib import messages
 from django.db import connection
 import uuid
 import random
+import datetime
 
 
 
@@ -59,7 +60,6 @@ def login(request):
             with connection.cursor() as cursor:
                 cursor.execute("SELECT email_akun FROM ARTIST WHERE email_akun = %s", [email])
                 row = cursor.fetchone()
-                print(row)
                 if row and row[0] == email:
                     roles.append('Artis')
 
@@ -67,6 +67,7 @@ def login(request):
                 cursor.execute("SELECT email_akun FROM SONGWRITER WHERE email_akun = %s", [email])
                 row = cursor.fetchone()
                 if row and row[0] == email:
+                    print('masok')
                     roles.append('Songwriter')
 
             with connection.cursor() as cursor:
@@ -193,10 +194,8 @@ def register_pengguna(request):
     return render (request, 'register_pengguna.html')
 
 def search_bar(request):
-    search_query = request.GET.get('search')  # Get the search query from the GET request
-    user_playlists = []
-    podcasts = []
-    songs = []
+    search_query = request.GET.get('search', '')  # Get the search query from the GET request
+    data = []
     
     if search_query != '':  # Only execute the query if there is a search term
         with connection.cursor() as cursor:
@@ -221,21 +220,24 @@ def search_bar(request):
             """, [f'%{search_query}%'])
             songs_data = cursor.fetchall()
         for song in songs_data:
-            songs.append({
+            data.append({
+                'jenis': 'Song',
                 'judul': song[0],
                 'nama': song[1],
             })
         for podcast in podcasts_data:
-            podcasts.append({
+            data.append({
+                'jenis': 'Podcast',
                 'judul': podcast[0],
                 'nama': podcast[1],
             })
         for playlist in user_playlists_data:
-            user_playlists.append({
+            data.append({
+                'jenis': 'User Playlist',
                 'judul': playlist[0],
                 'nama': playlist[1],
             })
-    return render(request, 'search_page.html', {'user_playlists': user_playlists, 'podcasts': podcasts, 'songs': songs,'search_query': search_query})
+    return render(request, 'search_page.html', {'data' : data,'search_query': search_query})
 
     
 
@@ -260,13 +262,54 @@ def langganan_paket(request):
 def downloaded_songs(request):
     return render(request, 'downloaded_songs.html')
 
+def add_months(source_date, months):
+    from calendar import monthrange
+    month = source_date.month - 1 + months
+    year = source_date.year + month // 12
+    month = month % 12 + 1
+    # Get the last day of the target month
+    last_day_of_month = monthrange(year, month)[1]
+    day = min(source_date.day, last_day_of_month)
+    return datetime.date(year, month, day)
+
+
 def pembayaran_paket(request, jenis, harga):
     context = {
         'jenis': jenis,
         'harga': harga
     }
 
+    if request.method == 'POST':
+        metode_pembayaran = request.POST['payment_method']
+        user_email = request.session['email']
+        new_id = uuid.uuid4()
+
+        # Determine the duration in months based on the 'jenis'
+        if jenis in ['1 Bulan', '3 Bulan', '6 Bulan']:
+            date = int(jenis.split()[0])
+        else:
+            date = 12  # Default to 12 months for yearly subscription
+
+        timestamp_dimulai = datetime.date.today()
+        timestamp_berakhir = add_months(timestamp_dimulai, date)
+
+        with connection.cursor() as cursor:
+            cursor.execute("""
+                INSERT INTO TRANSACTION (ID, JENIS_PAKET, EMAIL, TIMESTAMP_DIMULAI, TIMESTAMP_BERAKHIR, METODE_BAYAR, NOMINAL)
+                VALUES (%s, %s, %s, %s, %s, %s, %s)
+            """, [new_id, jenis, user_email, timestamp_dimulai, timestamp_berakhir, metode_pembayaran, int(harga)])
+
+            cursor.execute("DELETE FROM NONPREMIUM WHERE email = %s", [user_email])
+            cursor.execute("INSERT INTO PREMIUM (EMAIL) VALUES (%s)", [user_email])
+            cursor.execute("UPDATE AKUN SET is_verified = true WHERE email = %s", [user_email])
+
+        roles = request.session['roles']
+        roles.remove("Pengguna Biasa")
+        roles.append("Premium")
+        request.session['roles'] = roles
+
     return render(request, 'pembayaran_paket.html', context)
+
 
 def melihat_chart(request):
     return render(request,'melihat_chart.html')
@@ -301,7 +344,18 @@ def dashboard_artist_atau_songwriter(request):
     return render(request, 'dashboard_artist_atau_songwriter.html')
 
 def riwayat_transaksi(request):
-    return render(request, 'riwayat_transaksi.html')
+    user_email = request.session['email']
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT * FROM TRANSACTION WHERE email = %s", [user_email])
+        row = cursor.fetchone()
+    data = {
+        'jenis' : row[1],
+        'tanggal_mulai': row[3],
+        'tanggal_akhir': row[4],
+        'metode_pembayaran' : row[5],
+        'nominal': row[6],
+    }
+    return render(request, 'riwayat_transaksi.html', data)
 
 def dashboard_label_with_album(request):
     return render(request, 'dashboard_label_with_album.html')
