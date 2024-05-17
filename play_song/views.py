@@ -238,7 +238,7 @@ def add_song_to_user_playlist(request):
         """, [id_playlist, id_song])
 
     return render(request, 'message.html', {
-        'message': f"Berhasil menambahkan Lagu dengan judul '{request.POST.get('song_judul')}' ke '{request.POST.get('judul_playlist')}'!",
+        'message': f"Berhasil menambahkan Lagu dengan judul '{request.POST.get('song_judul')}' Playlist!",
         'options': [
             {'label': 'KEMBALI', 'url': reverse('play_song:song', args=[id_song])},
             {'label': 'KE PLAYLIST', 'url': reverse('kelola_playlist:detail_playlist', args=[id_playlist])}
