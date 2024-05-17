@@ -1,6 +1,5 @@
 {% extends 'base.html' %}
 
-
 {% block content %}
 {% include 'navbar.html' %}
 <style>
@@ -15,49 +14,71 @@
 <div class="outerDiv">
     <div>
         <h2 style="text-align: center;padding-bottom: 1rem;">Downloaded Songs</h2>
+        {% if data %}
         <table class="table">
-            <th>No. </th>
-            <th>Judul Lagu</th>
-            <th>Oleh</th>
-            <th>Tanggal Download</th>
-            <th>Actions</th>
-            <tr>
-                <td>1. </td>
-                <td class="judul">Lagu Spakbor</td>
-                <td>Rhuizi Bayu</td>
-                <td>20/04/2024</td>
-                <td>
-                    <button class="btn btn-outline-danger">Lihat</button>
-                    <button class="btn btn-outline-danger hapus">Hapus</button>
-                </td>
-            </tr>
-            <tr>
-                <td>2. </td>
-                <td class="judul">Diblokir Bencong</td>
-                <td>Akmal Irfan</td>
-                <td>23/04/2024</td>
-                <td>
-                    <button class="btn btn-outline-danger">Lihat</button>
-                    <button class="btn btn-outline-danger hapus">Hapus</button>
-                </td>
-            </tr>
+            <thead>
+                <tr>
+                    <th>Judul Lagu</th>
+                    <th>Oleh</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for d in data %}
+                <tr data-id="{{ d.id }}">
+                    <td>{{ d.judul }}</td>
+                    <td>{{ d.nama }}</td>
+                    <td>
+                        <a href="{% url 'play_song:song' d.id %}" class="btn btn-info btn-action">Lihat</a>
+                        <button class="btn btn-outline-danger hapus" onclick="deleteSong('{{d.id}}','{{d.nama}}')">Hapus</button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
         </table>
-        <button class="btn btn-outline-dark">Kembali</button>
+        {% else %}
+        <h4>Belum ada lagu yang didownload</h4>
+        {% endif %}
+        <button class="btn btn-outline-dark" onclick="backButton()">Kembali</button>
     </div>
 </div>
 <script>
-    function deleteSong(songName) {
-        alert("Berhasil menghapus Lagu dengan judul " + songName + " dari daftar unduhan!")
+    function backButton() {
+        window.location.href = "{% url 'main:dashboard_penggunabiasa' %}";
     }
 
-    var deleteButtons = document.querySelectorAll(".hapus");
+    function deleteSong(songId, songTitle) {
+        fetch(`/delete_song/${songId}/`, {
+            method: 'DELETE',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}'
+            }
+        })
+        .then(response => {
+            if (response.ok) {
+                alert("Berhasil menghapus Lagu dengan judul " + songTitle + " dari daftar unduhan!");
+                document.querySelector(`tr[data-id="${songId}"]`).remove();
+            } else {
+                alert("Gagal menghapus lagu.");
+            }
+        })
+        .catch(error => {
+            console.error("Error deleting song:", error);
+            alert("Terjadi kesalahan saat menghapus lagu.");
+        });
+    }
 
-deleteButtons.forEach(function(button) {
-    button.addEventListener("click", function() {
-        var titleElement = this.parentNode.parentNode.querySelector(".judul");
-        var songTitle = titleElement.textContent;
-        deleteSong(songTitle);
+    document.addEventListener("DOMContentLoaded", function() {
+        var deleteButtons = document.querySelectorAll(".hapus");
+
+        deleteButtons.forEach(function(button) {
+            button.addEventListener("click", function() {
+                var row = this.closest("tr");
+                var songId = row.getAttribute("data-id");
+                var songTitle = row.querySelector(".judul").value;
+                deleteSong(songId, songTitle);
+            });
+        });
     });
-});
 </script>
 {% endblock content %}

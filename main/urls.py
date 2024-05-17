@@ -1,4 +1,5 @@
 from django.urls import include, path
+from main.views import *
 
 from main.views import *
 app_name = 'main'
@@ -18,6 +19,10 @@ urlpatterns = [
     path('dashboard_label/', dashboard_label, name='dashboard_label'),
     path('dashboard_penggunabiasa/', dashboard_penggunabiasa, name='dashboard_penggunabiasa'),
     path('dashboard_podcaster/', dashboard_podcaster, name='dashboard_podcaster'),
+    path('dashboard_label_with_album/', dashboard_label_with_album, name='dashboard_label_with_album'),
+    path('dashboard_podcaster_with_podcast/', dashboard_podcaster_with_podcast, name='dashboard_podcaster_with_podcast'),
+    path('dashboard_penggunabiasa_with_playlist/', dashboard_penggunabiasa_with_playlist, name='dashboard_penggunabiasa_with_playlist'),
+    path('dashboard_artist_atau_songwriter_with_playlist/', dashboard_artist_atau_songwriter_with_playlist, name='dashboard_artist_atau_songwriter_with_playlist'),
     path('riwayat-transaksi/', riwayat_transaksi, name='riwayat_transaksi'),
     path('dashboard_label_with_album/', dashboard_label_with_album, name='dashboard_label_with_album'),
     path('dashboard_podcaster_with_podcast/', dashboard_podcaster_with_podcast, name='dashboard_podcaster_with_podcast'),
@@ -25,5 +30,6 @@ urlpatterns = [
     path('dashboard_artist_atau_songwriter_with_playlist/', dashboard_artist_atau_songwriter_with_playlist, name='dashboard_artist_atau_songwriter_with_playlist'),
     path('logout/', logout, name='logout'),
     path('search/', search_bar, name='search_bar'),
-    path('dashboard/', dashboard, name='dashboard')
+    path('dashboard/', dashboard, name='dashboard'),
+    path('delete_song/<str:song_id>/', delete_song, name='delete_song'),
 ]

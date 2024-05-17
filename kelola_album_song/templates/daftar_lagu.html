@@ -84,77 +84,20 @@
         <th>Total Download</th>
         <th>Action</th>
     </tr>
-
-
-    <!-- {% for product in products %}
-        <tr>
-            <td>{{song.judul}}</td>
-            <td>1</td>
-            <td>{{song.total_play}}</td>
-            <td>{{song.total_download}}</td>
-            <td>Kolom Action</td>
-        </tr>
-    {% endfor %} -->
+    {% for song in songs %}
     <tr>
-        <td>Lagu1</td>
-        <td>2 menit</td>
-        <td>3</td>
-        <td>0</td>
+        <td>{{ song.Judul }}</td>
+        <td>{{ song.Durasi }}</td>
+        <td>{{ song.Total_Play }}</td>
+        <td>{{ song.Total_Download }}</td>
         <td>
             <a class="btn btn-success btn-sm">Lihat Detail</a>
-            <a href="{% url 'kelola_album_song:hapus_lagu' %}" class="btn btn-danger btn-sm">Hapus</a>
-        </td>
-        </td>
-    </tr>
-
-    <tr>
-        <td>Lagu2</td>
-        <td>3 menit</td>
-        <td>2</td>
-        <td>2</td>
-        <td>
-            <a class="btn btn-success btn-sm">Lihat Detail</a>
-            <a href="{% url 'kelola_album_song:hapus_lagu' %}" class="btn btn-danger btn-sm">Hapus</a>
-        </td>
+            <a href="{% url 'kelola_album_song:hapus_lagu' %}?id={{ song.id }}" class="btn btn-danger btn-sm">Hapus</a>
         </td>
     </tr>
-
-    <tr>
-        <td>Lagu3</td>
-        <td>4 menit</td>
-        <td>1</td>
-        <td>5</td>
-        <td>
-            <a class="btn btn-success btn-sm">Lihat Detail</a>
-            <a href="{% url 'kelola_album_song:hapus_lagu' %}" class="btn btn-danger btn-sm">Hapus</a>
-        </td>
-        </td>
-    </tr>
-
-    <tr>
-        <td>Lagu4</td>
-        <td>3 menit</td>
-        <td>5</td>
-        <td>10</td>
-        <td>
-            <a class="btn btn-success btn-sm">Lihat Detail</a>
-            <a href="{% url 'kelola_album_song:hapus_lagu' %}" class="btn btn-danger btn-sm">Hapus</a>
-        </td>
-        </td>
-    </tr>
-
-    <tr>
-        <td>Lagu5</td>
-        <td>4 menit</td>
-        <td>3</td>
-        <td>6</td>
-        <td>
-            <a class="btn btn-success btn-sm">Lihat Detail</a>
-            <a href="{% url 'kelola_album_song:hapus_lagu' %}" class="btn btn-danger btn-sm">Hapus</a>
-        </td>
-        </td>
-    </tr>
+    {% endfor %}
 </table>
+    
 
 <div class="centered-text" style = "margin-top: 40px;">
     <a href="{% url 'kelola_album_song:list_album' %}" class="btn btn-danger btn-sm">Kembali ke List Album</a>

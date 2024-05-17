@@ -7,6 +7,9 @@ from django.db import connection
 import uuid
 import random
 import datetime
+from django.http import JsonResponse
+from django.views.decorators.http import require_http_methods
+from django.shortcuts import get_object_or_404
 
 
 
@@ -327,7 +330,32 @@ def langganan_paket(request):
     return render(request, 'langganan_paket.html', {'paket': paket})
 
 def downloaded_songs(request):
-    return render(request, 'downloaded_songs.html')
+    with connection.cursor() as cursor:
+        cursor.execute("""
+            SELECT ds.id_song, k.JUDUL, ak.NAMA
+            FROM DOWNLOADED_SONG as ds, KONTEN as k, AKUN as ak, SONG as s, ARTIST as ar
+            WHERE ds.id_song = k.id AND ds.id_song = s.id_konten AND s.id_artist = ar.id AND ar.email_akun = ak.email  AND ds.email_downloader = %s
+        """, [request.session['email']])
+        row = cursor.fetchall()
+    data = []
+    for song in row:
+        data.append(
+            {
+            'id': song[0],
+            'judul': song[1],
+            'nama': song[2],
+            }
+        )
+    return render(request, 'downloaded_songs.html', {'data': data})
+
+@require_http_methods(["DELETE"])
+def delete_song(request, song_id):
+    if request.method == 'DELETE':
+        with connection.cursor() as cursor:
+            cursor.execute("DELETE FROM DOWNLOADED_SONG WHERE id_song = %s", [song_id])
+        return JsonResponse({'message': 'Song deleted successfully'}, status=200)
+    return JsonResponse({'message': 'Failed to delete Song'})
+
 
 def add_months(source_date, months):
     from calendar import monthrange
@@ -425,6 +453,17 @@ def dashboard_penggunabiasa(request):
 def dashboard_artist_atau_songwriter(request):
     return render(request, 'dashboard_artist_atau_songwriter.html')
 
+def dashboard_label_with_album(request):
+    return render(request, 'dashboard_label_with_album.html')
+
+def dashboard_podcaster_with_podcast(request):
+    return render(request, 'dashboard_podcaster_with_podcast.html')
+
+def dashboard_penggunabiasa_with_playlist(request):
+    return render(request, 'dashboard_penggunabiasa_with_playlist.html')
+
+def dashboard_artist_atau_songwriter_with_playlist(request):
+    return render(request, 'dashboard_artist_atau_songwriter_with_playlist.html')
 def riwayat_transaksi(request):
     user_email = request.session['email']
     with connection.cursor() as cursor:

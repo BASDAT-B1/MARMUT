@@ -69,7 +69,12 @@
             </div>
         </div>
         <div class="btn-toolbar justify-content-center" role="toolbar">
-            <button class="btn btn-secondary btn-action" onclick="goBack()">Kembali</button>
+            <input
+                action="action"
+                onclick="window.history.go(-1); return false;"
+                type="submit"
+                value="Kembali"
+            />
         </div>
     </div> 
     <form id="progressForm" method="post" action="{% url 'play_song:update_song_progress' id_song %}">
@@ -83,19 +88,6 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 <script>
-    function downloadSong() {
-        const downloadForm = document.createElement('form');
-        downloadForm.method = 'POST';
-        downloadForm.action = '{% url "play_song:download_song" id_song %}';
-        const csrfToken = document.createElement('input');
-        csrfToken.type = 'hidden';
-        csrfToken.name = 'csrfmiddlewaretoken';
-        csrfToken.value = '{{ csrf_token }}';
-        downloadForm.appendChild(csrfToken);
-        document.body.appendChild(downloadForm);
-        downloadForm.submit();
-    }
-
     function addToPlaylistSubmit() {
         let playlist = document.getElementById("playlistSelect").value;
         if (!playlist) {
