@@ -1,8 +1,7 @@
 {% extends 'base.html' %}
 
-
 {% block content %}
-{% include 'navbar3.html' %}
+{% include 'navbar.html' %}
 <style>
     body {
         background-color: rgb(247, 231, 206);
@@ -32,38 +31,36 @@
 <div class="container background-container mt-4">
     <h1 class="mb-3 centered-text">Song Detail</h1>
     <div class="song-detail">
-        <b style="display: inline-block; margin-right: 5px;">Judul:</b><p style="display: inline;">Song1</p><br>
+        <b style="display: inline-block; margin-right: 5px;">Judul:</b><p style="display: inline;">{{ judul }}</p><br>
         <b>Genre(s):</b>
         <ul>
-            <li>Genre1</li>
-            <li>Genre2</li>
+            {% for genre in genres %}
+                <li>{{ genre }}</li>
+            {% endfor %}
         </ul>
-        <b style="display: inline-block; margin-right: 5px;">Artist:</b><p style="display: inline;">Artist1</p><br>
+        <b style="display: inline-block; margin-right: 5px;">Artist:</b><p style="display: inline;">{{ artist }}</p><br>
         <b>Songwriter(s):</b>
         <ul>
-            <li>Songwriter1</li>
-            <li>Songwriter2</li>
+            {% for songwriter in songwriters %}
+                <li>{{ songwriter }}</li>
+            {% endfor %}
         </ul>
-        <b style="display: inline-block; margin-right: 5px;">Durasi:</b><p style="display: inline;">3 menit</p><br>
-        <b style="display: inline-block; margin-right: 5px;">Tanggal Rilis:</b><p style="display: inline;">18/03/24</p><br>
-        <b style="display: inline-block; margin-right: 5px;">Tahun:</b><p style="display: inline;">2024</p><br>
-        <b style="display: inline-block; margin-right: 5px;">Total Play:</b><p style="display: inline;">34</p><br>
-        <b style="display: inline-block; margin-right: 5px;">Total Download:</b><p style="display: inline;">0</p><br>
-        <b style="display: inline-block; margin-right: 5px;">Album:</b><p style="display: inline;">Album1</p><br>
+        <b style="display: inline-block; margin-right: 5px;">Durasi:</b><p style="display: inline;">{{ durasi }} menit</p><br>
+        <b style="display: inline-block; margin-right: 5px;">Tanggal Rilis:</b><p style="display: inline;">{{ tanggal_rilis|date:"d/m/y" }}</p><br>
+        <b style="display: inline-block; margin-right: 5px;">Tahun:</b><p style="display: inline;">{{ tahun }}</p><br>
+        <b style="display: inline-block; margin-right: 5px;">Total Play:</b><p style="display: inline;">{{ total_play }}</p><br>
+        <b style="display: inline-block; margin-right: 5px;">Total Downloads:</b><p style="display: inline;">{{ total_downloads }}</p><br>
+        <b style="display: inline-block; margin-right: 5px;">Album:</b><p style="display: inline;">{{ album }}</p><br>
         <hr>
         <div>
-            <input type="range" id="progressSlider" min="0" max="100" step="1" value="0">
-        </div>                           
+            <input type="range" id="progressSlider" min="0" max="100" step="1" value="0" oninput="updateProgressField()">
+            <input type="number" id="progressField" min="0" max="100" step="1" value="0" oninput="updateProgressSlider()">
+        </div>                            
     </div>
     <div class="text-center">
-        <div class="btn-toolbar justify-content-center" role="toolbar">
+         <div class="btn-toolbar justify-content-center" role="toolbar">
             <div class="btn-group mr-2" role="group">
-                <button class="btn btn-primary btn-action" onclick="playSong()">Play</button>
-            </div>
-        </div>
-        <div class="btn-toolbar justify-content-center" role="toolbar">
-            <div class="btn-group mr-2" role="group">
-                <button class="btn btn-success btn-action" onclick="openAddToPlaylistModal()">Add to Playlist</button>
+                <button class="btn btn-primary btn-action" onclick="submitProgressForm()">Play</button>
             </div>
         </div>
         <div class="btn-toolbar justify-content-center" role="toolbar">
@@ -73,118 +70,35 @@
         </div>
         <div class="btn-toolbar justify-content-center" role="toolbar">
             <div class="btn-group mr-2" role="group">
-                <button class="btn btn-secondary btn-action" onclick="goBack()">Kembali</button>
+                <a href="{% url 'play_song:add_song_to_user_playlist_form' id_song %}" class="btn btn-success btn-action">Add to Playlist</a>
             </div>
+        </div>
+        <div class="btn-toolbar justify-content-center" role="toolbar">
+            <button class="btn btn-secondary btn-action" onclick="goBack()">Kembali</button>
         </div>
     </div> 
-    <div class="modal fade" id="addToPlaylistModal" tabindex="-1" role="dialog" aria-labelledby="addToPlaylistModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="addToPlaylistModalLabel">ADD SONG TO USER PLAYLIST</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <p>Judul: Song1</p>
-                    <p>Artist: Artist1</p>
-                    <form id="addToPlaylistForm">
-                        <div class="form-group">
-                            <label for="playlistSelect">Playlist:</label>
-                            <select class="form-control" id="playlistSelect" required>
-                                <option value="" disabled selected>Pilih Playlist</option>
-                                <option value="Playlist1">Playlist1</option>
-                                <option value="Playlist2">Playlist2</option>
-                            </select>
-                        </div>
-                    </form>
-                </div>
-                <div>
-                    <div class="text-center">
-                        <div class="btn-toolbar justify-content-center" role="toolbar">
-                            <div class="btn-group mr-2" role="group">
-                                <button class="btn btn-primary btn-action" onclick="addToPlaylistSubmit()">Tambah</button>
-                            </div>
-                        </div>
-                        <div class="btn-toolbar justify-content-center" role="toolbar">
-                            <div class="btn-group mr-2" role="group">
-                                <button class="btn btn-secondary btn-action mt-2 mb-4" data-dismiss="modal">Kembali</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>              
-            </div>
-        </div>
-    </div>    
-    <div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="successModalLabel">Berhasil!</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <p>Berhasil menambahkan Lagu dengan judul 'Song1' ke 'Playlist1'!</p>
-                </div>
-                <div>
-                    <div class="text-center">
-                        <div class="btn-toolbar justify-content-center" role="toolbar">
-                            <div class="btn-group mr-2" role="group">
-                                <button class="btn btn-primary btn-action" onclick="goToPlaylist()">Ke Playlist</button>
-                            </div>
-                        </div>
-                        <div class="btn-toolbar justify-content-center" role="toolbar">
-                            <div class="btn-group mr-2" role="group">
-                                <button class="btn btn-secondary btn-action mt-2 mb-4" data-dismiss="modal">Kembali</button>
-                            </div>
-                        </div>
-                    </div>
-                </div> 
-            </div>
-        </div>
-    </div> 
-    <div class="modal fade" id="downloadModal" tabindex="-1" role="dialog" aria-labelledby="downloadModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="downloadModalLabel">Berhasil mengunduh!</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <p>Berhasil mengunduh Lagu dengan judul 'Song1'!</p>
-                </div>
-                <div>
-                    <div class="text-center">
-                        <div class="btn-toolbar justify-content-center" role="toolbar">
-                            <div class="btn-group mr-2" role="group">
-                                <button class="btn btn-primary btn-action" onclick="goToDownloadList()">Ke Daftar Download</button>
-                            </div>
-                        </div>
-                        <div class="btn-toolbar justify-content-center" role="toolbar">
-                            <div class="btn-group mr-2" role="group">
-                                <button class="btn btn-secondary btn-action mt-2 mb-4" data-dismiss="modal">Kembali</button>
-                            </div>
-                        </div>
-                    </div>
-                </div> 
-            </div>
-        </div>
-    </div>
+    <form id="progressForm" method="post" action="{% url 'play_song:update_song_progress' id_song %}">
+        {% csrf_token %}
+        <input type="hidden" name="progress" id="hiddenProgressField" value="0">
+    </form>
 </div>
-
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 <script>
-    function openAddToPlaylistModal() {
-        $('#addToPlaylistModal').modal('show');
+    function downloadSong() {
+        const downloadForm = document.createElement('form');
+        downloadForm.method = 'POST';
+        downloadForm.action = '{% url "play_song:download_song" id_song %}';
+        const csrfToken = document.createElement('input');
+        csrfToken.type = 'hidden';
+        csrfToken.name = 'csrfmiddlewaretoken';
+        csrfToken.value = '{{ csrf_token }}';
+        downloadForm.appendChild(csrfToken);
+        document.body.appendChild(downloadForm);
+        downloadForm.submit();
     }
 
     function addToPlaylistSubmit() {
@@ -201,22 +115,21 @@
         return false;
     }
 
-    function playSong() {
-        let progress = document.getElementById("progressSlider").value;
-        if (progress > 70) {
-            alert("Song played more than 70%. Adding to play history.");
-        } else {
-            alert("Song played less than 70%. No action taken.");
-        }
+    function updateProgressField() {
+        document.getElementById('progressField').value = document.getElementById('progressSlider').value;
     }
 
-    function downloadSong() {
-        let isPremium = true; 
-        if (isPremium) {
-            $('#downloadModal').modal('show');
-        } else {
-            alert("Anda memerlukan akun premium untuk mengunduh lagu ini.");
+    function updateProgressSlider() {
+        document.getElementById('progressSlider').value = document.getElementById('progressField').value;
+    }
+
+    function submitProgressForm() {
+        const progress = document.getElementById('progressSlider').value;
+        if (progress > 70) {
+            document.getElementById('hiddenProgressField').value = progress;
+            document.getElementById('progressForm').submit();
         }
     }
 </script>
+
 {% endblock content %}
