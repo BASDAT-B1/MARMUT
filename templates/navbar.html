@@ -37,7 +37,7 @@
                         {% if 'Artis' in request.session.roles or 'Songwriter' in request.session.roles %}
                             <button class="btn btn-outline-dark" onclick="toAlbumSongs()">Kelola Album & Songs</button>
                         {% endif %}
-                        {% if 'Podcaster' in request.session.roles %}
+                        {% if 'Label' in request.session.roles %}
                             <button class="btn btn-outline-dark" onclick="toAlbumLabel()">Kelola Album</button>
                         {% endif %}
                         {% if 'Artis' in request.session.roles or 'Songwriter' in request.session.roles %}
