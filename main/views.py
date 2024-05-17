@@ -182,7 +182,7 @@ def register_label(request):
         if row == email:
             return HttpResponse("Email Already Exist")
 
-        rate_royalti = random.randint(1_000_000, 100_000_000)
+        rate_royalti = random.randint(10_000, 100_000)
         with connection.cursor() as cursor:
             cursor.execute("""
                 INSERT INTO PEMILIK_HAK_CIPTA (id, rate_royalti)
