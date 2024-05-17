@@ -74,7 +74,7 @@
     }
 </style>
 
-    <h1 class ="centered-text">DAFTAR LAGU PADA ALBUMX {{album.judul}}</h1>
+    <h1 class ="centered-text">DAFTAR LAGU PADA ALBUM {{judul}}</h1>
 
 <table>
     <tr>
@@ -92,7 +92,7 @@
         <td>{{ song.Total_Download }}</td>
         <td>
             <a class="btn btn-success btn-sm">Lihat Detail</a>
-            <a href="{% url 'kelola_album_song:hapus_lagu' %}?id={{ song.id }}" class="btn btn-danger btn-sm">Hapus</a>
+            <a href="{% url 'kelola_album_song:hapus_lagu' song.id %}" class="btn btn-danger btn-sm">Hapus</a>
         </td>
     </tr>
     {% endfor %}

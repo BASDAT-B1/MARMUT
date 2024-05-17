@@ -7,49 +7,44 @@ from datetime import datetime
 # Create your views here.
 
 def list_album(request):
-    roles = request.session.get('roles', [])
-    if 'Artis' in roles or 'Songwriter' in roles:
-        if request.method == 'GET':
-            label_email = request.session.get('email', None)
-            if label_email:
-                print("halo")
-                id_artist = None
-                album_data = []
-                # Use a single 'with' block for both queries
-                with connection.cursor() as cursor:
-                    cursor.execute("""
-                        SELECT A.id
-                        FROM AKUN AK
-                        JOIN ARTIST A ON AK.email = A.email_akun
-                        WHERE AK.email = %s
-                    """, [label_email])
-                    result = cursor.fetchone()
-                    if result:
-                        id_artist = result[0]
-                        print("halo kedua")
+    label_email = request.session.get('email')
+    if label_email:
+        id_artist = None
+        album_data = []
 
-                    if id_artist:
-                        cursor.execute("""
-                            SELECT A.id, A.judul, L.nama, A.jumlah_lagu, A.total_durasi
-                            FROM ALBUM A
-                            JOIN LABEL L ON A.id_label = L.id
-                            JOIN SONG S ON A.id = S.id_album
-                            WHERE S.id_artist = %s
-                        """, [id_artist])
-                        albums = cursor.fetchall()
-                        print("halo ketiga")
-                        for album in albums:
-                            album_data.append({
-                                'id': album[0],
-                                'judul': album[1],
-                                'label': album[2],
-                                'jumlah_lagu': album[3],
-                                'total_durasi': album[4]
-                            })
-                        
-                        print(album_data)
+        with connection.cursor() as cursor:
+            cursor.execute("""
+                SELECT A.id
+                FROM AKUN AK
+                JOIN ARTIST A ON AK.email = A.email_akun
+                WHERE AK.email = %s
+            """, [label_email])
+            result = cursor.fetchone()
+            if result:
+                id_artist = result[0]
 
-                return render(request, "list_album.html", {'albums': album_data})
+            if id_artist:
+                cursor.execute("""
+                    SELECT DISTINCT A.id, A.judul, L.nama, A.jumlah_lagu, A.total_durasi
+                    FROM ALBUM A
+                    JOIN LABEL L ON A.id_label = L.id
+                    JOIN SONG S ON A.id = S.id_album
+                    WHERE S.id_artist = %s
+                """, [id_artist])
+                albums = cursor.fetchall()
+                
+                for album in albums:
+                    album_data.append({
+                        'id': album[0],
+                        'judul': album[1],
+                        'label': album[2],
+                        'jumlah_lagu': album[3],
+                        'total_durasi': album[4]
+                    })
+                
+                print(album_data)
+
+        return render(request, "list_album.html", {'albums': album_data})
 
 
 def list_album_label(request):
@@ -352,92 +347,126 @@ def create_lagu_songwriter(request):
                             """, [id_konten, genre])     
                     return render(request, "create_lagu_songwriter.html")
 
-def daftar_lagu(request):
-    roles = request.session.get('roles', [])
-    if 'Artis' in roles or 'Songwriter' in roles or 'Label' in roles:
-        if request.method == 'GET':
-            label_email = request.session.get('email', None)
-            
-            if label_email:
-                id_album = request.GET.get('id', None)
-                
-                with connection.cursor() as cursor:
-                    cursor.execute("""
-                        SELECT K.id, K.judul, K.durasi, 
-                               COALESCE(APS.total_play, 0) AS total_play, 
-                               COALESCE(DS.total_download, 0) AS total_download
-                        FROM SONG S
-                        LEFT JOIN KONTEN K ON S.id_konten = K.id
-                        LEFT JOIN (
-                            SELECT id_song, COUNT(*) AS total_play 
-                            FROM akun_play_song 
-                            GROUP BY id_song
-                        ) AS APS ON S.id_konten = APS.id_song
-                        LEFT JOIN (
-                            SELECT id_song, COUNT(*) AS total_download 
-                            FROM downloaded_song 
-                            GROUP BY id_song
-                        ) AS DS ON S.id_konten = DS.id_song
-                        WHERE S.id_album = %s
-                    """, [id_album])
-                    songs = cursor.fetchall()
+def daftar_lagu(request, id_album):
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT judul FROM ALBUM WHERE id=%s", [id_album])
+        judul_fetch = cursor.fetchone()
+        judul_album = judul_fetch[0]
 
-                song_data = []
-                for song in songs:
-                    song_data.append({
-                        "id": song[0],
-                        'Judul': song[1],
-                        'Durasi': song[2],
-                        'Total Play': song[3],
-                        'Total Download': song[4]
-                    })
+        cursor.execute("""
+            SELECT K.id, K.judul, K.durasi, 
+                    COALESCE(APS.total_play, 0) AS total_play, 
+                    COALESCE(DS.total_download, 0) AS total_download
+            FROM SONG S
+            LEFT JOIN KONTEN K ON S.id_konten = K.id
+            LEFT JOIN (
+                SELECT id_song, COUNT(*) AS total_play 
+                FROM akun_play_song 
+                GROUP BY id_song
+            ) AS APS ON S.id_konten = APS.id_song
+            LEFT JOIN (
+                SELECT id_song, COUNT(*) AS total_download 
+                FROM downloaded_song 
+                GROUP BY id_song
+            ) AS DS ON S.id_konten = DS.id_song
+            WHERE S.id_album = %s
+        """, [id_album])
+        songs = cursor.fetchall()
 
-                return render(request, "daftar_lagu.html", {'songs': song_data})
-    
-    return HttpResponse("Unauthorized", status=401)
+    song_data = []
+    for song in songs:
+        song_data.append({
+            "id": song[0],
+            'Judul': song[1],
+            'Durasi': song[2],
+            'Total Play': song[3],
+            'Total Download': song[4]
+        })
 
+    return render(request, "daftar_lagu.html", {'songs': song_data, 'judul': judul_album, 'id': id_album})
 
 def cek_royalti(request):
-    roles = request.session.get('roles', [])
-    if 'Artist' in roles or 'Songwriter' in roles or 'Label' in roles:
-        if request.method == 'GET':
-            label_email = request.session.get('email', None)
-            if label_email:
-                with connection.cursor() as cursor:
-                    cursor.execute("""
-                        SELECT 
-                            K.judul AS "Judul Lagu", 
-                            A.judul AS "Judul Album", 
-                            S.total_play AS "Total Play", 
-                            S.total_download AS "Total Download",
-                            S.total_play * PH.rate_royalti AS "Total Royalti Didapat"
-                        FROM SONG S
-                        JOIN KONTEN K ON S.id_konten = K.id
-                        JOIN ALBUM A ON S.id_album = A.id
-                        JOIN ROYALTI R ON R.id_song = S.id_konten
-                        JOIN PEMILIK_HAK_CIPTA PH ON R.id_pemilik_hak_cipta = PH.id
-                        JOIN ARTIST ART ON ART.id_pemilik_hak_cipta = PH.id
-                        JOIN SONGWRITER SG ON SG.id_pemilik_hak_cipta = PH.id 
-                        JOIN LABEL L ON L.id_pemilik_hak_cipta = PH.id
-                        JOIN AKUN AK ON ART.email_akun = AK.email OR SG.email_akun = AK.email OR L.email = AK.email
-                        WHERE AK.email = %s
-                    """,[label_email])
-                    royaltis = cursor.fetchall()
-                
-                royalti_data = []
-                for royalti in royaltis:
-                    royalti_data.append({
-                        'Judul_Lagu': royalti[0],
-                        'Judul_Album': royalti[1],
-                        'Total_Play': royalti[2],
-                        'Total_Download': royalti[3],
-                        'Total_Royalti_Didapat': royalti[4]
-                    })
+    roles = request.session.get('roles')
+    label_email = request.session.get('email')
+    royalti_data = []
+    if 'Artis' in roles or 'Songwriter' in roles:
+        with connection.cursor() as cursor:
+            cursor.execute("""
+            SELECT
+                k.judul AS judul_lagu,
+                a.judul AS judul_album,
+                s.total_play,
+                s.total_download,
+                r.jumlah
+            FROM
+                royalti r
+            JOIN
+                song s ON r.id_song = s.id_konten
+            JOIN
+                album a ON s.id_album = a.id
+            JOIN
+                konten k ON s.id_konten = k.id
+            JOIN
+                pemilik_hak_cipta phc ON r.id_pemilik_hak_cipta = phc.id
+            WHERE
+                phc.id IN (
+                    SELECT DISTINCT phc.id
+                    FROM
+                        pemilik_hak_cipta phc
+                    LEFT JOIN
+                        artist ar ON ar.id_pemilik_hak_cipta = phc.id
+                    LEFT JOIN
+                        songwriter sw ON sw.id_pemilik_hak_cipta = phc.id
+                    LEFT JOIN
+                        akun a ON (ar.email_akun = a.email OR sw.email_akun = a.email)
+                    WHERE
+                        a.email = %s
+                )
+            """, [label_email])
+            royaltis = cursor.fetchall()
+            print(royaltis)
+        for royalti in royaltis:
+            royalti_data.append({
+                'Judul_Lagu': royalti[0],
+                'Judul_Album': royalti[1],
+                'Total_Play': royalti[2],
+                'Total_Download': royalti[3],
+                'Total_Royalti_Didapat': royalti[4]
+            })
+            print(royalti)
 
-                return render(request, "cek_royalti.html", {'royalti': royalti_data})
+
+    if "Label" in roles:
+        with connection.cursor() as cursor:
+            cursor.execute("""
+                SELECT
+                    konten.judul AS judul_lagu,
+                    album.judul AS judul_album,
+                    song.total_play,
+                    song.total_download,
+                    r.jumlah
+                FROM song
+                JOIN album ON song.id_album = album.id
+                JOIN konten ON song.id_konten = konten.id
+                JOIN label ON album.id_label = label.id
+                JOIN pemilik_hak_cipta phc ON label.id_pemilik_hak_cipta = phc.id
+                WHERE label.email = %s
+            """,[label_email])
+            royaltis = cursor.fetchall()
+            print(royaltis)
+        for royalti in royaltis:
+            royalti_data.append({
+                'Judul_Lagu': royalti[0],
+                'Judul_Album': royalti[1],
+                'Total_Play': royalti[2],
+                'Total_Download': royalti[3],
+                'Total_Royalti_Didapat': royalti[4]
+            })
+            print(royalti)
     
-    return render(request, "cek_royalti.html")
 
+    return render(request, "cek_royalti.html", {'royalti': royalti_data})
+    
 def hapus_album(request):
     roles = request.session.get('roles', [])
     if 'Artis' in roles or 'Songwriter' in roles or 'Label' in roles:

@@ -12,10 +12,10 @@ urlpatterns = [
     path('list_album/', list_album, name='list_album'),
     path('list_album_label/', list_album_label, name='list_album_label'),
     path('create_album/', create_album, name='create_album'),
-    path('create_lagu_artist/', create_lagu_artist, name='create_lagu_artist'),
+    path('create_lagu_artist/<str:id>', create_lagu_artist, name='create_lagu_artist'),
     path('create_lagu_songwriter/', create_lagu_songwriter, name='create_lagu_songwriter'),
-    path('daftar_lagu/', daftar_lagu, name='daftar_lagu'),
+    path('daftar_lagu/<str:id_album>', daftar_lagu, name='daftar_lagu'),
     path('cek_royalti/', cek_royalti, name='cek_royalti'),
-    path('hapus_album/', hapus_album, name='hapus_album'),
-    path('hapus_lagu/', hapus_lagu, name='hapus_lagu')
+    path('hapus_album/<str:id>', hapus_album, name='hapus_album'),
+    path('hapus_lagu/<str:id>', hapus_lagu, name='hapus_lagu')
 ]
