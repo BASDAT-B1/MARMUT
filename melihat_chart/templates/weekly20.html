@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 
+{% load humanize %}
 
 {% block content %}
 {% include 'navbar2.html' %}
@@ -20,7 +21,7 @@
   <body>
     <div class="container mt-5">
         <div class="d-flex justify-content-between mb-3">
-            <a  href="{% url 'main:melihat_chart' %}" class="btn btn-secondary">Back</a>
+            <a href="{% url 'main:melihat_chart' %}" class="btn btn-secondary">Back</a>
             <div>
                 <a href="{% url 'melihat_chart:show_daily' %}" class="btn btn-outline-warning">Daily Top 20</a>
                 <a href="{% url 'melihat_chart:show_weekly' %}" class="btn btn-outline-primary">Weekly Top 20</a>
@@ -29,46 +30,36 @@
         <h1 class="mb-3">Marmut | Charts</h1>
         <h3 class="mb-3 mt-2">Weekly Top 20</h3>
         <table class="table table-hover">
-    <thead class = "thead-dark">
-        <tr >
-            <th scope="col">#</th>
-            <th scope="col">Judul Lagu</th>
-            <th scope="col">Oleh</th>
-            <th scope="col">Tanggal Rilis</th>
-            <th scope="col">Total Plays</th>
-            <th scope="col">Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr class="table-light">
-            <th scope="row">1</th>
-            <td>Despacito</td>
-            <td>Luis Fonsi</td>
-            <td>2021-04-01</td>
-            <td>7,000,000</td>
-            <td><button type="button" class="btn">
-                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye" viewBox="0 0 16 16" style="fill: black;">
-                    <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8M1.173 8a13 13 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5s3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5s-3.879-1.168-5.168-2.457A13 13 0 0 1 1.172 8z"/>
-                     <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5M4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0"/>
-                 </svg>
-            </button></td>
-        </tr>
-        <tr class="table-light">
-            <th scope="row">2</th>
-            <td>Edamame</td>
-            <td>bbno$</td>
-            <td>2021-06-01</td>
-            <td>6,000,000</td>
-            <td><button type="button" class="btn">
-                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye" viewBox="0 0 16 16" style="fill: black;">
-                    <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8M1.173 8a13 13 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5s3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5s-3.879-1.168-5.168-2.457A13 13 0 0 1 1.172 8z"/>
-                     <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5M4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0"/>
-                 </svg>
-            </button></td>
-        </tr>
-        <!-- Additional rows -->
-    </tbody>
-</table>
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Judul Lagu</th>
+                    <th scope="col">Oleh</th>
+                    <th scope="col">Tanggal Rilis</th>
+                    <th scope="col">Total Plays</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for song in songs %}
+                <tr class="table-light">
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td>{{ song.1 }}</td>
+                    <td>{{ song.4 }}</td>
+                    <td>{{ song.2 }}</td>
+                    <td>{{ song.3|intcomma }}</td>
+                    <td>
+                        <button type="button" class="btn">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye" viewBox="0 0 16 16" style="fill: black;">
+                                <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8M1.173 8a13 13 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5s3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5s-3.879-1.168-5.168-2.457A13 13 0 0 1 1.172 8z"/>
+                                <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5M4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0"/>
+                            </svg>
+                        </button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
 
     <!-- Optional JavaScript -->

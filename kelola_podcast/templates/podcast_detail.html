@@ -1,25 +1,21 @@
 {% extends 'base.html' %}
 
-
 {% block content %}
 {% include 'navbar4.html' %}
 <!doctype html>
 <html lang="en">
-
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
-        crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" crossorigin="anonymous">
     <link rel="stylesheet" href="styles.css">
-    <title>Marmut | Charts</title>
+    <title>Marmut | Podcast</title>
     <style>
         body {
             background-color: rgb(247, 231, 206);
         }
     </style>
 </head>
-
 <body>
     <div class="container mt-5">
         <div class="d-flex justify-content-between mb-3">
@@ -31,20 +27,16 @@
         <div class="podcast-info shadow p-3 mb-5 bg-secondary rounded d-flex flex-column font-weight-bold" style="background: linear-gradient(rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.7)), 
             url('https://cdn-icons-png.flaticon.com/512/2628/2628834.png'); 
             background-size: contain; 
-            
             background-position: right;
             background-repeat: no-repeat;">
-            <h1 class="mb-3" style="color: Orchid;">Marmut | Podcast</h1>
+            <h1 class="mb-3" style="color: Orchid;">{{ podcast.1 }}</h1>
 
-            <p class="mb-3 mt-2">Judul Podcast:</p>
-            <p class="mb-3 mt-2">Genres:</p>
-            <p class="mb-3 mt-2">Podcaster:</p>
-            <p class="mb-3 mt-2">Total Durasi:</p>
-            <p class="mb-3 mt-2">Tanggal Rilis:</p>
-            <p class="mb-3 mt-2">Tahun:</p>
+            <p class="mb-3 mt-2">Podcaster: {{ podcast.5 }}</p>
+            <p class="mb-3 mt-2">Total Durasi: {{ podcast.4 }} menit</p>
+            <p class="mb-3 mt-2">Tanggal Rilis: {{ podcast.2 }}</p>
+            <p class="mb-3 mt-2">Tahun: {{ podcast.3 }}</p>
+            <p class="mb-3 mt-2">Genres: {{ podcast.6 }}</p>
         </div>
-
-
 
         <h5 class="text-center">Daftar Episode</h5>
         <table class="table table-hover">
@@ -54,33 +46,29 @@
                     <th scope="col">Judul Episode</th>
                     <th scope="col">Deskripsi</th>
                     <th scope="col">Durasi</th>
-                    <th scope="col">Tanggal</th>
-
+                    <th scope="col">Tanggal Rilis</th>
                 </tr>
             </thead>
             <tbody>
+                {% for episode in episodes %}
                 <tr class="table-light">
-                    <th scope="row">1</th>
-                    <td>Episode Title 1</td>
-                    <td>Lorem Ipsum</td>
-                    <td>59 menit</td>
-                    <td>18/03/2024</td>
-
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td>{{ episode.1 }}</td>
+                    <td>{{ episode.2 }}</td>
+                    <td>{{ episode.3 }} menit</td>
+                    <td>{{ episode.4 }}</td>
                 </tr>
-                <!-- Additional rows -->
+                {% endfor %}
             </tbody>
         </table>
     </div>
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.slim.min.js"
-        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.slim.min.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
-        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" crossorigin="anonymous"></script>
     <script src="script.js"></script>
 </body>
-
 </html>
 {% endblock content %}
