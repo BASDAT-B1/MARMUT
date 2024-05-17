@@ -99,19 +99,20 @@
         </tr>
         <tr>
             <td>Artist:</td>
+            {% if 'Artist' in data_fix.user_role %}
+            <td>{{ aos_data_fix.artists[0] }}</td> 
+            {% else %}
             <td>
-                <select name="Artist[]">
-                    <option value="Artist1">Artist1</option>
-                    <option value="Artist2">Artist2</option>
-                    <option value="Artist3">Artist3</option>
-                    <option value="Artist4">Artist4</option>
-                    <option value="Artist5">Artist5</option>
+                <select name="Artist">
+                    {% for artist in aos_data_fix.artists %}
+                        <option value="{{ artist }}">{{ artist }}</option>
+                    {% endfor %}
                 </select>
             </td>
         </tr>
         <tr>
             <td>Songwriter:</td>
-            <td>SongwriterX</td> 
+            <td>{{ data_fix.songwriter[0] }}</td> 
         </tr>
         <tr>
             <td>Genre:</td>

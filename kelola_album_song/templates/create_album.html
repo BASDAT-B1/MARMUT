@@ -97,9 +97,9 @@
             <td>Label:</td>
             <td>
                 <select name="label">
-                    <option value="LabelA">LabelA</option>
-                    <option value="LabelB">LabelB</option>
-                    <option value="LabelC">LabelC</option>
+                    {% for label in aos_data_fix.labels %}
+                        <option value="{{ label }}">{{ label }}</option>
+                    {% endfor %}
                 </select>
             </td>
         </tr>
@@ -109,16 +109,16 @@
         </tr>
         <tr>
             <td>Judul:</td>
-            <td><input type="text" name="Judul"></td> 
+            <td><input type="text" name="judul_lagu"></td> 
         </tr>
         <tr>
             <td>Artist:</td>
-            {% if user_role == 'Artist' %}
-            <td>ArtistX</td> 
+            {% if 'Artist' in aos_data_fix.user_role %}
+            <td>{{ aos_data_fix.artists[0] }}</td> 
             {% else %}
             <td>
-                <select name="Artist[]">
-                    {% for artist in artists %}
+                <select name="Artist">
+                    {% for artist in aos_data_fix.artists %}
                         <option value="{{ artist }}">{{ artist }}</option>
                     {% endfor %}
                 </select>
@@ -127,11 +127,11 @@
         <tr>
         <tr>
             <td>Songwriter:</td>
-            {% if user_role == 'Songwriter' %}
-            <td>SongwriterX</td> 
+            {% if 'Songwriter' in aos_data_fix.user_role %}
+            <td>{{ aos_data_fix.songwriters[0] }}</td> 
             {% else %}
             <td>
-                {% for songwriter in songwriters %}
+                {% for songwriter in aos_data_fix.songwriters %}
                 <div class="form-check">
                     <input type="checkbox" class="form-check-input" id="songwriter{{ forloop.counter }}" name="songwriters[]" value="{{ songwriter }}">
                     <label class="form-check-label" for="songwriter{{ forloop.counter }}">{{ songwriter }}</label>
@@ -142,31 +142,16 @@
         <tr>
             <td>Genre:</td>
             <td>
+                {% for genre in aos_data_fix.genre %}
                 <div class="form-check">
-                    <input type="checkbox" class="form-check-input" id="genre">
-                    <label class="form-check-label" for="genre">Genre1</label>
+                    <input type="checkbox" class="form-check-input" id="genre{{ forloop.counter }}" name="genre[]" value="{{ genre }}">
+                    <label class="form-check-label" for="genre{{ forloop.counter }}">{{ genre }}</label>
                 </div>
-                <div class="form-check">
-                    <input type="checkbox" class="form-check-input" id="genre">
-                    <label class="form-check-label" for="genre">Genre2</label>
-                </div>
-                <div class="form-check">
-                    <input type="checkbox" class="form-check-input" id="genre">
-                    <label class="form-check-label" for="genre">Genre3</label>
-                </div>
-                <div class="form-check">
-                    <input type="checkbox" class="form-check-input" id="genre">
-                    <label class="form-check-label" for="genre">Genre4</label>
-                </div>
-                <div class="form-check">
-                    <input type="checkbox" class="form-check-input" id="genre">
-                    <label class="form-check-label" for="genre">Genre5</label>
-                </div>  
-                </td>
+            </td>
         </tr>
         <tr>
             <td>Durasi:</td>
-            <td><input type="text" name="Judul"></td> 
+            <td><input type="text" name="durasi"></td> 
         </tr>
         <tr>
             <td></td>

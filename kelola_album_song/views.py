@@ -1,6 +1,7 @@
 from django.db import connection
 from django.shortcuts import render
 import uuid
+from datetime import datetime
 
 # Create your views here.
 
@@ -58,7 +59,7 @@ def list_album_label(request):
             
             return render(request, 'list_album_label.html', {'albums': album_data})
         
-def artist_data(request):
+
      
 
 def create_album(request):
@@ -73,6 +74,18 @@ def create_album(request):
                 judul_lagu = request.POST.get("judul_lagu")
                 artist = request.POST.get("artist")
                 songwriter = request.POST.get("songwriter")
+
+                with connection.cursor() as cursor:
+                    cursor.execute("""
+                        SELECT id FROM LABEL
+                    """)
+                    nama_label = cursor.fetchall()
+
+                with connection.cursor() as cursor:
+                    cursor.execute("""
+                        SELECT genre FROM GENRE
+                    """)
+                    data_genre = cursor.fetchall()
                 aos_data = []
                 if 'Artist' not in roles :
                     with connection.cursor() as cursor:
@@ -82,6 +95,13 @@ def create_album(request):
                         """)
                         artist_data = cursor.fetchall()
                         aos_data.append(artist_data)
+                else :
+                    with connection.cursor() as cursor:
+                        cursor.execute("""
+                            SELECT nama FROM ARTIST WHERE email_akun = %s
+                        """, [label_email])
+                        nama_artist = cursor.fetchone()[0]
+                        aos_data.append(nama_artist)
 
                 if 'Songwriter' not in roles :
                     with connection.cursor() as cursor:
@@ -91,8 +111,28 @@ def create_album(request):
                         """)
                         songwriter_data = cursor.fetchall()
                         aos_data.append(songwriter_data)
-                
-                genre = request.POST.get("genre")
+                else :
+                    with connection.cursor() as cursor:
+                        cursor.execute("""
+                            SELECT nama FROM SONGWRITER WHERE email_akun = %s
+                        """, [label_email])
+                        nama_songwriter = cursor.fetchone()[0]
+                        aos_data.append(nama_songwriter)
+
+                aos_data.append(nama_label)
+                aos_data.append(roles)
+                aos_data.append(genre)
+                aos_data_fix = []
+                for aos in aos_data:
+                    aos_data_fix.append({
+                    'artists': aos[0],
+                    'songwriters': aos[1],
+                    'labels':aos[2],
+                    'user_role': aos[3],
+                    'genre': aos[4],
+                })
+                    
+                genre = request.POST.getlist("genre")
                 durasi = request.POST.get("durasi")
                 id_album = uuid.uuid4()
 
@@ -116,64 +156,118 @@ def create_album(request):
                 with connection.cursor() as cursor:
                         cursor.execute("""
                             INSERT INTO ALBUM (id, judul, jumlah_lagu, id_label, total_durasi)
-                            VALUES (%s, %s, %d, %s, %d)
+                            VALUES (%s, %s, %s, %s, %s)
                         """, [id_album, album, 1, id_label , durasi])
 
+                current_datetime = datetime.now()
+                formatted_datetime = current_datetime.strftime('%Y-%m-%d %H:%M:%S')
+
+                with connection.cursor() as cursor:
+                        cursor.execute("""
+                            INSERT INTO KONTEN (id, judul, tanggal_rilis, tahun, durasi)
+                            VALUES (%s, %s, %s, %s, %s)
+                        """, [judul_lagu,formatted_datetime, 2024, durasi])     
             
                 with connection.cursor() as cursor:
                         cursor.execute("""
-                            INSERT INTO SONG (id_konten, id_artist, id_album, total_play, total_download)
-                            VALUES (%s, %s, %s, %d, %d)
-                        """, [id_konten, id_artist, id_album, 0 , 0])     
-                return render(request, "create_album.html",{'artist_or_songwriter': aos_data})
+                            INSERT INTO SONG (id_artist, id_album, total_play, total_download)
+                            VALUES (%s, %s, %s, %s)
+                            WHERE id_konten = %s
+                        """, [id_artist, id_album, 0 , 0, id_konten])     
+
+                with connection.cursor() as cursor:
+                    cursor.execute("""
+                        INSERT INTO GENRE (id_konten, genre)
+                        VALUES (%s, %s)
+                    """, [id_konten, genre])     
+                return render(request, "create_album.html",{'artist_or_songwriter': aos_data_fix})
+            
+
 
 def create_lagu_artist(request):
-    if request.method == 'POST':
-        judul_lagu = request.POST.get("judul_lagu")
-        artist = request.POST.get("artist")
-        songwriter = request.POST.get("songwriter")
-        genre = request.POST.get("genre")
-        durasi = request.POST.get("durasi")
-        id_album = request.POST.get("id_album")
-        with connection.cursor() as cursor:
-                cursor.execute("""
-                    SELECT A.id 
-                    FROM  ARTIST A
-                    WHERE A.nama = %s    
-                """, [artist])
-        id_artist = cursor.fetchone()[0]
-        id_konten = uuid.uuid4()
-        with connection.cursor() as cursor:
-                cursor.execute("""
-                    INSERT INTO SONG (id_konten, id_artist, id_album, total_play, total_download)
-                    VALUES (%s, %s, %s, %d, %d)
-                """, [id_konten, id_artist, id_album, 0 , 0])
+    roles = request.session.get('roles', [])
+    if 'Artist' in roles :
+        if request.method == 'POST':
+            label_email = request.session.get('email', None)
+            if label_email:
+                with connection.cursor() as cursor:
+                    cursor.execute("""
+                        SELECT id, FROM ARTIST WHERE email = %s
+                    """, [label_email])
+                    id_artist = cursor.fetchone()[0]
 
-    return render(request, "create_lagu_artist.html")
+                judul_lagu = request.POST.get("judul_lagu")
+                songwriter = request.POST.get("songwriter")
+                genre = request.POST.get("genre")
+                durasi = request.POST.get("durasi")
+                id_album = request.POST.get("id_album")
+                id_konten = uuid.uuid4()
+                current_datetime = datetime.now()
+                formatted_datetime = current_datetime.strftime('%Y-%m-%d %H:%M:%S')
+                with connection.cursor() as cursor:
+                        cursor.execute("""
+                            INSERT INTO KONTEN (id, judul, tanggal_rilis, tahun, durasi)
+                            VALUES (%s, %s, %s, %s, %s)
+                        """, [judul_lagu,formatted_datetime, 2024, durasi])
+
+                with connection.cursor() as cursor:
+                        cursor.execute("""
+                            INSERT INTO SONG (id_konten, id_artist, id_album, total_play, total_download)
+                            VALUES (%s, %s, %s, %s, %s)
+                        """, [id_konten, id_artist, id_album, 0 , 0])
+
+                with connection.cursor() as cursor:
+                    cursor.execute("""
+                        INSERT INTO GENRE (id_konten, genre)
+                        VALUES (%s, %s)
+                    """, [id_konten, genre])     
+                return render(request, "create_lagu_artist.html")
 
 def create_lagu_songwriter(request):
-    if request.method == 'POST':
-        judul_lagu = request.POST.get("judul_lagu")
-        artist = request.POST.get("artist")
-        songwriter = request.POST.get("songwriter")
-        genre = request.POST.get("genre")
-        durasi = request.POST.get("durasi")
-        id_album = request.POST.get("id_album")
-        with connection.cursor() as cursor:
-                cursor.execute("""
-                    SELECT A.id 
-                    FROM  ARTIST A
-                    WHERE A.nama = %s    
-                """, [artist])
-        id_artist = cursor.fetchone()[0]
-        id_konten = uuid.uuid4()
-        with connection.cursor() as cursor:
-                cursor.execute("""
-                    INSERT INTO SONG (id_konten, id_artist, id_album, total_play, total_download)
-                    VALUES (%s, %s, %s, %d, %d)
-                """, [id_konten, id_artist, id_album, 0 , 0])
+    roles = request.session.get('roles', [])
+    if 'Songwriter' in roles :
+        if request.method == 'POST':
+            label_email = request.session.get('email', None)
+            if label_email:
+                with connection.cursor() as cursor:
+                    cursor.execute("""
+                        SELECT id, FROM SONGWRITER WHERE email = %s
+                    """, [label_email])
+                    id_songwriter = cursor.fetchone()[0]
+                    judul_lagu = request.POST.get("judul_lagu")
+                    artist = request.POST.get("artist")
+                    genre = request.POST.get("genre")
+                    durasi = request.POST.get("durasi")
+                    id_album = request.POST.get("id_album")
+                    with connection.cursor() as cursor:
+                            cursor.execute("""
+                                SELECT A.id 
+                                FROM  ARTIST A
+                                WHERE A.nama = %s    
+                            """, [artist])
+                    id_artist = cursor.fetchone()[0]
+                    id_konten = uuid.uuid4()
 
-    return render(request, "create_lagu_songwriter.html")
+                    current_datetime = datetime.now()
+                    formatted_datetime = current_datetime.strftime('%Y-%m-%d %H:%M:%S')
+                    with connection.cursor() as cursor:
+                            cursor.execute("""
+                                INSERT INTO KONTEN (id, judul, tanggal_rilis, tahun, durasi)
+                                VALUES (%s, %s, %s, %s, %s)
+                            """, [judul_lagu,formatted_datetime, 2024, durasi])
+
+                    with connection.cursor() as cursor:
+                            cursor.execute("""
+                                INSERT INTO SONG (id_konten, id_artist, id_album, total_play, total_download)
+                                VALUES (%s, %s, %s, %d, %d)
+                            """, [id_konten, id_artist, id_album, 0 , 0])
+                    
+                    with connection.cursor() as cursor:
+                            cursor.execute("""
+                                INSERT INTO GENRE (id_konten, genre)
+                                VALUES (%s, %s)
+                            """, [id_konten, genre])     
+                    return render(request, "create_lagu_songwriter.html")
 
 def daftar_lagu(request):
     roles = request.session.get('roles', [])
