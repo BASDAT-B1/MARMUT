@@ -409,61 +409,6 @@ def pembayaran_paket(request, jenis, harga):
 def melihat_chart(request):
     return render(request,'melihat_chart.html')
 
-def dashboard_label(request):
-    return render(request, 'dashboard_label.html')
-
-def dashboard_podcaster(request):
-    email = request.session.get('email')
-    with connection.cursor() as cursor:
-        cursor.execute("""
-            SELECT k.id, k.judul 
-            FROM podcast p
-            JOIN konten k ON p.id_konten = k.id
-            WHERE p.email_podcaster = %s
-        """, [email])
-        podcasts = cursor.fetchall()
-
-    context = {
-        'podcasts': podcasts,
-        'user_info': request.session.get('user_info'),
-        'roles': request.session.get('roles')
-    }
-    return render(request, 'dashboard_podcaster.html', context)
-
-def dashboard_penggunabiasa(request):
-    if 'email' in request.session:
-        user_email = request.session['email']
-        roles = request.session['roles']
-        print(roles)
-        with connection.cursor() as cursor:
-            cursor.execute("SELECT * FROM AKUN WHERE EMAIL = %s", [user_email])
-            row = cursor.fetchone()
-        gender = "Laki-laki" if row[3] else "Perempuan"
-        context = {
-            'nama' : row[2],
-            'email' : row[0],
-            'kota_asal' : row[7],
-            'gender' : gender,
-            'tempat_lahir': row[4],
-            'tanggal_lahir': row[5],
-            'roles': roles
-        }
-    return render(request, 'dashboard_penggunabiasa.html', context)
-
-def dashboard_artist_atau_songwriter(request):
-    return render(request, 'dashboard_artist_atau_songwriter.html')
-
-def dashboard_label_with_album(request):
-    return render(request, 'dashboard_label_with_album.html')
-
-def dashboard_podcaster_with_podcast(request):
-    return render(request, 'dashboard_podcaster_with_podcast.html')
-
-def dashboard_penggunabiasa_with_playlist(request):
-    return render(request, 'dashboard_penggunabiasa_with_playlist.html')
-
-def dashboard_artist_atau_songwriter_with_playlist(request):
-    return render(request, 'dashboard_artist_atau_songwriter_with_playlist.html')
 def riwayat_transaksi(request):
     user_email = request.session['email']
     with connection.cursor() as cursor:
@@ -477,15 +422,3 @@ def riwayat_transaksi(request):
         'nominal': row[6],
     }
     return render(request, 'riwayat_transaksi.html', data)
-
-def dashboard_label_with_album(request):
-    return render(request, 'dashboard_label_with_album.html')
-
-def dashboard_podcaster_with_podcast(request):
-    return render(request, 'dashboard_podcaster_with_podcast.html')
-
-def dashboard_penggunabiasa_with_playlist(request):
-    return render(request, 'dashboard_penggunabiasa_with_playlist.html')
-
-def dashboard_artist_atau_songwriter_with_playlist(request):
-    return render(request, 'dashboard_artist_atau_songwriter_with_playlist.html')
