@@ -74,7 +74,12 @@
             </div>
         </div>
         <div class="btn-toolbar justify-content-center" role="toolbar">
-            <button class="btn btn-secondary btn-action" onclick="goBack()">Kembali</button>
+            <input
+                action="action"
+                onclick="window.history.go(-1); return false;"
+                type="submit"
+                value="Kembali"
+            />
         </div>
     </div> 
     <form id="progressForm" method="post" action="{% url 'play_song:update_song_progress' id_song %}">
