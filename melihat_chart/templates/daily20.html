@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 
+{% load humanize %}
 {% block content %}
 {% include 'navbar2.html' %}
 <!doctype html>
@@ -45,7 +46,7 @@
                     <td>{{ song.1 }}</td>
                     <td>{{ song.4 }}</td>
                     <td>{{ song.2 }}</td>
-                    <td>{{ song.3}}</td>
+                    <td>{{ song.3|intcomma }}</td>
                     <td>
                         <button type="button" class="btn">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye" viewBox="0 0 16 16" style="fill: black;">
