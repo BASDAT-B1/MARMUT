@@ -1,8 +1,7 @@
 {% extends 'base.html' %}
 
-
 {% block content %}
-{% include 'navbar4.html' %}
+{% include 'navbar.html' %}
 <!doctype html>
 <html lang="en">
 <head>
@@ -12,8 +11,8 @@
   <title>Podcast Card</title>
   <style>
     body {
-            background-color: rgb(247, 231, 206);
-        }
+        background-color: rgb(247, 231, 206);
+    }
   </style>
 </head>
 <body>
@@ -22,40 +21,32 @@
         <h1>Marmut | Podcast</h1>
         <a href="{% url 'main:show_main' %}" class="btn btn-secondary">Back</a>
     </div>
-      <hr>
+    <hr>
     <div class="row justify-content-center">
+      {% for podcast in podcasts %}
       <div class="col-sm-12 col-md-6">
         <div class="card" style="flex-grow: 1; margin-left: 10px;">
           <div class="card-body">
-            <h5 class="card-title">Judul Podcast 2</h5>
-            <img src="https://png.pngtree.com/png-clipart/20230926/original/pngtree-flat-podcast-microphone-icon-with-audio-interview-vector-illustration-vector-png-image_12873021.png" alt="Weekly Top 20 Icon" style="width: 100%; max-width: 128px; height: auto; display: block; margin: 0 auto;">
-            <p class="card-text mt-5">Jumlah Episode</p>
-            <p class="card-text mt-5">Total Durasi</p>
+            <h5 class="card-title">{{ podcast.1 }}</h5>
+            <img src="https://png.pngtree.com/png-clipart/20230926/original/pngtree-flat-podcast-microphone-icon-with-audio-interview-vector-illustration-vector-png-image_12873021.png" alt="Podcast Icon" style="width: 100%; max-width: 128px; height: auto; display: block; margin: 0 auto;">
+            <p class="card-text mt-5">Durasi: {{ podcast.4 }} minutes</p>
+            <p class="card-text mt-5">Jumlah Episode: {{ podcast.6 }}</p>
             <div class="d-flex justify-content-between mb-3">
-              <a href="{% url 'kelola_podcast:podcast_detail'%}" class="btn btn-outline-secondary">Episode List</a>
-              <a href="{% url 'kelola_podcast:add_episode'%}" class="btn btn-outline-primary">Tambah Episode</a>
-              <a href="#" class="btn btn-outline-danger">Hapus Podcast</a>
+              <a href="{% url 'kelola_podcast:podcast_detail' id=podcast.0 %}" class="btn btn-outline-secondary">Episode List</a>
+              {% if podcast.5 == user_email %}
+              <a href="{% url 'kelola_podcast:add_episode' id=podcast.0 %}" class="btn btn-outline-primary">Tambah Episode</a>
+              <form method="POST" action="{% url 'kelola_podcast:delete_podcast' id=podcast.0 %}" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-outline-danger">Hapus Podcast</button>
+              </form>
+              {% endif %}
             </div>
           </div>
         </div>
       </div>
-      <div class="col-sm-12 col-md-6">
-        <div class="card" style="flex-grow: 1; margin-left: 10px;">
-          <div class="card-body">
-            <h5 class="card-title">Judul Podcast 1</h5>
-            <img src="https://png.pngtree.com/png-clipart/20230926/original/pngtree-flat-podcast-microphone-icon-with-audio-interview-vector-illustration-vector-png-image_12873021.png" alt="Weekly Top 20 Icon" style="width: 100%; max-width: 128px; height: auto; display: block; margin: 0 auto;">
-            <p class="card-text mt-5">Jumlah Episode</p>
-            <p class="card-text mt-5">Total Durasi</p>
-            <div class="d-flex justify-content-between mb-3">
-              <a href="{% url 'kelola_podcast:podcast_detail'%}" class="btn btn-outline-secondary">Episode List</a>
-              <a href="{% url 'kelola_podcast:add_episode'%}" class="btn btn-outline-primary">Tambah Episode</a>
-              <a href="#" class="btn btn-outline-danger">Hapus Podcast</a>
-            </div>
-          </div>
-        </div>
-      </div>
+      {% endfor %}
     </div>
-    <a href="{% url 'kelola_podcast:add_podcast'%}" class="btn btn-primary mt-5">Tambah Podcast</a>
+    <a href="{% url 'kelola_podcast:add_podcast' %}" class="btn btn-primary mt-5">Tambah Podcast</a>
   </div>
 
   <!-- Optional JavaScript -->

@@ -1,8 +1,7 @@
 {% extends 'base.html' %}
 
-
 {% block content %}
-{% include 'navbar4.html' %}
+{% include 'navbar.html' %}
 <!doctype html>
 <html lang="en">
 <head>
@@ -12,8 +11,8 @@
   <title>Create Podcast</title>
   <style>
     body {
-            background-color: rgb(247, 231, 206);
-        }
+        background-color: rgb(247, 231, 206);
+    }
   </style>
 </head>
 <body>
@@ -23,23 +22,60 @@
         <div class="card">
           <div class="card-body">
             <h4 class="card-title text-center mb-4">CREATE PODCAST</h4>
-            <form>
+            <form method="POST">
+              {% csrf_token %}
               <div class="form-group">
                 <label for="podcastTitle">Judul:</label>
-                <input type="text" class="form-control" id="podcastTitle" placeholder="Enter title">
+                <input type="text" class="form-control" id="podcastTitle" name="title" placeholder="Enter title">
               </div>
               <div class="form-group">
                 <label for="podcastGenre">Genre:</label>
-                <select multiple class="form-control" id="podcastGenre">
-                  <option>Genre 1</option>
-                  <option>Genre 2</option>
-                  <option>Genre 3</option>
-                  <option>Genre 4</option>
-                </select>
+                <div id="podcastGenre">
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="genres" id="classical" value="classical">
+                    <label class="form-check-label" for="classical">Classical</label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="genres" id="reggae" value="reggae">
+                    <label class="form-check-label" for="reggae">Reggae</label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="genres" id="electronic" value="electronic">
+                    <label class="form-check-label" for="electronic">Electronic</label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="genres" id="jazz" value="jazz">
+                    <label class="form-check-label" for="jazz">Jazz</label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="genres" id="country" value="country">
+                    <label class="form-check-label" for="country">Country</label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="genres" id="blues" value="blues">
+                    <label class="form-check-label" for="blues">Blues</label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="genres" id="pop" value="pop">
+                    <label class="form-check-label" for="pop">Pop</label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="genres" id="rock" value="rock">
+                    <label class="form-check-label" for="rock">Rock</label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="genres" id="rb" value="R&B">
+                    <label class="form-check-label" for="rb">R&B</label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="genres" id="hiphop" value="hip-hop">
+                    <label class="form-check-label" for="hiphop">Hip-hop</label>
+                  </div>
+                </div>
               </div>
               <div class="form-group">
-                <label for="podcastDuration">Durasi:</label>
-                <input type="text" class="form-control" id="podcastDuration" placeholder="Enter duration">
+                <label for="podcastDuration">Durasi (minutes):</label>
+                <input type="number" class="form-control" id="podcastDuration" name="duration" placeholder="Enter duration">
               </div>
               <div class="text-center">
                 <button type="submit" class="btn btn-primary">SUBMIT</button>
