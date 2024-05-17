@@ -70,7 +70,7 @@
         </div>
         <div class="btn-toolbar justify-content-center" role="toolbar">
             <div class="btn-group mr-2" role="group">
-                <button class="btn btn-success btn-action" onclick="openAddToPlaylistModal()">Add to Playlist</button>
+                <a href="{% url 'play_song:add_song_to_user_playlist_form' id_song %}" class="btn btn-success btn-action">Add to Playlist</a>
             </div>
         </div>
         <div class="btn-toolbar justify-content-center" role="toolbar">
@@ -82,77 +82,6 @@
         <input type="hidden" name="progress" id="hiddenProgressField" value="0">
     </form>
 </div>
-
-<div class="modal fade" id="addToPlaylistModal" tabindex="-1" role="dialog" aria-labelledby="addToPlaylistModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="addToPlaylistModalLabel">ADD SONG TO USER PLAYLIST</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <p>Judul: Song1</p>
-                <p>Artist: Artist1</p>
-                <form id="addToPlaylistForm">
-                    <div class="form-group">
-                        <label for="playlistSelect">Playlist:</label>
-                        <select class="form-control" id="playlistSelect" required>
-                            <option value="" disabled selected>Pilih Playlist</option>
-                            <option value="Playlist1">Playlist1</option>
-                            <option value="Playlist2">Playlist2</option>
-                        </select>
-                    </div>
-                </form>
-            </div>
-            <div>
-                <div class="text-center">
-                    <div class="btn-toolbar justify-content-center" role="toolbar">
-                        <div class="btn-group mr-2" role="group">
-                            <button class="btn btn-primary btn-action" onclick="addToPlaylistSubmit()">Tambah</button>
-                        </div>
-                    </div>
-                    <div class="btn-toolbar justify-content-center" role="toolbar">
-                        <div class="btn-group mr-2" role="group">
-                            <button class="btn btn-secondary btn-action mt-2 mb-4" data-dismiss="modal">Kembali</button>
-                        </div>
-                    </div>
-                </div>
-            </div>              
-        </div>
-    </div>
-</div>    
-
-<div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="successModalLabel">Berhasil!</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <p>Berhasil menambahkan Lagu dengan judul 'Song1' ke 'Playlist1'!</p>
-            </div>
-            <div>
-                <div class="text-center">
-                    <div class="btn-toolbar justify-content-center" role="toolbar">
-                        <div class="btn-group mr-2" role="group">
-                            <button class="btn btn-primary btn-action" onclick="goToPlaylist()">Ke Playlist</button>
-                        </div>
-                    </div>
-                    <div class="btn-toolbar justify-content-center" role="toolbar">
-                        <div class="btn-group mr-2" role="group">
-                            <button class="btn btn-secondary btn-action mt-2 mb-4" data-dismiss="modal">Kembali</button>
-                        </div>
-                    </div>
-                </div> 
-            </div>
-        </div>
-    </div>
-</div> 
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
@@ -170,10 +99,6 @@
         downloadForm.appendChild(csrfToken);
         document.body.appendChild(downloadForm);
         downloadForm.submit();
-    }
-
-    function openAddToPlaylistModal() {
-        $('#addToPlaylistModal').modal('show');
     }
 
     function addToPlaylistSubmit() {

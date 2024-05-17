@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% include 'navbar.html' %}
+<style>
+    body {
+        background-color: rgb(247, 231, 206);
+    }
+
+    .background-container {
+        background-color: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+    }
+
+    .btn-toolbar {
+        margin-bottom: 10px;
+    }
+
+    .centered-text {
+        text-align: center;
+    }
+</style>
+
+<div class="container background-container mt-4">
+    <h1 class="mb-3 centered-text">ADD SONG TO USER PLAYLIST</h1>
+    <p>Judul: {{ song_judul }}</p>
+    <p>Artist: {{ song_artist }}</p>
+    <form method="post" action="{% url 'play_song:add_song_to_user_playlist' %}">
+        {% csrf_token %}
+        <input type="hidden" name="id_song" value="{{ id_song }}">
+        <input type="hidden" name="song_judul" value="{{ song_judul }}">
+        <div class="form-group">
+            <label for="playlistSelect">Playlist:</label>
+            <select class="form-control" id="playlistSelect" name="playlist" required>
+                <option value="" disabled selected>Pilih Playlist</option>
+                {% for playlist in playlists %}
+                    <option value="{{ playlist.0 }}">{{ playlist.1 }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="text-center">
+            <button type="submit" class="btn btn-primary">TAMBAH</button>
+            <button type="button" class="btn btn-secondary" href="{% url 'play_song:song' id_song %}">KEMBALI</button>
+        </div>
+    </form>
+</div>
+
+{% endblock content %}

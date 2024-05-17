@@ -26,7 +26,7 @@ def detail_playlist(request, id_playlist):
         
         with connection.cursor() as cursor:
             cursor.execute("""
-                SELECT k.judul, ak.nama, k.durasi, k.id
+                SELECT k.judul, ak.nama, k.durasi, k.id, ps.id_playlist
                 FROM PLAYLIST_SONG ps
                 JOIN KONTEN k ON ps.id_song = k.id
                 JOIN SONG s ON k.id = s.id_konten
@@ -98,7 +98,7 @@ def playlist(request):
             user_email = request.session['email']
         with connection.cursor() as cursor:
             cursor.execute("""
-                SELECT up.id_user_playlist, up.judul, up.jumlah_lagu, up.total_durasi
+                SELECT up.id_playlist, up.judul, up.jumlah_lagu, up.total_durasi
                 FROM USER_PLAYLIST up
                 JOIN AKUN a ON up.email_pembuat = a.email
                 WHERE a.email = %s
@@ -137,7 +137,6 @@ def add_playlist(request):
         if not user_email:
             return redirect('login.html')
 
-        id_user_playlist = str(uuid.uuid4())
         id_playlist = str(uuid.uuid4())
 
         with connection.cursor() as cursor:
@@ -149,7 +148,7 @@ def add_playlist(request):
             cursor.execute("""
                 INSERT INTO USER_PLAYLIST (id_user_playlist, judul, deskripsi, email_pembuat, jumlah_lagu, total_durasi, tanggal_dibuat, id_playlist)
                 VALUES (%s, %s, %s, %s, %s, %s, NOW(), %s)
-            """, [id_user_playlist, judul, deskripsi, user_email, 0, 0, id_playlist])
+            """, [id_playlist, judul, deskripsi, user_email, 0, 0, id_playlist])
         
         return redirect('kelola_playlist:playlist')
     return render(request, 'add_playlist.html')
@@ -268,10 +267,11 @@ def add_song_to_playlist(request, id_playlist):
                 })
 
             try:
-                cursor.execute("""
-                    INSERT INTO PLAYLIST_SONG (id_playlist, id_song)
-                    VALUES (%s, %s)
-                """, [playlist_exists, song_id])
+                with connection.cursor() as cursor:
+                    cursor.execute("""
+                        INSERT INTO PLAYLIST_SONG (id_playlist, id_song)
+                        VALUES (%s, %s)
+                    """, [playlist_exists, song_id])
                 print(f"Lagu dengan id {song_id} berhasil ditambahkan ke playlist {playlist_exists}")
             except IntegrityError as e:
                 print(f"IntegrityError: {e}")

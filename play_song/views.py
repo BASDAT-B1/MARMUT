@@ -1,8 +1,9 @@
+from django.http import JsonResponse
 from django.shortcuts import redirect, render
 from django.db import connection
 from django.urls import reverse
 from django.utils import timezone
-from django.views.decorators.http import require_POST
+from django.views.decorators.http import require_POST, require_GET
 
 
 # Create your views here.
@@ -170,3 +171,76 @@ def downloaded_songs(request):
         'songs': [{'judul': song[0], 'artist': song[1], 'durasi': song[2], 'id_song': song[3]} for song in songs]
     }
     return render(request, 'downloaded_songs.html', context)
+
+@require_GET
+def add_song_to_user_playlist_form(request, id_song):
+    email = request.session.get('email')
+    if not email:
+        return redirect('login')
+
+    with connection.cursor() as cursor:
+        cursor.execute("""
+            SELECT up.id_user_playlist, up.judul
+            FROM USER_PLAYLIST up
+            WHERE up.email_pembuat = %s
+        """, [email])
+        playlists = cursor.fetchall()
+
+    with connection.cursor() as cursor:
+        cursor.execute("""
+            SELECT k.judul, ak.nama, k.id
+            FROM KONTEN k
+            JOIN SONG s ON k.id = s.id_konten
+            JOIN ARTIST ar ON s.id_artist = ar.id
+            JOIN AKUN ak ON ak.email = ar.email_akun
+            WHERE k.id = %s
+        """, [id_song])
+        song = cursor.fetchone()
+    print(playlists)
+    context = {
+        'id_song': id_song,
+        'song_judul': song[0],
+        'song_artist': song[1],
+        'playlists': playlists,
+    }
+    return render(request, 'add_song_to_user_playlist.html', context)
+
+@require_POST
+def add_song_to_user_playlist(request):
+    email = request.session.get('email')
+    if not email:
+        return redirect('login')
+
+    id_playlist = request.POST.get('playlist')
+    id_song = request.POST.get('id_song')
+    with connection.cursor() as cursor:
+        # Cek apakah lagu sudah ada di playlist
+        cursor.execute("""
+            SELECT COUNT(*)
+            FROM PLAYLIST_SONG
+            WHERE id_playlist = %s AND id_song = %s
+        """, [id_playlist, id_song])
+        song_exists = cursor.fetchone()[0]
+
+        if song_exists:
+            return render(request, 'message.html', {
+                'message': f"Lagu dengan judul '{request.POST.get('song_judul')}' sudah ada di playlist!",
+                'options': [
+                    {'label': 'KEMBALI', 'url': reverse('play_song:add_song_to_user_playlist_form', args=[id_song])},
+                    {'label': 'KE PLAYLIST', 'url': reverse('kelola_playlist:detail_playlist', args=[id_playlist])}
+                ]
+            })
+
+        # Tambahkan lagu ke playlist
+        cursor.execute("""
+            INSERT INTO PLAYLIST_SONG (id_playlist, id_song)
+            VALUES (%s, %s)
+        """, [id_playlist, id_song])
+
+    return render(request, 'message.html', {
+        'message': f"Berhasil menambahkan Lagu dengan judul '{request.POST.get('song_judul')}' ke '{request.POST.get('judul_playlist')}'!",
+        'options': [
+            {'label': 'KEMBALI', 'url': reverse('play_song:song', args=[id_song])},
+            {'label': 'KE PLAYLIST', 'url': reverse('kelola_playlist:detail_playlist', args=[id_playlist])}
+        ]
+    })
