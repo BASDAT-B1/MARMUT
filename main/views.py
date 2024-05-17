@@ -47,9 +47,9 @@ def login(request):
     if request.method == 'POST':
         email = request.POST.get('email')
         password = request.POST.get('password')
+        roles = []
         
         user = authenticate(email, password)
-        roles = []
         if user is not None:
             with connection.cursor() as cursor:
                 cursor.execute("SELECT EMAIL FROM PODCASTER WHERE email = %s", [email])
