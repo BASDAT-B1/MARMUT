@@ -15,7 +15,6 @@
         text-align: center;
     }
 
-    /* Make dropdown button fill its parent container */
     .dropdown-btn {
         width: 100%;
         height: 100%;
@@ -27,15 +26,19 @@
         padding: 3px;
     }
 
-    /* Align the "Submit" button to the bottom */
     .content > .dropdown + .btn {
         margin-top: auto;
+    }
+
+    .dropdown-menu {
+        display: none;
+        position: absolute;
     }
 </style>
 
 <div class="demdud">
     <div class="content">
-        <h2 style="text-align: center;padding-bottom: 3rem;margin-top: 2rem;">Pembayaran Paket</h2>
+        <h2 style="text-align: center; padding-bottom: 3rem; margin-top: 2rem;">Pembayaran Paket</h2>
         <p style="margin-right: 25rem;">Informasi Paket yang Ingin Dibeli:</p>
 
         <table class="table table-light">
@@ -48,17 +51,26 @@
                 <td>Rp{{ harga }}</td>
             </tr>
         </table>
-        <div class="dropdown">
-            <button class="btn btn-secondary dropdown-toggle" id="dropdownMenuButton">Metode Pembayaran</button>
-            <ul class="dropdown-menu" id="dropdownMenu">
-                <li class="li-dropdown"><button class="btn dropdown-btn btn-outline-dark">Transfer Bank</button></li>
-                <li class="li-dropdown"><button class="btn dropdown-btn btn-outline-dark">Kartu Kredit</button></li>
-                <li class="li-dropdown"><button class="btn dropdown-btn btn-outline-dark">E-Wallet</button></li>
-            </ul>
-        </div>
-
-        <!-- "Submit" button placed here -->
-        <button class="btn btn-outline-dark">Submit</button>
+        <form method="POST">
+            {% csrf_token %}
+            <div class="d-flex justify-content-center flex-column align-items-center"> 
+                <div>
+                    <div class="dropdown">
+                        <button type="button" class="btn btn-secondary dropdown-toggle" id="dropdownMenuButton">Metode Pembayaran</button>
+                        <ul class="dropdown-menu" id="dropdownMenu">
+                            <li class="li-dropdown"><button type="button" class="btn dropdown-btn btn-outline-dark" data-value="Transfer Bank">Transfer Bank</button></li>
+                            <li class="li-dropdown"><button type="button" class="btn dropdown-btn btn-outline-dark" data-value="Kartu Kredit">Kartu Kredit</button></li>
+                            <li class="li-dropdown"><button type="button" class="btn dropdown-btn btn-outline-dark" data-value="E-Wallet">E-Wallet</button></li>
+                        </ul>
+                    </div>
+                    <input type="hidden" name="payment_method" id="paymentMethodInput" value="">
+                </div>
+                <div>
+                    <button class="btn btn-outline-dark" type="submit" >Submit</button>
+                </div>
+            </div>
+        </form>
+        
     </div>
 </div>
 
@@ -66,13 +78,11 @@
 document.addEventListener("DOMContentLoaded", function() {
     var dropdownToggle = document.getElementById("dropdownMenuButton");
     var dropdownMenu = document.getElementById("dropdownMenu");
+    var dropdownButtons = dropdownMenu.getElementsByClassName("dropdown-btn");
+    var paymentMethodInput = document.getElementById("paymentMethodInput");
 
     dropdownToggle.addEventListener("click", function() {
-        if (dropdownMenu.style.display === "block") {
-            dropdownMenu.style.display = "none";
-        } else {
-            dropdownMenu.style.display = "block";
-        }
+        dropdownMenu.style.display = dropdownMenu.style.display === "block" ? "none" : "block";
     });
 
     // Close dropdown when clicking outside
@@ -80,6 +90,16 @@ document.addEventListener("DOMContentLoaded", function() {
         if (!dropdownToggle.contains(event.target) && !dropdownMenu.contains(event.target)) {
             dropdownMenu.style.display = "none";
         }
+    });
+
+    // Update dropdown button text and hidden input value when an option is clicked
+    Array.from(dropdownButtons).forEach(function(button) {
+        button.addEventListener("click", function() {
+            var selectedValue = this.getAttribute("data-value");
+            dropdownToggle.textContent = selectedValue;
+            paymentMethodInput.value = selectedValue;
+            dropdownMenu.style.display = "none";
+        });
     });
 });
 </script>
