@@ -12,20 +12,43 @@
         }
     </style>
     </style>
+
     <nav class="navbar" style="background-color: #e3f2fd;">
         <div class="container-fluid" style="margin-left: 1rem;">
             <div class="navContent">
-            <a class="navbar-brand" href="">Marmut</a>
-            <div class="buttonnavContent">
-                <button class="btn btn-outline-dark" onclick="toLogin()">Login</button>
-                <button class="btn btn-outline-dark" onclick="toRegister()">Registrasi</button>
+                <a class="navbar-brand" href="">Marmut</a>
+                <div class="buttonnavContent">
+                    {% if not request.session.roles %}
+                    <button class="btn btn-outline-dark" onclick="toLogin()">Login</button>
+                    <button class="btn btn-outline-dark" onclick="toRegister()">Registrasi</button>
+                    {% else %}
+                    <button class="btn btn-outline-dark" onclick="toDashboard()">Dashboard</button>
+                    {% if 'Label' not in request.session.roles %}
+                        <button class="btn btn-outline-dark" onclick="toChart()">Chart</button>
+                        <button class="btn btn-outline-dark" onclick="toKelolaPlaylist()">Kelola Playlist</button>
+                        <button class="btn btn-outline-dark" onclick="toSubscribe()">Langganan Paket</button>
+                    {% endif %}
+                    {% if 'Premium' in request.session.roles %}
+                        <button class="btn btn-outline-dark" onclick="toDownloadedSongs()">Downloaded songs</button>
+                    {% endif %}
+                    {% if 'Podcaster' in request.session.roles %}
+                        <button class="btn btn-outline-dark" onclick="toKelolaPodcast()">Kelola Podcast</button>
+                    {% endif %}
+                    {% if 'Artis' in request.session.roles or 'Songwriter' in request.session.roles %}
+                        <button class="btn btn-outline-dark" onclick="toAlbumSongs()">Kelola Album & Songs</button>
+                    {% endif %}
+                    {% if 'Podcaster' in request.session.roles %}
+                        <button class="btn btn-outline-dark" onclick="toAlbumLabel()">Kelola Album</button>
+                    {% endif %}
+                    {% if 'Artis' in request.session.roles or 'Songwriter' in request.session.roles %}
+                        <button class="btn btn-outline-dark" onclick="toRoyalti()">Cek Royalti</button>
+                    {% endif %}
+                        <button class="btn btn-outline-dark" onclick="toSearchPage()">Search</button>
+                        <button class="btn btn-outline-dark" onclick="logoutButton()">Logout</button>
+                    {% endif %}
+                </div>
+                </div>
             </div>
-            </div>
-            {% comment %} <form class="d-flex" role="search">
-            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-            <button class="btn btn-outline-dark" type="submit">Search</button>
-        </form>{% endcomment %}
-        </div>
     </nav>
 
 <script>
@@ -35,6 +58,50 @@
 
     function toRegister() {
         window.location.href = "{% url 'main:register' %}"
+    }
+
+    function toDashboard() {
+        window.location.href = "{% url 'main:dashboard_penggunabiasa' %}";
+    }
+
+    function toChart() {
+        window.location.href = "{% url 'melihat_chart:show_daily' %}";
+    }
+    
+    function toSearchPage() {
+        window.location.href = "{% url 'main:search_bar' %}";
+    }
+
+    function toKelolaPlaylist() {
+        window.location.href = "{% url 'kelola_playlist:playlist' %}";
+    }
+
+    function toSubscribe() {
+        window.location.href = "{% url 'main:langganan_paket' %}";
+    }
+    
+    function toDownloadedSongs() {
+        window.location.href = "{% url 'main:downloaded_songs' %}";
+    }
+
+    function toKelolaPodcast() {
+        window.location.href = "{% url 'kelola_podcast:list_podcast' %}";
+    }
+
+    function toAlbumSongs() {
+        window.location.href = "{% url 'kelola_album_song:list_album' %}";
+    }
+
+    function toAlbumLabel() {
+        window.location.href = "{% url 'kelola_album_song:list_album_label' %}";
+    }
+
+    function toRoyalti() {
+        window.location.href = "{% url 'kelola_album_song:cek_royalti' %}";
+    }
+
+    function logoutButton() {
+        window.location.href = "{% url 'main:logout' %}";
     }
 </script>
 {% endblock %}
