@@ -49,7 +49,19 @@ def login(request):
         
         user = authenticate(email, password)
         roles = []
+        user_info = {}
         if user is not None:
+            with connection.cursor() as cursor:
+                cursor.execute("SELECT nama, kota_asal, gender, tempat_lahir, tanggal_lahir FROM AKUN WHERE email = %s", [email])
+                user_info_row = cursor.fetchone()
+                user_info = {
+                    'nama': user_info_row[0],
+                    'kota_asal': user_info_row[1],
+                    'gender': 'Laki-laki' if user_info_row[2] == 1 else 'Perempuan',
+                    'tempat_lahir': user_info_row[3],
+                    'tanggal_lahir': user_info_row[4].strftime('%Y-%m-%d')  # Convert date to string
+                }
+            
             with connection.cursor() as cursor:
                 cursor.execute("SELECT EMAIL FROM PODCASTER WHERE email = %s", [email])
                 row = cursor.fetchone()
@@ -59,7 +71,6 @@ def login(request):
             with connection.cursor() as cursor:
                 cursor.execute("SELECT email_akun FROM ARTIST WHERE email_akun = %s", [email])
                 row = cursor.fetchone()
-                print(row)
                 if row and row[0] == email:
                     roles.append('Artis')
 
@@ -82,15 +93,69 @@ def login(request):
                     roles.append('Premium')
                 else:
                     roles.append('Pengguna Biasa')
+            print(user_info)
 
             request.session['email'] = user
             request.session['roles'] = roles
+            request.session['user_info'] = user_info
 
-            return redirect('main:dashboard_penggunabiasa')
+            return redirect('main:dashboard')
         else:
             return HttpResponse("Invalid credentials")
 
     return render(request, 'login.html')
+
+def dashboard(request):
+    email = request.session.get('email')
+    roles = request.session.get('roles', [])
+    podcasts = []
+    songs = []
+    albums = []
+    playlists = []
+
+    with connection.cursor() as cursor:
+        if 'Podcaster' in roles:
+            cursor.execute("""
+                SELECT k.id, k.judul 
+                FROM podcast p 
+                JOIN konten k ON p.id_konten = k.id 
+                WHERE p.email_podcaster = %s
+            """, [email])
+            podcasts = cursor.fetchall()
+
+        if 'Artis' in roles or 'Songwriter' in roles:
+            cursor.execute("""
+                SELECT k.id, k.judul 
+                FROM song s 
+                JOIN konten k ON s.id_konten = k.id 
+                WHERE s.id_artist = (SELECT id FROM artist WHERE email_akun = %s)
+            """, [email])
+            songs = cursor.fetchall()
+
+        if 'Label' in roles:
+            cursor.execute("""
+                SELECT a.id, a.judul 
+                FROM album a 
+                WHERE a.id_label = (SELECT id FROM label WHERE email = %s)
+            """, [email])
+            albums = cursor.fetchall()
+
+        cursor.execute("""
+            SELECT up.id_user_playlist, up.judul 
+            FROM user_playlist up 
+            WHERE up.email_pembuat = %s
+        """, [email])
+        playlists = cursor.fetchall()
+
+    context = {
+        'podcasts': podcasts,
+        'songs': songs,
+        'albums': albums,
+        'playlists': playlists,
+    }
+
+    return render(request, 'dashboard.html', context)
+
 
 def register(request):
     return render (request, 'register.html')
@@ -275,7 +340,22 @@ def dashboard_label(request):
     return render(request, 'dashboard_label.html')
 
 def dashboard_podcaster(request):
-    return render(request, 'dashboard_podcaster.html')
+    email = request.session.get('email')
+    with connection.cursor() as cursor:
+        cursor.execute("""
+            SELECT k.id, k.judul 
+            FROM podcast p
+            JOIN konten k ON p.id_konten = k.id
+            WHERE p.email_podcaster = %s
+        """, [email])
+        podcasts = cursor.fetchall()
+
+    context = {
+        'podcasts': podcasts,
+        'user_info': request.session.get('user_info'),
+        'roles': request.session.get('roles')
+    }
+    return render(request, 'dashboard_podcaster.html', context)
 
 def dashboard_penggunabiasa(request):
     if 'email' in request.session:

@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-{% include 'navbar2.html' %}
+{% include 'navbar4.html' %}
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,17 +9,14 @@
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif&display=swap" rel="stylesheet">
     <style>
-        html,
-        body {
+        html, body {
             height: 100%;
             margin: 0;
             padding: 0;
         }
-
         body {
             background-color: rgb(247, 231, 206);
         }
-
         .background-container {
             background-color: #ffffff;
             border-radius: 10px;
@@ -29,46 +26,36 @@
             width: 80%;
             margin-top: 50px;
         }
-
         table {
             width: 100%;
             border-collapse: collapse;
         }
-
-        table,
-        th,
-        td {
+        table, th, td {
             border: 1.5px solid #dedddd;
             vertical-align: middle;
             padding: 10px;
             font-weight: 600;
         }
-
         th {
             background-color: #151414;
             color: #f7f7f7;
             text-align: center;
             font-weight: bold;
         }
-
         td {
             background-color: #f2f2f2;
             text-align: left;
         }
-
         .centered-text {
             text-align: center;
         }
-
-
+        body { margin-top: 20px; }
         .card-style1 {
             box-shadow: 0px 0px 10px 0px rgb(89 75 128 / 9%);
         }
-
         .border-0 {
             border: 0 !important;
         }
-
         .card {
             position: relative;
             display: flex;
@@ -86,9 +73,7 @@
             overflow: hidden;
             background: #fff;
         }
-
-        .mb-2-3,
-        .my-2-3 {
+        .mb-2-3, .my-2-3 {
             margin-bottom: 2.3rem;
         }
 
@@ -100,19 +85,15 @@
             position: relative;
             display: inline-block;
         }
-
         .text-primary {
             color: #ceaa4d !important;
         }
-
         .text-secondary {
             color: #15395A !important;
         }
-
         .font-weight-600 {
             font-weight: 600;
         }
-
         .display-26 {
             font-size: 1.3rem;
         }
@@ -122,19 +103,16 @@
                 padding: 4rem;
             }
         }
-
         @media screen and (min-width: 768px) {
             .p-md-6 {
                 padding: 3.5rem;
             }
         }
-
         @media screen and (min-width: 576px) {
             .p-sm-2-3 {
                 padding: 2.3rem;
             }
         }
-
         .p-1-9 {
             padding: 1.9rem;
         }
@@ -142,60 +120,41 @@
         .bg-secondary {
             background: #15395A !important;
         }
-
         @media screen and (min-width: 576px) {
-
-            .pe-sm-6,
-            .px-sm-6 {
+            .pe-sm-6, .px-sm-6 {
                 padding-right: 3.5rem;
             }
         }
-
         @media screen and (min-width: 576px) {
-
-            .ps-sm-6,
-            .px-sm-6 {
+            .ps-sm-6, .px-sm-6 {
                 padding-left: 3.5rem;
             }
         }
-
-        .pe-1-9,
-        .px-1-9 {
+        .pe-1-9, .px-1-9 {
             padding-right: 1.9rem;
         }
-
-        .ps-1-9,
-        .px-1-9 {
+        .ps-1-9, .px-1-9 {
             padding-left: 1.9rem;
         }
-
-        .pb-1-9,
-        .py-1-9 {
+        .pb-1-9, .py-1-9 {
             padding-bottom: 1.9rem;
         }
-
-        .pt-1-9,
-        .py-1-9 {
+        .pt-1-9, .py-1-9 {
             padding-top: 1.9rem;
         }
-
-        .mb-1-9,
-        .my-1-9 {
+        .mb-1-9, .my-1-9 {
             margin-bottom: 1.9rem;
         }
-
         @media (min-width: 992px) {
             .d-lg-inline-block {
                 display: inline-block !important;
             }
         }
-
         .rounded {
             border-radius: 0.25rem !important;
         }
     </style>
 </head>
-
 <body>
     <h1 class="centered-text">Dashboard</h1>
     <div class="background-container">
@@ -215,56 +174,147 @@
                                             <h3 class="h2 text-white mb-0">{{ request.session.user_info.nama }}</h3>
                                             <span class="text-primary">{{ request.session.roles|join:", " }}</span>
                                         </div>
-                                        
                                         <table>
-            <tr>
-                <th>Nama</th>
-                <td>{{ request.session.user_info.nama }}</td>
-            </tr>
-            <tr>
-                <th>Email</th>
-                <td>{{ request.session.email }}</td>
-            </tr>
-            <tr>
-                <th>Kota Asal</th>
-                <td>{{ request.session.user_info.kota_asal }}</td>
-            </tr>
-            <tr>
-                <th>Gender</th>
-                <td>{{ request.session.user_info.gender }}</td>
-            </tr>
-            <tr>
-                <th>Tempat Lahir</th>
-                <td>{{ request.session.user_info.tempat_lahir }}</td>
-            </tr>
-            <tr>
-                <th>Tanggal Lahir</th>
-                <td>{{ request.session.user_info.tanggal_lahir }}</td>
-            </tr>
-            <tr>
-                <th>Role</th>
-                <td>{{ request.session.roles|join:", " }}</td>
-            </tr>
-        </table>
+                                            <tr>
+                                                <th>Nama</th>
+                                                <td>{{ request.session.user_info.nama }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Email</th>
+                                                <td>{{ request.session.email }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Kota Asal</th>
+                                                <td>{{ request.session.user_info.kota_asal }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Gender</th>
+                                                <td>{{ request.session.user_info.gender }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Tempat Lahir</th>
+                                                <td>{{ request.session.user_info.tempat_lahir }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Tanggal Lahir</th>
+                                                <td>{{ request.session.user_info.tanggal_lahir }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Role</th>
+                                                <td>{{ request.session.roles|join:", " }}</td>
+                                            </tr>
+                                        </table>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    
+                    </div>                    
                 </div>
             </div>
         </section>
     </div>
 
+    {% if "Podcaster" in request.session.roles %}
+    <div class="background-container">
+        <h1 class="centered-text">Daftar Podcast</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Judul Podcast</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for podcast in podcasts %}
+                <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td>{{ podcast.1 }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="2">Belum Memiliki Podcast</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+
+    {% if "Artis" in request.session.roles or "Songwriter" in request.session.roles %}
+    <div class="background-container">
+        <h1 class="centered-text">Daftar Lagu</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Judul Lagu</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for song in songs %}
+                <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td>{{ song.1 }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="2">Belum Memiliki Lagu</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+
+    {% if "Label" in request.session.roles %}
+    <div class="background-container">
+        <h1 class="centered-text">Daftar Album</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Judul Album</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for album in albums %}
+                <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td>{{ album.1 }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="2">Belum Memiliki Album</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
     <div class="background-container">
         <h1 class="centered-text">Daftar Playlist</h1>
         <table>
-            <tr>
-                <th>Belum Memiliki Playlist</th>
-            </tr>
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Judul Playlist</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for playlist in playlists %}
+                <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td>{{ playlist.1 }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="2">Belum Memiliki Playlist</td>
+                </tr>
+                {% endfor %}
+            </tbody>
         </table>
     </div>
+
 </body>
 
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>

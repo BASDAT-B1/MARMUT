@@ -171,44 +171,40 @@ section {
                                     </div>
                                     <div class="col-lg-6 px-xl-10">
                                         <div class="bg-secondary d-lg-inline-block py-1-9 px-1-9 px-sm-6 mb-1-9 rounded w-100">
-                                            <h3 class="h2 text-white mb-0">Pengguna</h3>
-                                            <span class="text-primary">Role</span>
+                                            <h3 class="h2 text-white mb-0">{{ request.session.user_info.nama }}</h3>
+                                            <span class="text-primary">{{ request.session.roles|join:", " }}</span>
                                         </div>
                                         
                                         <table>
-                                            <tr>
-                                                <th>Nama</th>
-                                                <td>Marmut Basdat</td>
-                                            </tr>
-                                            <tr>
-                                                <th>Email</th>
-                                                <td>marmutbasdat@example.com</td>
-                                            </tr>
-                                            <tr>
-                                                <th>Kontak</th>
-                                                <td>08123456789</td>
-                                            </tr>
-                                            <tr>
-                                                <th>Kota Asal</th>
-                                                <td>Jakarta</td>
-                                            </tr>
-                                            <tr>
-                                                <th>Gender</th>
-                                                <td>Laki-laki</td>
-                                            </tr>
-                                            <tr>
-                                                <th>Tempat Lahir</th>
-                                                <td>Bandung</td>
-                                            </tr>
-                                            <tr>
-                                                <th>Tanggal Lahir</th>
-                                                <td>1 Januari 2004</td>
-                                            </tr>
-                                            <tr>
-                                                <th>Role</th>
-                                                <td>Podcaster</td>
-                                            </tr>
-                                        </table>
+            <tr>
+                <th>Nama</th>
+                <td>{{ request.session.user_info.nama }}</td>
+            </tr>
+            <tr>
+                <th>Email</th>
+                <td>{{ request.session.email }}</td>
+            </tr>
+            <tr>
+                <th>Kota Asal</th>
+                <td>{{ request.session.user_info.kota_asal }}</td>
+            </tr>
+            <tr>
+                <th>Gender</th>
+                <td>{{ request.session.user_info.gender }}</td>
+            </tr>
+            <tr>
+                <th>Tempat Lahir</th>
+                <td>{{ request.session.user_info.tempat_lahir }}</td>
+            </tr>
+            <tr>
+                <th>Tanggal Lahir</th>
+                <td>{{ request.session.user_info.tanggal_lahir }}</td>
+            </tr>
+            <tr>
+                <th>Role</th>
+                <td>{{ request.session.roles|join:", " }}</td>
+            </tr>
+        </table>
                                     </div>
                                 </div>
                             </div>
@@ -223,9 +219,24 @@ section {
     <div class="background-container">
         <h1 class="centered-text">Daftar Podcast</h1>
         <table>
-            <tr>
-                <th>Belum Memiliki Podcast</th>
-            </tr>
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Judul Podcast</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for podcast in podcasts %}
+                <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td>{{ podcast.1 }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="2">Belum Memiliki Podcast</td>
+                </tr>
+                {% endfor %}
+            </tbody>
         </table>
     </div>
 </body>
