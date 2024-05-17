@@ -6,119 +6,65 @@ from django.views.decorators.http import require_POST
 
 
 # Create your views here.
-def song_premium(request, id_song):
+def song(request, id_song):
+    roles = request.session['roles']
     with connection.cursor() as cursor:
-            # Fetch song details
-            cursor.execute("""
+        cursor.execute("""
                 SELECT k.judul, k.durasi, k.tanggal_rilis, k.tahun, s.total_play, s.total_download, a.judul
                 FROM SONG s
                 JOIN KONTEN k ON s.id_konten = k.id
                 JOIN ALBUM a ON s.id_album = a.id
                 WHERE k.id = %s
             """, [id_song])
-            song_detail = cursor.fetchone()
-
-            # Fetch genres
-            cursor.execute("""
-                SELECT g.genre
-                FROM GENRE g
-                WHERE g.id_konten = %s
-            """, [id_song])
-            genres = cursor.fetchall()
-
-            # Fetch artist
-            cursor.execute("""
-                SELECT ak.nama
-                FROM ARTIST ar
-                JOIN SONG s ON ar.id = s.id_artist
-                JOIN ARTIST ON s.id_artist = ar.id
-                JOIN AKUN ak ON ak.email = ar.email_akun
-                WHERE s.id_konten = %s
-            """, [id_song])
-            artist = cursor.fetchone()
-
-            # Fetch songwriters
-            cursor.execute("""
-                SELECT ak.nama
-                FROM SONGWRITER sw
-                JOIN SONGWRITER_WRITE_SONG sws ON sw.id = sws.id_songwriter
-                JOIN AKUN ak ON ak.email = sw.email_akun
-                WHERE sws.id_song = %s
-            """, [id_song])
-            songwriters = cursor.fetchall()
-
-    context = {
-            'id_song': id_song,
-            'judul': song_detail[0],
-            'durasi': song_detail[1],
-            'tanggal_rilis': song_detail[2],
-            'tahun': song_detail[3],
-            'total_play': song_detail[4],
-            'total_downloads': song_detail[5],
-            'album': song_detail[6],
-            'genres': [genre[0] for genre in genres],
-            'artist': artist[0] if artist else 'Unknown',
-            'songwriters': [songwriter[0] for songwriter in songwriters]
-        }
-
-    return render(request, 'song_premium.html', context)
-
-def song(request, id_song):
-    with connection.cursor() as cursor:
-        # Fetch song details
-        cursor.execute("""
-            SELECT k.judul, k.durasi, k.tanggal_rilis, k.tahun, s.total_play, s.total_download, a.judul
-            FROM SONG s
-            JOIN KONTEN k ON s.id_konten = k.id
-            JOIN ALBUM a ON s.id_album = a.id
-            WHERE k.id = %s
-        """, [id_song])
         song_detail = cursor.fetchone()
 
-        # Fetch genres
+                # Fetch genres
         cursor.execute("""
-            SELECT g.genre
-            FROM GENRE g
-            WHERE g.id_konten = %s
-        """, [id_song])
+                    SELECT g.genre
+                    FROM GENRE g
+                    WHERE g.id_konten = %s
+                """, [id_song])
         genres = cursor.fetchall()
 
-        # Fetch artist
+                # Fetch artist
         cursor.execute("""
-            SELECT ak.nama
-            FROM ARTIST ar
-            JOIN SONG s ON ar.id = s.id_artist
-            JOIN ARTIST ON s.id_artist = ar.id
-            JOIN AKUN ak ON ak.email = ar.email_akun
-            WHERE s.id_konten = %s
-        """, [id_song])
+                    SELECT ak.nama
+                    FROM ARTIST ar
+                    JOIN SONG s ON ar.id = s.id_artist
+                    JOIN ARTIST ON s.id_artist = ar.id
+                    JOIN AKUN ak ON ak.email = ar.email_akun
+                    WHERE s.id_konten = %s
+                """, [id_song])
         artist = cursor.fetchone()
 
-        # Fetch songwriters
+                # Fetch songwriters
         cursor.execute("""
-            SELECT ak.nama
-            FROM SONGWRITER sw
-            JOIN SONGWRITER_WRITE_SONG sws ON sw.id = sws.id_songwriter
-            JOIN AKUN ak ON ak.email = sw.email_akun
-            WHERE sws.id_song = %s
-        """, [id_song])
+                    SELECT ak.nama
+                    FROM SONGWRITER sw
+                    JOIN SONGWRITER_WRITE_SONG sws ON sw.id = sws.id_songwriter
+                    JOIN AKUN ak ON ak.email = sw.email_akun
+                    WHERE sws.id_song = %s
+                """, [id_song])
         songwriters = cursor.fetchall()
 
-    context = {
-        'id_song': id_song,
-        'judul': song_detail[0],
-        'durasi': song_detail[1],
-        'tanggal_rilis': song_detail[2],
-        'tahun': song_detail[3],
-        'total_play': song_detail[4],
-        'total_downloads': song_detail[5],
-        'album': song_detail[6],
-        'genres': [genre[0] for genre in genres],
-        'artist': artist[0] if artist else 'Unknown',
-        'songwriters': [songwriter[0] for songwriter in songwriters]
-    }
+        context = {
+                    'id_song': id_song,
+                    'judul': song_detail[0],
+                    'durasi': song_detail[1],
+                    'tanggal_rilis': song_detail[2],
+                    'tahun': song_detail[3],
+                    'total_play': song_detail[4],
+                    'total_downloads': song_detail[5],
+                    'album': song_detail[6],
+                    'genres': [genre[0] for genre in genres],
+                    'artist': artist[0] if artist else 'Unknown',
+                    'songwriters': [songwriter[0] for songwriter in songwriters]
+                }
+    if "Pengguna Biasa" in roles :
+        return render(request, 'song.html', context)
 
-    return render(request, 'song.html', context)
+    else:
+        return render(request, 'song_premium.html', context)
 
 @require_POST
 def update_song_progress(request, id_song):
@@ -169,7 +115,7 @@ def download_song(request, id_song):
                 'message': f"Lagu dengan judul '{song_title}' sudah pernah di unduh!",
                 'options': [
                     {'label': 'KE PLAYLIST', 'url': reverse('kelola_playlist:playlist')},
-                    {'label': 'KEMBALI', 'url': reverse('play_song:song_premium', args=[id_song])}
+                    {'label': 'KEMBALI', 'url': reverse('play_song:song', args=[id_song])}
                 ]
             }
             return render(request, 'message.html', context)
@@ -200,7 +146,7 @@ def download_song(request, id_song):
                 'message': f"Berhasil mengunduh Lagu dengan judul '{song_title}'!",
                 'options': [
                     {'label': 'KE DAFTAR DOWNLOAD', 'url': reverse('main:downloaded_songs')},
-                    {'label': 'KEMBALI', 'url': reverse('play_song:song_premium', args=[id_song])}
+                    {'label': 'KEMBALI', 'url': reverse('play_song:song', args=[id_song])}
                 ]
             }
             return render(request, 'message.html', context)

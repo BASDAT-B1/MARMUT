@@ -35,7 +35,7 @@ def detail_playlist(request, id_playlist):
                 WHERE ps.id_playlist = %s
             """, [id_playlist])
             songs = cursor.fetchall()
-
+            print(songs)
         song_data = []
         for song in songs:
             song_data.append({
@@ -53,13 +53,12 @@ def detail_playlist(request, id_playlist):
 
 def play_playlist(request, id_playlist):
     if request.method == 'GET':
-        
         with connection.cursor() as cursor:
             cursor.execute("""
                 SELECT up.judul, a.nama, up.jumlah_lagu, up.total_durasi, up.tanggal_dibuat, up.deskripsi
                 FROM USER_PLAYLIST up
                 JOIN AKUN a ON up.email_pembuat = a.email
-                WHERE up.id_user_playlist = %s AND a.email = %s
+                WHERE up.id_user_playlist = %s 
             """, [id_playlist])
             playlist_detail = cursor.fetchone()
 
@@ -87,7 +86,7 @@ def play_playlist(request, id_playlist):
                 'id_song': song[3]
             })
 
-        return render(request, 'detail_playlist.html', {
+        return render(request, 'play_playlist.html', {
             'playlist_detail': playlist_detail,
             'songs': song_data,
             'id_playlist': id_playlist
@@ -210,7 +209,6 @@ def get_songs():
         for song in songs
     ]
 
-# View untuk menambahkan lagu ke playlist
 def add_song_to_playlist(request, id_playlist):
     if request.method == 'GET':
         print(f"GET request received for playlist ID: {id_playlist}")
@@ -235,11 +233,10 @@ def add_song_to_playlist(request, id_playlist):
             })
 
         with connection.cursor() as cursor:
-            # Pastikan playlist ada
             cursor.execute("""
-                SELECT COUNT(*)
-                FROM PLAYLIST
-                WHERE id = %s
+                SELECT id
+                FROM PLAYLIST, USER_PLAYLIST
+                WHERE id_user_playlist = %s AND id_playlist = id
             """, [id_playlist])
             playlist_exists = cursor.fetchone()[0]
             print(f"Playlist exists: {playlist_exists}")
@@ -253,7 +250,6 @@ def add_song_to_playlist(request, id_playlist):
                     'error': 'Playlist does not exist'
                 })
 
-            # Periksa apakah lagu sudah ada di playlist
             cursor.execute("""
                 SELECT COUNT(*)
                 FROM PLAYLIST_SONG
@@ -271,13 +267,12 @@ def add_song_to_playlist(request, id_playlist):
                     'error': 'Lagu sudah ada di playlist'
                 })
 
-            # Tambahkan lagu ke playlist
             try:
                 cursor.execute("""
                     INSERT INTO PLAYLIST_SONG (id_playlist, id_song)
                     VALUES (%s, %s)
-                """, [id_playlist, song_id])
-                print(f"Lagu dengan id {song_id} berhasil ditambahkan ke playlist {id_playlist}")
+                """, [playlist_exists, song_id])
+                print(f"Lagu dengan id {song_id} berhasil ditambahkan ke playlist {playlist_exists}")
             except IntegrityError as e:
                 print(f"IntegrityError: {e}")
                 songs = get_songs()
@@ -292,7 +287,6 @@ def add_song_to_playlist(request, id_playlist):
 def delete_song_from_playlist(request, id_playlist, id_song):
     if request.method == 'POST':
         with connection.cursor() as cursor:
-            # Delete the song from the playlist
             cursor.execute("""
                 DELETE FROM PLAYLIST_SONG
                 WHERE id_playlist = %s AND id_song = %s
@@ -300,7 +294,6 @@ def delete_song_from_playlist(request, id_playlist, id_song):
 
         return redirect(reverse('kelola_playlist:detail_playlist', args=[id_playlist]))
     else:
-        # Fetch the song details to confirm deletion
         with connection.cursor() as cursor:
             cursor.execute("""
                 SELECT k.judul, ak.nama
@@ -328,13 +321,11 @@ def play_song(request, id_song):
     waktu = timezone.now()
 
     with connection.cursor() as cursor:
-        # Tambahkan entri ke tabel AKUN_PLAY_SONG
         cursor.execute("""
             INSERT INTO AKUN_PLAY_SONG (email_pemain, id_song, waktu)
             VALUES (%s, %s, %s)
         """, [email_pemain, id_song, waktu])
 
-        # Perbarui total_play di tabel SONG
         cursor.execute("""
             UPDATE SONG
             SET total_play = total_play + 1
@@ -348,7 +339,6 @@ def shuffle_play(request, id_playlist):
     waktu = timezone.now()
 
     with connection.cursor() as cursor:
-        # Ambil email pembuat playlist
         cursor.execute("""
             SELECT email_pembuat
             FROM USER_PLAYLIST
@@ -356,13 +346,11 @@ def shuffle_play(request, id_playlist):
         """, [id_playlist])
         email_pembuat = cursor.fetchone()[0]
 
-        # Tambahkan entri ke tabel AKUN_PLAY_USER_PLAYLIST
         cursor.execute("""
             INSERT INTO AKUN_PLAY_USER_PLAYLIST (email_pemain, id_user_playlist, email_pembuat, waktu)
             VALUES (%s, %s, %s, %s)
         """, [email_pemain, id_playlist, email_pembuat, waktu])
 
-        # Ambil semua id_lagu dari playlist
         cursor.execute("""
             SELECT id_song
             FROM PLAYLIST_SONG
@@ -370,7 +358,6 @@ def shuffle_play(request, id_playlist):
         """, [id_playlist])
         songs = cursor.fetchall()
 
-        # Tambahkan entri ke tabel AKUN_PLAY_SONG untuk setiap lagu di playlist
         for song in songs:
             cursor.execute("""
                 INSERT INTO AKUN_PLAY_SONG (email_pemain, id_song, waktu)

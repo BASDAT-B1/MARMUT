@@ -2,7 +2,7 @@
 
 
 {% block content %}
-{% include 'navbar6.html' %}
+{% include 'navbar.html' %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
@@ -171,22 +171,38 @@ section {
                                     </div>
                                     <div class="col-lg-6 px-xl-10">
                                         <div class="bg-secondary d-lg-inline-block py-1-9 px-1-9 px-sm-6 mb-1-9 rounded w-100">
-                                            <h3 class="h2 text-white mb-0">Pengguna</h3>
-                                            <span class="text-primary">Role</span>
+                                            <h3 class="h2 text-white mb-0">{{ request.session.user_info.nama }}</h3>
+                                            <span class="text-primary">{{ request.session.roles|join:", " }}</span>
                                         </div>
                                         
                                         <table>
             <tr>
                 <th>Nama</th>
-                <td>Marmut Basdat</td>
+                <td>{{ request.session.user_info.nama }}</td>
             </tr>
             <tr>
                 <th>Email</th>
-                <td>marmutbasdat@example.com</td>
+                <td>{{ request.session.email }}</td>
             </tr>
             <tr>
-                <th>Kontak</th>
-                <td>08123456789</td>
+                <th>Kota Asal</th>
+                <td>{{ request.session.user_info.kota_asal }}</td>
+            </tr>
+            <tr>
+                <th>Gender</th>
+                <td>{{ request.session.user_info.gender }}</td>
+            </tr>
+            <tr>
+                <th>Tempat Lahir</th>
+                <td>{{ request.session.user_info.tempat_lahir }}</td>
+            </tr>
+            <tr>
+                <th>Tanggal Lahir</th>
+                <td>{{ request.session.user_info.tanggal_lahir }}</td>
+            </tr>
+            <tr>
+                <th>Role</th>
+                <td>{{ request.session.roles|join:", " }}</td>
             </tr>
         </table>
                                     </div>
