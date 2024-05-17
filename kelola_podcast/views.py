@@ -25,36 +25,36 @@ def list_podcast(request):
 
 def podcast_detail(request, id):
     with connection.cursor() as cursor:
-     
         cursor.execute("""
-            SELECT k.id, k.judul, k.tanggal_rilis, k.tahun, k.durasi, p.email_podcaster,
-                   (SELECT STRING_AGG(g.genre, ', ') 
-                    FROM genre g 
-                    WHERE g.id_konten = k.id) AS genres
-            FROM konten k
-            INNER JOIN podcast p ON k.id = p.id_konten
-            WHERE k.id = %s
-        """, [str(id)])
+            SELECT k.id, k.judul, k.tanggal_rilis, k.tahun, k.durasi, p.email_podcaster, STRING_AGG(g.genre, ', ')
+            FROM podcast p
+            JOIN konten k ON p.id_konten = k.id
+            LEFT JOIN genre g ON k.id = g.id_konten
+            WHERE p.id_konten = %s
+            GROUP BY k.id, k.judul, k.tanggal_rilis, k.tahun, k.durasi, p.email_podcaster
+        """, [id])
         podcast = cursor.fetchone()
-        
-        
+    
         cursor.execute("""
             SELECT e.id_episode, e.judul, e.deskripsi, e.durasi, e.tanggal_rilis
             FROM episode e
             WHERE e.id_konten_podcast = %s
-        """, [str(id)])
+        """, [id])
         episodes = cursor.fetchall()
 
     context = {
         'podcast': podcast,
-        'episodes': episodes
+        'episodes': episodes,
+        'podcaster_email': podcast[5]  
     }
+    
     return render(request, 'podcast_detail.html', context)
+
 
 def add_podcast(request):
     if request.method == 'POST':
         title = request.POST.get('title')
-        duration = request.POST.get('duration')
+        duration = 0
         genres = request.POST.getlist('genres')
         email_podcaster = request.session.get('email') 
         
@@ -150,3 +150,8 @@ def delete_podcast(request, id):
             return redirect('kelola_podcast:list_podcast')
     
     return redirect('kelola_podcast:list_podcast')
+
+def delete_episode(request, id):
+    with connection.cursor() as cursor:
+        cursor.execute("DELETE FROM episode WHERE id_episode = %s", [str(id)])
+    return redirect(request.META.get('HTTP_REFERER', 'kelola_podcast:list_podcast'))
