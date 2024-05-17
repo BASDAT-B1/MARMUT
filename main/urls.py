@@ -30,4 +30,5 @@ urlpatterns = [
     path('dashboard_artist_atau_songwriter_with_playlist/', dashboard_artist_atau_songwriter_with_playlist, name='dashboard_artist_atau_songwriter_with_playlist'),
     path('logout/', logout, name='logout'),
     path('search/', search_bar, name='search_bar'),
+    path('dashboard/', dashboard, name='dashboard')
 ]

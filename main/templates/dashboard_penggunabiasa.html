@@ -2,6 +2,7 @@
 
 {% block content %}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 {% include 'navbar2.html' %}
 <<<<<<< HEAD
@@ -9,6 +10,9 @@
 
 =======
 >>>>>>> d80c9afba7865608a4ddbaa49153fc860f445caa
+=======
+{% include 'navbar.html' %}
+>>>>>>> 29eab6d832c8e21d1a92b2c4e040d2d272b9bf6f
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -220,50 +224,48 @@
                                     <div class="col-lg-6 px-xl-10">
                                         <div
                                             class="bg-secondary d-lg-inline-block py-1-9 px-1-9 px-sm-6 mb-1-9 rounded w-100">
-                                            <h3 class="h2 text-white mb-0">Pengguna</h3>
-                                            <span class="text-primary">Role</span>
+                                            <h3 class="h2 text-white mb-0">{{nama}}</h3>
+                                            <span class="text-primary">{% for role in roles %}
+                                                {{ role }}{% if not forloop.last %}, {% endif %}
+                                            {% endfor %}</span>
                                         </div>
-
+                                        
                                         <table>
-                                            <tr>
-                                                <th>Nama</th>
-                                                <td>{{nama}}</td>
-                                            </tr>
-                                            <tr>
-                                                <th>Email</th>
-                                                <td>{{email}}</td>
-                                            </tr>
-                                            <tr>
-                                                <th>Kota Asal</th>
-                                                <td>{{kota_asal}}</td>
-                                            </tr>
-                                            <tr>
-                                                <th>Gender</th>
-                                                <td>{{gender}}</td>
-                                            </tr>
-                                            <tr>
-                                                <th>Tempat Lahir</th>
-                                                <td>{{tempat_lahir}}</td>
-                                            </tr>
-                                            <tr>
-                                                <th>Tanggal Lahir</th>
-                                                <td>{{tanggal_lahir}}</td>
-                                            </tr>
-                                            <tr>
-                                                <th>Role</th>
-                                                <td>
-                                                    {% for role in roles %}
-                                                        {{ role }}{% if not forloop.last %}, {% endif %}
-                                                    {% endfor %}
-                                                </td>
-                                            </tr>
-                                        </table>
+            <tr>
+                <th>Nama</th>
+                <td>{{ request.session.user_info.nama }}</td>
+            </tr>
+            <tr>
+                <th>Email</th>
+                <td>{{ request.session.email }}</td>
+            </tr>
+            <tr>
+                <th>Kota Asal</th>
+                <td>{{ request.session.user_info.kota_asal }}</td>
+            </tr>
+            <tr>
+                <th>Gender</th>
+                <td>{{ request.session.user_info.gender }}</td>
+            </tr>
+            <tr>
+                <th>Tempat Lahir</th>
+                <td>{{ request.session.user_info.tempat_lahir }}</td>
+            </tr>
+            <tr>
+                <th>Tanggal Lahir</th>
+                <td>{{ request.session.user_info.tanggal_lahir }}</td>
+            </tr>
+            <tr>
+                <th>Role</th>
+                <td>{{ request.session.roles|join:", " }}</td>
+            </tr>
+        </table>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-
+                    
                 </div>
             </div>
         </section>
@@ -279,7 +281,4 @@
     </div>
 </body>
 
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 {% endblock content %}

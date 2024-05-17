@@ -2,7 +2,7 @@
 
 
 {% block content %}
-{% include 'navbar2.html' %}
+{% include 'navbar.html' %}
 <style>
     .allCard {
         display: flex;
@@ -12,32 +12,28 @@
     }
 
 </style>
-    <div class="d-flex justify-content-center flex-direction-row align-items-center" style="width: 100vw; height: 80vh;">
+    <div class="d-flex justify-content-center align-items-center" style="width: 100vw; height: 80vh;">
         {% for data in paket %}
-            <form method="POST">
-                {% csrf_token %}
-                <div class="card" style="width: 18rem;">
-                    <div class="card-body">
-                        <h3>Premium</h3>
-                        <h5>{{ data.jenis }}</h5>
-                        <h5>{{ data.harga }}</h5>
-                        <input type="hidden" name="selected_jenis" value="{{ data.jenis }}">
-                        <input type="hidden" name="selected_harga" value="{{ data.harga }}">
-                        <input class="btn login_btn btn-outline-dark" type="submit" value="{{ data.jenis }}">
-                    </div>
+        <form method="POST" style="display: block; margin-bottom: 10px;">
+            {% csrf_token %}
+            <div class="card" style="width: 18rem;">
+                <div class="card-body">
+                    <h3>Premium</h3>
+                    <h5>{{ data.jenis }}</h5>
+                    <h5>{{ data.harga }}</h5>
+                    <input type="hidden" name="selected_jenis" value="{{ data.jenis }}">
+                    <input type="hidden" name="selected_harga" value="{{ data.harga }}">
+                    <input class="btn login_btn btn-outline-dark" type="submit" value="{{ data.jenis }}">
                 </div>
-            </form>
-            {% endfor %}
+            </div>
+        </form>
+        {% endfor %}
+        <button class="btn login_btn btn-outline-dark" type="submit" style="display: block;" onclick="toHistory()"> Riwayat Transaksi</button>
     </div>
+<script>
 
-    <!-- <script>
-        function getPremium(jenis, harga) {
-            const url = `pembayaran-paket/${jenis}/${harga}`
-            fetch(url, {
-                method: "GET",
-            })
-
-            return false
-        }
-    </script> -->
+    function toHistory() {
+        window.location.href = "{% url 'main:riwayat_transaksi' %}";
+    }
+</script>
 {% endblock content %}
