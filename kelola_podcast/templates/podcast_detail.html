@@ -47,6 +47,7 @@
                     <th scope="col">Deskripsi</th>
                     <th scope="col">Durasi</th>
                     <th scope="col">Tanggal Rilis</th>
+                    <th scope="col">Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -57,6 +58,11 @@
                     <td>{{ episode.2 }}</td>
                     <td>{{ episode.3 }} menit</td>
                     <td>{{ episode.4 }}</td>
+                    <td>
+                        {% if request.session.email == podcaster_email %}
+                        <a href="{% url 'kelola_podcast:delete_episode' episode.0 %}" class="btn btn-danger btn-sm">Delete</a>
+                        {% endif %}
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>

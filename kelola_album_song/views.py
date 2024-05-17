@@ -1,4 +1,5 @@
 from django.db import connection
+from django.http import HttpResponse
 from django.shortcuts import redirect, render
 import uuid
 from datetime import datetime
@@ -359,15 +360,27 @@ def daftar_lagu(request):
             
             if label_email:
                 id_album = request.GET.get('id', None)
-
+                
                 with connection.cursor() as cursor:
-                     cursor.execute("""
-                    SELECT K.id, K.judul, K.durasi, S.total_play, S.total_download
-                    FROM SONG S
-                    LEFT JOIN KONTEN K ON S.id_konten = K.id
-                    WHERE S.id_album = %s
-                """, id_album)
-                songs = cursor.fetchall()
+                    cursor.execute("""
+                        SELECT K.id, K.judul, K.durasi, 
+                               COALESCE(APS.total_play, 0) AS total_play, 
+                               COALESCE(DS.total_download, 0) AS total_download
+                        FROM SONG S
+                        LEFT JOIN KONTEN K ON S.id_konten = K.id
+                        LEFT JOIN (
+                            SELECT id_song, COUNT(*) AS total_play 
+                            FROM akun_play_song 
+                            GROUP BY id_song
+                        ) AS APS ON S.id_konten = APS.id_song
+                        LEFT JOIN (
+                            SELECT id_song, COUNT(*) AS total_download 
+                            FROM downloaded_song 
+                            GROUP BY id_song
+                        ) AS DS ON S.id_konten = DS.id_song
+                        WHERE S.id_album = %s
+                    """, [id_album])
+                    songs = cursor.fetchall()
 
                 song_data = []
                 for song in songs:
@@ -377,9 +390,12 @@ def daftar_lagu(request):
                         'Durasi': song[2],
                         'Total Play': song[3],
                         'Total Download': song[4]
-                })
+                    })
 
-                return render(request, "daftar_lagu.html",{'songs': song_data})
+                return render(request, "daftar_lagu.html", {'songs': song_data})
+    
+    return HttpResponse("Unauthorized", status=401)
+
 
 def cek_royalti(request):
     roles = request.session.get('roles', [])
