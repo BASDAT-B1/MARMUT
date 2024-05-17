@@ -86,7 +86,11 @@
     {% else %}
         <h5 class="centered-text mb-3">Anda Belum Memiliki Playlist</h5>
     {% endif %}
-    <a href="{% url 'kelola_playlist:add_playlist'%}" class="btn btn-success mt-3">Tambah Playlist</a>
+    <div class="btn-toolbar justify-content-center" role="toolbar">
+        <div class="btn-group mr-2" role="group">
+            <a href="{% url 'kelola_playlist:add_playlist'%}" class="btn btn-success mt-3">Tambah Playlist</a>
+        </div>
+    </div>
 </div>
 
 {% endblock content %}

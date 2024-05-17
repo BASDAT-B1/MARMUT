@@ -258,14 +258,13 @@ def add_song_to_playlist(request, id_playlist):
             print(f"Song already in playlist: {count > 0}")
 
             if count > 0:
-                print(f"Song with ID {song_id} is already in the playlist.")
-                songs = get_songs()
-                return render(request, 'add_song.html', {
-                    'id_playlist': id_playlist,
-                    'songs': songs,
-                    'error': 'Lagu sudah ada di playlist'
-                })
-
+                return render(request, 'message.html', {
+                'message': f"Lagu dengan judul sudah ada di playlist!",
+                'options': [
+                    {'label': 'KE PLAYLIST', 'url': reverse('kelola_playlist:detail_playlist', args=[id_playlist])}
+                ]
+            })
+               
             try:
                 with connection.cursor() as cursor:
                     cursor.execute("""
