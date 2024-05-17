@@ -70,7 +70,10 @@
         <div class="text-center">
             <div class="btn-toolbar justify-content-center" role="toolbar">
                 <div class="btn-group mr-2" role="group">
-                    <button class="btn btn-primary btn-action">Shuffle Play</button>
+                    <form action="{% url 'kelola_playlist:shuffle_play' id_playlist %}" method="post" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-primary btn-action">Shuffle Play</button>
+                    </form>
                 </div>
             </div>
             <div class="btn-toolbar justify-content-center" role="toolbar">
@@ -98,8 +101,8 @@
                 <td>{{ song.artist }}</td>
                 <td>{{ song.durasi }} menit</td>
                 <td>
-                    <a href="#" class="btn btn-info btn-action">Lihat</a>
-                    <a href="{% url 'play_song:song' %}" class="btn btn-success btn-action">Play</a>
+                    <a href="{% url 'play_song:song' song.id_song %}" class="btn btn-info btn-action">Lihat</a>
+                    <a href="{% url 'kelola_playlist:play_song' song.id_song %}" class="btn btn-success btn-action">Play</a>
                     <form action="{% url 'kelola_playlist:delete_song_from_playlist' id_playlist song.id_song %}" method="post" style="display:inline;">
                         {% csrf_token %}
                         <button type="submit" class="btn btn-danger btn-action">Hapus</button>

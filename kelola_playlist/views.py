@@ -1,8 +1,10 @@
 import uuid
 from django.shortcuts import redirect, render
-from django.db import connection
+from django.db import IntegrityError, connection
 from django.http import HttpResponseForbidden
 from django.urls import reverse
+from django.utils import timezone
+from django.views.decorators.http import require_POST
 
 # Create your views here.
 def detail_playlist(request, id_playlist):
@@ -20,7 +22,7 @@ def detail_playlist(request, id_playlist):
             playlist_detail = cursor.fetchone()
 
         if not playlist_detail:
-            return redirect('kelola_playlist:playlist')  # Redirect if playlist not found
+            return redirect('kelola_playlist:playlist')  
         
         with connection.cursor() as cursor:
             cursor.execute("""
@@ -49,6 +51,48 @@ def detail_playlist(request, id_playlist):
             'id_playlist': id_playlist
         })
 
+def play_playlist(request, id_playlist):
+    if request.method == 'GET':
+        
+        with connection.cursor() as cursor:
+            cursor.execute("""
+                SELECT up.judul, a.nama, up.jumlah_lagu, up.total_durasi, up.tanggal_dibuat, up.deskripsi
+                FROM USER_PLAYLIST up
+                JOIN AKUN a ON up.email_pembuat = a.email
+                WHERE up.id_user_playlist = %s AND a.email = %s
+            """, [id_playlist])
+            playlist_detail = cursor.fetchone()
+
+        if not playlist_detail:
+            return redirect('kelola_playlist:playlist')  
+        
+        with connection.cursor() as cursor:
+            cursor.execute("""
+                SELECT k.judul, ak.nama, k.durasi, k.id
+                FROM PLAYLIST_SONG ps
+                JOIN KONTEN k ON ps.id_song = k.id
+                JOIN SONG s ON k.id = s.id_konten
+                JOIN ARTIST ar ON s.id_artist = ar.id
+                JOIN AKUN ak ON ak.email = ar.email_akun
+                WHERE ps.id_playlist = %s
+            """, [id_playlist])
+            songs = cursor.fetchall()
+
+        song_data = []
+        for song in songs:
+            song_data.append({
+                'judul': song[0],
+                'artist': song[1],
+                'durasi': song[2],
+                'id_song': song[3]
+            })
+
+        return render(request, 'detail_playlist.html', {
+            'playlist_detail': playlist_detail,
+            'songs': song_data,
+            'id_playlist': id_playlist
+        })
+    
 def playlist(request):
     if request.method == 'GET':
         if 'email' in request.session:
@@ -122,7 +166,7 @@ def edit_playlist(request, id_playlist):
             playlist = cursor.fetchone()
 
         if not playlist:
-            return redirect('kelola_playlist:playlist')  # Redirect if playlist not found
+            return redirect('kelola_playlist:playlist') 
 
         return render(request, 'edit_playlist.html', {
             'id_playlist': id_playlist,
@@ -151,65 +195,97 @@ def edit_playlist(request, id_playlist):
 
         return redirect(reverse('kelola_playlist:detail_playlist', args=[id_playlist]))
     
-def add_song_to_playlist(request, id_playlist):
+def get_songs():
     with connection.cursor() as cursor:
-            cursor.execute("""
-                SELECT k.judul, ak.nama, k.id
-                FROM KONTEN k
-                JOIN SONG s ON k.id = s.id_konten
-                JOIN ARTIST ar ON s.id_artist = ar.id
-                JOIN AKUN ak ON ak.email = ar.email_akun
-            """)
-            songs = cursor.fetchall()
-    if request.method == 'GET':
-        with connection.cursor() as cursor:
-            cursor.execute("""
-                SELECT k.judul, ak.nama, k.id
-                FROM KONTEN k
-                JOIN SONG s ON k.id = s.id_konten
-                JOIN ARTIST ar ON s.id_artist = ar.id
-                JOIN AKUN ak ON ak.email = ar.email_akun
-            """)
-            songs = cursor.fetchall()
-            
-        song_options = [
-            {'judul': song[0], 'artist': song[1], 'id': song[2]}
-        for song in songs]
+        cursor.execute("""
+            SELECT k.judul, ak.nama, k.id
+            FROM KONTEN k
+            JOIN SONG s ON k.id = s.id_konten
+            JOIN ARTIST ar ON s.id_artist = ar.id
+            JOIN AKUN ak ON ak.email = ar.email_akun
+        """)
+        songs = cursor.fetchall()
+    return [
+        {'judul': song[0], 'artist': song[1], 'id': song[2]}
+        for song in songs
+    ]
 
+# View untuk menambahkan lagu ke playlist
+def add_song_to_playlist(request, id_playlist):
+    if request.method == 'GET':
+        print(f"GET request received for playlist ID: {id_playlist}")
+        songs = get_songs()
         return render(request, 'add_song.html', {
             'id_playlist': id_playlist,
-            'songs': song_options
+            'songs': songs
         })
+
     elif request.method == 'POST':
-        print("POST data:", request.POST)
+        print(f"POST request received for playlist ID: {id_playlist}")
         song_id = request.POST.get('song_id')
-        
+        print(f"Song ID from POST request: {song_id}")
+
         if not song_id:
+            print("Song ID is required but not provided.")
+            songs = get_songs()
             return render(request, 'add_song.html', {
                 'id_playlist': id_playlist,
+                'songs': songs,
                 'error': 'Song ID is required'
             })
 
         with connection.cursor() as cursor:
-            # Check if song is already in playlist
+            # Pastikan playlist ada
+            cursor.execute("""
+                SELECT COUNT(*)
+                FROM PLAYLIST
+                WHERE id = %s
+            """, [id_playlist])
+            playlist_exists = cursor.fetchone()[0]
+            print(f"Playlist exists: {playlist_exists}")
+
+            if not playlist_exists:
+                print(f"Playlist with ID {id_playlist} does not exist.")
+                songs = get_songs()
+                return render(request, 'add_song.html', {
+                    'id_playlist': id_playlist,
+                    'songs': songs,
+                    'error': 'Playlist does not exist'
+                })
+
+            # Periksa apakah lagu sudah ada di playlist
             cursor.execute("""
                 SELECT COUNT(*)
                 FROM PLAYLIST_SONG
                 WHERE id_playlist = %s AND id_song = %s
             """, [id_playlist, song_id])
             count = cursor.fetchone()[0]
+            print(f"Song already in playlist: {count > 0}")
 
             if count > 0:
+                print(f"Song with ID {song_id} is already in the playlist.")
+                songs = get_songs()
                 return render(request, 'add_song.html', {
                     'id_playlist': id_playlist,
+                    'songs': songs,
                     'error': 'Lagu sudah ada di playlist'
                 })
 
-            # Add song to playlist
-            cursor.execute("""
-                INSERT INTO PLAYLIST_SONG (id_playlist, id_song)
-                VALUES (%s, %s)
-            """, [id_playlist, song_id])
+            # Tambahkan lagu ke playlist
+            try:
+                cursor.execute("""
+                    INSERT INTO PLAYLIST_SONG (id_playlist, id_song)
+                    VALUES (%s, %s)
+                """, [id_playlist, song_id])
+                print(f"Lagu dengan id {song_id} berhasil ditambahkan ke playlist {id_playlist}")
+            except IntegrityError as e:
+                print(f"IntegrityError: {e}")
+                songs = get_songs()
+                return render(request, 'add_song.html', {
+                    'id_playlist': id_playlist,
+                    'songs': songs,
+                    'error': 'Failed to add song to playlist. Please try again.'
+                })
 
             return redirect(reverse('kelola_playlist:detail_playlist', args=[id_playlist]))
         
@@ -246,3 +322,59 @@ def delete_song_from_playlist(request, id_playlist, id_song):
             'song_title': song[0],
             'artist_name': song[1]
         })
+
+def play_song(request, id_song):
+    email_pemain = request.session['email']
+    waktu = timezone.now()
+
+    with connection.cursor() as cursor:
+        # Tambahkan entri ke tabel AKUN_PLAY_SONG
+        cursor.execute("""
+            INSERT INTO AKUN_PLAY_SONG (email_pemain, id_song, waktu)
+            VALUES (%s, %s, %s)
+        """, [email_pemain, id_song, waktu])
+
+        # Perbarui total_play di tabel SONG
+        cursor.execute("""
+            UPDATE SONG
+            SET total_play = total_play + 1
+            WHERE id_konten = %s
+        """, [id_song])
+
+    return redirect(reverse('kelola_playlist:detail_playlist', args=[id_song]))
+
+def shuffle_play(request, id_playlist):
+    email_pemain = request.session['email']
+    waktu = timezone.now()
+
+    with connection.cursor() as cursor:
+        # Ambil email pembuat playlist
+        cursor.execute("""
+            SELECT email_pembuat
+            FROM USER_PLAYLIST
+            WHERE id_playlist = %s
+        """, [id_playlist])
+        email_pembuat = cursor.fetchone()[0]
+
+        # Tambahkan entri ke tabel AKUN_PLAY_USER_PLAYLIST
+        cursor.execute("""
+            INSERT INTO AKUN_PLAY_USER_PLAYLIST (email_pemain, id_user_playlist, email_pembuat, waktu)
+            VALUES (%s, %s, %s, %s)
+        """, [email_pemain, id_playlist, email_pembuat, waktu])
+
+        # Ambil semua id_lagu dari playlist
+        cursor.execute("""
+            SELECT id_song
+            FROM PLAYLIST_SONG
+            WHERE id_playlist = %s
+        """, [id_playlist])
+        songs = cursor.fetchall()
+
+        # Tambahkan entri ke tabel AKUN_PLAY_SONG untuk setiap lagu di playlist
+        for song in songs:
+            cursor.execute("""
+                INSERT INTO AKUN_PLAY_SONG (email_pemain, id_song, waktu)
+                VALUES (%s, %s, %s)
+            """, [email_pemain, song[0], waktu])
+
+    return redirect(reverse('kelola_playlist:detail_playlist', args=[id_playlist]))
