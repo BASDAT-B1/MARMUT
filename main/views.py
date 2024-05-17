@@ -10,6 +10,7 @@ import datetime
 from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
 from django.shortcuts import get_object_or_404
+from django.db import IntegrityError
 
 
 
@@ -270,21 +271,21 @@ def search_bar(request):
     if search_query != '':  # Only execute the query if there is a search term
         with connection.cursor() as cursor:
             cursor.execute("""
-                SELECT up.JUDUL, ak.NAMA
+                SELECT up.JUDUL, ak.NAMA, id_playlist
                 FROM USER_PLAYLIST as up, AKUN as ak
                 WHERE judul ILIKE %s AND up.EMAIL_PEMBUAT = ak.EMAIL;
             """, [f'%{search_query}%'])
             user_playlists_data = cursor.fetchall()
 
             cursor.execute("""
-                SELECT k.JUDUL, ak.NAMA
+                SELECT k.JUDUL, ak.NAMA, id_konten
                 FROM PODCAST as p, AKUN as ak, KONTEN as k
                 WHERE judul ILIKE %s AND p.EMAIL_PODCASTER = ak.EMAIL AND p.id_konten = k.id;
             """, [f'%{search_query}%'])
             podcasts_data = cursor.fetchall()
 
             cursor.execute("""
-                SELECT k.JUDUL, ak.NAMA
+                SELECT k.JUDUL, ak.NAMA, id_konten
                 FROM SONG as s, AKUN as ak, KONTEN as k, ARTIST as ar
                 WHERE judul ILIKE %s AND s.id_konten = k.id AND ar.email_akun = ak.email AND s.id_artist = ar.id;
             """, [f'%{search_query}%'])
@@ -294,18 +295,21 @@ def search_bar(request):
                 'jenis': 'Song',
                 'judul': song[0],
                 'nama': song[1],
+                'id': song[2],
             })
         for podcast in podcasts_data:
             data.append({
                 'jenis': 'Podcast',
                 'judul': podcast[0],
                 'nama': podcast[1],
+                'id': podcast[2],
             })
         for playlist in user_playlists_data:
             data.append({
                 'jenis': 'User Playlist',
                 'judul': playlist[0],
                 'nama': playlist[1],
+                'id': playlist[2],
             })
     return render(request, 'search_page.html', {'data' : data,'search_query': search_query})
 
@@ -375,33 +379,42 @@ def pembayaran_paket(request, jenis, harga):
     }
 
     if request.method == 'POST':
-        metode_pembayaran = request.POST['payment_method']
-        user_email = request.session['email']
-        new_id = uuid.uuid4()
+        try:
+            metode_pembayaran = request.POST['payment_method']
+            user_email = request.session['email']
+            new_id = uuid.uuid4()
 
-        # Determine the duration in months based on the 'jenis'
-        if jenis in ['1 Bulan', '3 Bulan', '6 Bulan']:
-            date = int(jenis.split()[0])
-        else:
-            date = 12  # Default to 12 months for yearly subscription
+            # Determine the duration in months based on the 'jenis'
+            if jenis in ['1 Bulan', '3 Bulan', '6 Bulan']:
+                date = int(jenis.split()[0])
+            else:
+                date = 12  # Default to 12 months for yearly subscription
 
-        timestamp_dimulai = datetime.date.today()
-        timestamp_berakhir = add_months(timestamp_dimulai, date)
+            timestamp_dimulai = datetime.date.today()
+            timestamp_berakhir = add_months(timestamp_dimulai, date)
 
-        with connection.cursor() as cursor:
-            cursor.execute("""
-                INSERT INTO TRANSACTION (ID, JENIS_PAKET, EMAIL, TIMESTAMP_DIMULAI, TIMESTAMP_BERAKHIR, METODE_BAYAR, NOMINAL)
-                VALUES (%s, %s, %s, %s, %s, %s, %s)
-            """, [new_id, jenis, user_email, timestamp_dimulai, timestamp_berakhir, metode_pembayaran, int(harga)])
+            with connection.cursor() as cursor:
+                cursor.execute("""
+                    INSERT INTO TRANSACTION (ID, JENIS_PAKET, EMAIL, TIMESTAMP_DIMULAI, TIMESTAMP_BERAKHIR, METODE_BAYAR, NOMINAL)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s)
+                """, [new_id, jenis, user_email, timestamp_dimulai, timestamp_berakhir, metode_pembayaran, int(harga)])
 
-            cursor.execute("DELETE FROM NONPREMIUM WHERE email = %s", [user_email])
-            cursor.execute("INSERT INTO PREMIUM (EMAIL) VALUES (%s)", [user_email])
-            cursor.execute("UPDATE AKUN SET is_verified = true WHERE email = %s", [user_email])
-
-        roles = request.session['roles']
-        roles.remove("Pengguna Biasa")
-        roles.append("Premium")
-        request.session['roles'] = roles
+            roles = request.session['roles']
+            roles.remove("Pengguna Biasa")
+            roles.append("Premium")
+            request.session['roles'] = roles
+        except IntegrityError as e:
+            error_message = str(e)
+            if "Pengguna masih memiliki paket aktif" in error_message:
+            # Tangani pesan error secara ramah pengguna di sini
+            # Misalnya, arahkan pengguna ke halaman yang sesuai atau tampilkan pesan error yang lebih informatif
+                return render(request, 'error_page.html', {'message': 'Anda sudah memiliki paket aktif. Transaksi dibatalkan.'})
+            else:
+                # Tangani pengecualian lainnya
+                # Misalnya, log pesan error untuk penanganan lebih lanjut
+                print("Error:", error_message)
+                return render(request, 'error_page.html', {'message': 'Terjadi kesalahan. Mohon coba lagi nanti.'})
+        return redirect('main:dashboard')
 
     return render(request, 'pembayaran_paket.html', context)
 
@@ -409,61 +422,6 @@ def pembayaran_paket(request, jenis, harga):
 def melihat_chart(request):
     return render(request,'melihat_chart.html')
 
-def dashboard_label(request):
-    return render(request, 'dashboard_label.html')
-
-def dashboard_podcaster(request):
-    email = request.session.get('email')
-    with connection.cursor() as cursor:
-        cursor.execute("""
-            SELECT k.id, k.judul 
-            FROM podcast p
-            JOIN konten k ON p.id_konten = k.id
-            WHERE p.email_podcaster = %s
-        """, [email])
-        podcasts = cursor.fetchall()
-
-    context = {
-        'podcasts': podcasts,
-        'user_info': request.session.get('user_info'),
-        'roles': request.session.get('roles')
-    }
-    return render(request, 'dashboard_podcaster.html', context)
-
-def dashboard_penggunabiasa(request):
-    if 'email' in request.session:
-        user_email = request.session['email']
-        roles = request.session['roles']
-        print(roles)
-        with connection.cursor() as cursor:
-            cursor.execute("SELECT * FROM AKUN WHERE EMAIL = %s", [user_email])
-            row = cursor.fetchone()
-        gender = "Laki-laki" if row[3] else "Perempuan"
-        context = {
-            'nama' : row[2],
-            'email' : row[0],
-            'kota_asal' : row[7],
-            'gender' : gender,
-            'tempat_lahir': row[4],
-            'tanggal_lahir': row[5],
-            'roles': roles
-        }
-    return render(request, 'dashboard_penggunabiasa.html', context)
-
-def dashboard_artist_atau_songwriter(request):
-    return render(request, 'dashboard_artist_atau_songwriter.html')
-
-def dashboard_label_with_album(request):
-    return render(request, 'dashboard_label_with_album.html')
-
-def dashboard_podcaster_with_podcast(request):
-    return render(request, 'dashboard_podcaster_with_podcast.html')
-
-def dashboard_penggunabiasa_with_playlist(request):
-    return render(request, 'dashboard_penggunabiasa_with_playlist.html')
-
-def dashboard_artist_atau_songwriter_with_playlist(request):
-    return render(request, 'dashboard_artist_atau_songwriter_with_playlist.html')
 def riwayat_transaksi(request):
     user_email = request.session['email']
     with connection.cursor() as cursor:
@@ -477,15 +435,3 @@ def riwayat_transaksi(request):
         'nominal': row[6],
     }
     return render(request, 'riwayat_transaksi.html', data)
-
-def dashboard_label_with_album(request):
-    return render(request, 'dashboard_label_with_album.html')
-
-def dashboard_podcaster_with_podcast(request):
-    return render(request, 'dashboard_podcaster_with_podcast.html')
-
-def dashboard_penggunabiasa_with_playlist(request):
-    return render(request, 'dashboard_penggunabiasa_with_playlist.html')
-
-def dashboard_artist_atau_songwriter_with_playlist(request):
-    return render(request, 'dashboard_artist_atau_songwriter_with_playlist.html')

@@ -39,13 +39,16 @@
         {% else %}
         <h4>Belum ada lagu yang didownload</h4>
         {% endif %}
-        <button class="btn btn-outline-dark" onclick="backButton()">Kembali</button>
+        <input
+            class="btn btn-outline-dark"
+            action="action"
+            onclick="window.history.go(-1); return false;"
+            type="submit"
+            value="Kembali"
+        />
     </div>
 </div>
 <script>
-    function backButton() {
-        window.location.href = "{% url 'main:dashboard_penggunabiasa' %}";
-    }
 
     function deleteSong(songId, songTitle) {
         fetch(`/delete_song/${songId}/`, {
