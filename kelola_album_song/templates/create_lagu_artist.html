@@ -83,12 +83,11 @@
     }
 </style>
 
-<h1 class = "centered-text">CREATE LAGU</h1>
+<h1 class="centered-text">CREATE LAGU</h1>
 
 <form method="POST" action="{% url 'kelola_album_song:list_album' %}">
     {% csrf_token %}
     <table>
-        <!-- {{ form.as_table }} -->
         <tr>
             <td>Album:</td>
             <td>AlbumX</td> 
@@ -99,62 +98,33 @@
         </tr>
         <tr>
             <td>Artist:</td>
-            <td>{{ data_fix.artist[0] }} </td> 
-            
+            <td>{{ aos_data.artists.0 }}</td> 
         </tr>
         <tr>
             <td>Songwriter:</td>
             <td>
-            <div class="form-check">
-                <input type="checkbox" class="form-check-input" id="songwriter">
-                <label class="form-check-label" for="songwriter">Songwriter1</label>
-            </div>
-            <div class="form-check">
-                <input type="checkbox" class="form-check-input" id="songwriter">
-                <label class="form-check-label" for="songwriter">Songwriter2</label>
-            </div>
-            <div class="form-check">
-                <input type="checkbox" class="form-check-input" id="songwriter">
-                <label class="form-check-label" for="songwriter">Songwriter3</label>
-            </div>
-            <div class="form-check">
-                <input type="checkbox" class="form-check-input" id="songwriter">
-                <label class="form-check-label" for="songwriter">Songwriter4</label>
-            </div>
-            <div class="form-check">
-                <input type="checkbox" class="form-check-input" id="songwriter">
-                <label class="form-check-label" for="songwriter">Songwriter5</label>
-            </div>   
+                {% for songwriter in aos_data.songwriters %}
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" id="songwriter{{ forloop.counter }}" name="songwriters[]" value="{{ songwriter }}">
+                    <label class="form-check-label" for="songwriter{{ forloop.counter }}">{{ songwriter }}</label>
+                </div>
+                {% endfor %}
             </td>
         </tr>
         <tr>
             <td>Genre:</td>
             <td>
+                {% for genre in aos_data.genres %}
                 <div class="form-check">
-                    <input type="checkbox" class="form-check-input" id="genre">
-                    <label class="form-check-label" for="genre">Genre1</label>
+                    <input type="checkbox" class="form-check-input" id="genre{{ forloop.counter }}" name="genre[]" value="{{ genre }}">
+                    <label class="form-check-label" for="genre{{ forloop.counter }}">{{ genre }}</label>
                 </div>
-                <div class="form-check">
-                    <input type="checkbox" class="form-check-input" id="genre">
-                    <label class="form-check-label" for="genre">Genre2</label>
-                </div>
-                <div class="form-check">
-                    <input type="checkbox" class="form-check-input" id="genre">
-                    <label class="form-check-label" for="genre">Genre3</label>
-                </div>
-                <div class="form-check">
-                    <input type="checkbox" class="form-check-input" id="genre">
-                    <label class="form-check-label" for="genre">Genre4</label>
-                </div>
-                <div class="form-check">
-                    <input type="checkbox" class="form-check-input" id="genre">
-                    <label class="form-check-label" for="genre">Genre5</label>
-                </div>  
-                </td>
+                {% endfor %}
+            </td>
         </tr>
         <tr>
             <td>Durasi:</td>
-            <td><input type="text" name="Judul"></td> 
+            <td><input type="text" name="durasi"></td> 
         </tr>
         <tr>
             <td></td>
@@ -164,6 +134,7 @@
         </tr>
     </table>
 </form>
+
 
 
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>

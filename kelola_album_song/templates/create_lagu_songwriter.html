@@ -99,9 +99,6 @@
         </tr>
         <tr>
             <td>Artist:</td>
-            {% if 'Artist' in data_fix.user_role %}
-            <td>{{ aos_data_fix.artists[0] }}</td> 
-            {% else %}
             <td>
                 <select name="Artist">
                     {% for artist in aos_data_fix.artists %}
@@ -117,26 +114,12 @@
         <tr>
             <td>Genre:</td>
             <td>
-            <div class="form-check">
-                <input type="checkbox" class="form-check-input" id="genre">
-                <label class="form-check-label" for="genre">Genre1</label>
-            </div>
-            <div class="form-check">
-                <input type="checkbox" class="form-check-input" id="genre">
-                <label class="form-check-label" for="genre">Genre2</label>
-            </div>
-            <div class="form-check">
-                <input type="checkbox" class="form-check-input" id="genre">
-                <label class="form-check-label" for="genre">Genre3</label>
-            </div>
-            <div class="form-check">
-                <input type="checkbox" class="form-check-input" id="genre">
-                <label class="form-check-label" for="genre">Genre4</label>
-            </div>
-            <div class="form-check">
-                <input type="checkbox" class="form-check-input" id="genre">
-                <label class="form-check-label" for="genre">Genre5</label>
-            </div>  
+                {% for genre in aos_data.genres %}
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" id="genre{{ forloop.counter }}" name="genre[]" value="{{ genre }}">
+                    <label class="form-check-label" for="genre{{ forloop.counter }}">{{ genre }}</label>
+                </div>
+                {% endfor %}
             </td>
         </tr>
         <tr>
