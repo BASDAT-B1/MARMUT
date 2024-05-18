@@ -29,7 +29,7 @@ def list_album(request):
 
                     if id_artist:
                         cursor.execute("""
-                            SELECT A.id, A.judul, L.nama, A.jumlah_lagu, A.total_durasi
+                            SELECT DISTINCT A.id, A.judul, L.nama, A.jumlah_lagu, A.total_durasi
                             FROM ALBUM A
                             JOIN LABEL L ON A.id_label = L.id
                             JOIN SONG S ON A.id = S.id_album
@@ -53,6 +53,7 @@ def list_album(request):
 
 def list_album_label(request):
     roles = request.session.get('roles', [])
+    print()
     if 'Label' in roles :
         if request.method == 'GET':
             label_email = request.session.get('email', None)
@@ -359,14 +360,15 @@ def daftar_lagu(request):
             
             if label_email:
                 id_album = request.GET.get('id', None)
-
+                print(id_album)
                 with connection.cursor() as cursor:
                      cursor.execute("""
                     SELECT K.id, K.judul, K.durasi, S.total_play, S.total_download
                     FROM SONG S
-                    LEFT JOIN KONTEN K ON S.id_konten = K.id
+                    JOIN KONTEN K ON S.id_konten = K.id
+                    JOIN AKUN A ON A.email = 
                     WHERE S.id_album = %s
-                """, id_album)
+                """, [id_album])
                 songs = cursor.fetchall()
 
                 song_data = []
