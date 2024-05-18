@@ -60,7 +60,13 @@
                                     <td>{{ d.judul }}</td>
                                     <td>{{ d.nama }}</td>
                                     <td>
-                                        <a href="#" class="btn btn-action btn-outline-dark">Lihat</a>
+                                        {% if d.jenis == 'Song' %}
+                                            <a href="{% url 'play_song:song' d.id %}" class="btn btn-info btn-action">Lihat</a>
+                                        {% elif d.jenis == 'User Playlist' %}
+                                            <a href="{% url 'kelola_playlist:play_playlist' d.id %}" class="btn btn-info btn-action">Lihat</a>
+                                        {% elif d.jenis == 'Podcast' %}
+                                            <a href="{% url 'kelola_podcast:podcast_detail' d.id %}" class="btn btn-info btn-action">Lihat</a>
+                                        {% endif %}
                                     </td>
                                 </tr>
                             {% endfor %}

@@ -93,9 +93,9 @@
         <td>{{ album.jumlah_lagu }}</td>
         <td>{{ album.total_durasi }}</td>
         <td>
-            <a href="{% url 'kelola_album_song:daftar_lagu' %}id={{ album.id }}" class="btn btn-info btn-sm">Lihat Daftar Lagu</a>
-            <a href="{% url 'kelola_album_song:create_lagu_artist' %}?id={{ album.id }}" class="btn btn-success btn-sm">Tambah Lagu</a>
-            <a href="{% url 'kelola_album_song:hapus_album' %}?id={{ album.id }}" class="btn btn-danger btn-sm">Hapus</a>
+            <a href="{% url 'kelola_album_song:daftar_lagu' album.id %}" class="btn btn-info btn-sm">Lihat Daftar Lagu</a>
+            <a href="{% url 'kelola_album_song:create_lagu_artist' album.id %} " class="btn btn-success btn-sm">Tambah Lagu</a>
+            <a href="{% url 'kelola_album_song:hapus_album' album.id %}" class="btn btn-danger btn-sm">Hapus</a>
         </td>
     </tr>
     {% endfor %}
@@ -106,11 +106,5 @@
 </div>
 
 <br /> 
-
-
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
 
 {% endblock content %}
