@@ -90,7 +90,7 @@
     <table>
         <tr>
             <td>Album:</td>
-            <td>AlbumX</td> 
+            <td>{{ aos_data.album }}</td> 
         </tr>
         <tr>
             <td>Judul:</td>
@@ -98,10 +98,24 @@
         </tr>
         <tr>
             <td>Artist:</td>
+            {% if 'Artis' in aos_data.user_role %}
             <td>{{ aos_data.artists.0 }}</td> 
+            {% else %}
+             <td>
+                <select name="Artist">
+                    {% for artist in aos_data_fix.artists %}
+                        <option value="{{ artist }}">{{ artist }}</option>
+                    {% endfor %}
+                </select>
+            </td>
+            {% endif %}
         </tr>
+           
         <tr>
             <td>Songwriter:</td>
+            {% if 'Songwriter' in aos_data.user_role %}
+            <td>{{ aos_data.songwriters.0 }}</td> 
+            {% else %}
             <td>
                 {% for songwriter in aos_data.songwriters %}
                 <div class="form-check">
@@ -110,6 +124,7 @@
                 </div>
                 {% endfor %}
             </td>
+            {% endif %}
         </tr>
         <tr>
             <td>Genre:</td>
@@ -136,8 +151,4 @@
 </form>
 
 
-
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-{% endblock %}
+{% endblock content %}
