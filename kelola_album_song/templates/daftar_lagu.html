@@ -34,7 +34,7 @@
         padding: 20px;
     }
     table {
-        margin : auto;
+        margin: auto;
         width: 100%;
         border-collapse: collapse;
     }
@@ -52,7 +52,7 @@
     }
     td {
         vertical-align: top;
-        text-align : center;
+        text-align: center;
     }
 
     .action-buttons {
@@ -61,20 +61,20 @@
         justify-content: center;
         align-items: center;
     }
-    tr{
+    tr {
         background-color: #f2f2f2;
     }
     .centered-text {
-            text-align: center;
-        }
+        text-align: center;
+    }
 
     h1.centered-text {
-    margin-bottom: 30px; 
-    margin-top: 40px;
+        margin-bottom: 30px;
+        margin-top: 40px;
     }
 </style>
 
-    <h1 class ="centered-text">DAFTAR LAGU PADA ALBUM {{judul}}</h1>
+<h1 class="centered-text">DAFTAR LAGU PADA ALBUM {{ album.judul }}</h1>
 
 <table>
     <tr>
@@ -92,39 +92,41 @@
         <td>{{ song.Total_Download }}</td>
         <td>
             <a href="#" class="btn btn-success btn-sm" data-toggle="modal" data-target="#modal{{ song.id }}">Lihat Detail</a>
-            <a href="{% url 'kelola_album_song:hapus_lagu' song.id %}" class="btn btn-danger btn-sm">Hapus</a>
+            <form method="post" action="{% url 'kelola_album_song:hapus_lagu' song.id %}" style="display: inline;">
+                {% csrf_token %}
+                <input type="hidden" name="id_album" value="{{ song.id_album }}">
+                <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
+            </form>
         </td>
-    
     </tr>
     <div class="modal fade" id="modal{{ song.id }}" tabindex="-1" role="dialog" aria-labelledby="modalLabel{{ song.id }}" aria-hidden="true">
         <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-            <h5 class="modal-title" id="modalLabel{{ song.id }}">Detail Lagu</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">×</span>
-            </button>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalLabel{{ song.id }}">Detail Lagu</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p><strong>Judul:</strong> {{ song.Judul }}</p>
+                    <p><strong>Durasi:</strong> {{ song.Durasi }}</p>
+                    <p><strong>Total Play:</strong> {{ song.Total_Play|default_if_none:"0" }}</p>
+                    <p><strong>Total Download:</strong> {{ song.Total_Download|default_if_none:"0" }}</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
             </div>
-            <div class="modal-body">
-            <p><strong>Judul:</strong> {{ song.Judul }}</p>
-            <p><strong>Durasi:</strong> {{ song.Durasi }}</p>
-            <p><strong>Total Play:</strong> {{ song.Total_Play|default_if_none:"0" }}</p>
-            <p><strong>Total Download:</strong> {{ song.Total_Download|default_if_none:"0" }}</p>
-            </div>
-            <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            </div>
-        </div>
         </div>
     </div>
     {% endfor %}
 </table>
-    
 
-<div class="centered-text" style = "margin-top: 40px;">
+<div class="centered-text" style="margin-top: 40px;">
     <a href="{% url 'kelola_album_song:list_album' %}" class="btn btn-danger btn-sm">Kembali ke List Album</a>
 </div>
-<br /> 
+<br />
 
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>

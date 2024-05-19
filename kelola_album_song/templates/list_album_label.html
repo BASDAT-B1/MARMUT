@@ -91,7 +91,10 @@
         <td>{{ album.total_durasi }}</td>
         <td>
             <a href="{% url 'kelola_album_song:daftar_lagu' album.id %}" class="btn btn-info btn-sm">Lihat Daftar Lagu</a>
-            <a href="{% url 'kelola_album_song:hapus_album' album.id %}" class="btn btn-danger btn-sm">Hapus</a>
+            <form method="POST" action="{% url 'kelola_album_song:hapus_album' album.id %}" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
+            </form>
         </td>
     </tr>
     {% endfor %}

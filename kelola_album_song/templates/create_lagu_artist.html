@@ -85,7 +85,7 @@
 
 <h1 class="centered-text">CREATE LAGU</h1>
 
-<form method="POST" action="{% url 'kelola_album_song:list_album' %}">
+<form method="POST" action="{% url 'kelola_album_song:create_lagu_artist' id_album=aos_data.id_album %}">
     {% csrf_token %}
     <table>
         <tr>
@@ -103,7 +103,7 @@
             {% else %}
              <td>
                 <select name="Artist">
-                    {% for artist in aos_data_fix.artists %}
+                    {% for artist in aos_data.artists %}
                         <option value="{{ artist }}">{{ artist }}</option>
                     {% endfor %}
                 </select>
@@ -149,6 +149,5 @@
         </tr>
     </table>
 </form>
-
 
 {% endblock content %}

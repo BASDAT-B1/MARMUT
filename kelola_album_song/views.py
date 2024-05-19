@@ -118,7 +118,6 @@ def list_album_label(request):
 def create_album(request):
     roles = request.session.get('roles', [])
     if 'Artis' in roles or 'Songwriter' in roles:
-        print('tes 1')
         if request.method == 'POST':
             label_email = request.session.get('email', None)
 
@@ -126,7 +125,7 @@ def create_album(request):
                 album = request.POST.get('Judul')
                 label = request.POST.get("label")
                 judul_lagu = request.POST.get("judul_lagu")
-                artist = request.POST.get("Artist")
+                artist = request.session['user_info'].get('nama')
                 songwriter = request.POST.getlist("songwriters")
                 genre = request.POST.getlist("genre")
                 durasi = request.POST.get("durasi")
@@ -135,21 +134,22 @@ def create_album(request):
                 id_album = uuid.uuid4()
                 id_konten = uuid.uuid4()
 
-             
                 with connection.cursor() as cursor:
                     cursor.execute("""
                         SELECT id FROM LABEL WHERE nama = %s
                     """, [label])
                     id_label = cursor.fetchone()[0]
 
-              
                 with connection.cursor() as cursor:
+                    print(artist)
                     cursor.execute("""
-                        SELECT id FROM ARTIST WHERE nama = %s
+                        SELECT A.id
+                        FROM ARTIST A
+                        JOIN AKUN AK ON A.email_akun = AK.email
+                        WHERE AK.nama = %s
                     """, [artist])
                     id_artist = cursor.fetchone()[0]
 
-               
                 with connection.cursor() as cursor:
                     cursor.execute("""
                         INSERT INTO ALBUM (id, judul, jumlah_lagu, id_label, total_durasi)
@@ -163,14 +163,12 @@ def create_album(request):
                         VALUES (%s, %s, %s, %s, %s)
                     """, [id_konten, judul_lagu, current_datetime, current_datetime.split('-')[0], durasi])
 
-                
                 with connection.cursor() as cursor:
                     cursor.execute("""
                         INSERT INTO SONG (id_konten, id_artist, id_album, total_play, total_download)
                         VALUES (%s, %s, %s, %s, %s)
                     """, [id_konten, id_artist, id_album, 0, 0])
 
-             
                 with connection.cursor() as cursor:
                     for g in genre:
                         cursor.execute("""
@@ -178,7 +176,6 @@ def create_album(request):
                             VALUES (%s, %s)
                         """, [id_konten, g])
 
-            
                 with connection.cursor() as cursor:
                     for sw in songwriter:
                         cursor.execute("""
@@ -190,9 +187,8 @@ def create_album(request):
                             VALUES (%s, %s)
                         """, [id_songwriter, id_konten])
 
-                return render(request, "create_album_success.html")
+                return redirect('kelola_album_song:list_album')
 
-        # If GET request, fetch necessary data
         else:
             label_email = request.session.get('email', None)
             if label_email:
@@ -220,162 +216,178 @@ def create_album(request):
                 else:
                     with connection.cursor() as cursor:
                         cursor.execute("""
-                                       SELECT nama 
-                                       FROM AKUN 
-                                       WHERE email = %s""", [label_email])
+                            SELECT nama 
+                            FROM AKUN 
+                            WHERE email = %s
+                        """, [label_email])
                         nama_artist = cursor.fetchone()[0]
                         aos_data['artists'] = [nama_artist]
 
                 if 'Songwriter' not in roles:
                     with connection.cursor() as cursor:
-                        cursor.execute("""SELECT S.nama 
-                                       FROM SONGWRITER S
-                                       """)
+                        cursor.execute("""
+                            SELECT A.nama 
+                            FROM SONGWRITER S 
+                            JOIN AKUN A ON S.email_akun = A.email
+                        """)
                         songwriter_data = cursor.fetchall()
                         aos_data['songwriters'] = [songwriter[0] for songwriter in songwriter_data]
-                        print( aos_data['songwriters'])
                 else:
                     with connection.cursor() as cursor:
-                        cursor.execute("SELECT nama FROM AKUN WHERE email= %s", [label_email])
+                        cursor.execute("""
+                            SELECT nama 
+                            FROM AKUN 
+                            WHERE email = %s
+                        """, [label_email])
                         nama_songwriter = cursor.fetchone()[0]
                         aos_data['songwriters'] = [nama_songwriter]
 
                 return render(request, "create_album.html", {'aos_data': aos_data})
 
+    return HttpResponse("Unauthorized", status=401)
+
 
 def create_lagu_artist(request, id_album):
     roles = request.session.get('roles', [])
     label_email = request.session.get('email')
-    if label_email:
-        id_artist = None
-        id_songwriter = None
+    
+    if not label_email or not ('Artis' in roles or 'Songwriter' in roles):
+        return HttpResponse("Unauthorized", status=401)
+    
+    with connection.cursor() as cursor:
+        cursor.execute("""
+            SELECT judul
+            FROM ALBUM 
+            WHERE id = %s
+        """, [id_album])
+        result = cursor.fetchone()
+        if result:
+            nama_album = result[0]
+        else:
+            return HttpResponse("Album not found", status=404)
 
-    if 'Artis' or 'Songwriter'in roles:
-        label_email = request.session.get('email', None)
-        if label_email:
-            with connection.cursor() as cursor:
+    id_artist, id_songwriter = None, None
+    if 'Artis' in roles:
+        with connection.cursor() as cursor:
+            cursor.execute("""
+                SELECT A.id
+                FROM ARTIST A
+                JOIN AKUN AK ON AK.email = A.email_akun     
+                WHERE A.email_akun = %s
+            """, [label_email])
+            result = cursor.fetchone()
+            if result:
+                id_artist = result[0]
+
+    if 'Songwriter' in roles:
+        with connection.cursor() as cursor:
+            cursor.execute("""
+                SELECT S.id
+                FROM SONGWRITER S
+                JOIN AKUN AK ON AK.email = S.email_akun     
+                WHERE S.email_akun = %s
+            """, [label_email])
+            result = cursor.fetchone()
+            if result:
+                id_songwriter = result[0]
+
+    if request.method == 'POST':
+        judul_lagu = request.POST.get("Judul")
+        songwriters = request.POST.getlist("songwriters")
+        genres = request.POST.getlist("genre")
+        durasi = request.POST.get("durasi")
+        id_konten = uuid.uuid4()
+        current_datetime = datetime.now()
+        formatted_datetime = current_datetime.strftime('%Y-%m-%d %H:%M:%S')
+
+        with connection.cursor() as cursor:
+            cursor.execute("""
+                INSERT INTO KONTEN (id, judul, tanggal_rilis, tahun, durasi)
+                VALUES (%s, %s, %s, %s, %s)
+            """, [id_konten, judul_lagu, formatted_datetime, current_datetime.year, durasi])
+
+        with connection.cursor() as cursor:
+            cursor.execute("""
+                INSERT INTO SONG (id_konten, id_artist, id_album, total_play, total_download)
+                VALUES (%s, %s, %s, %s, %s)
+            """, [id_konten, id_artist, id_album, 0, 0])
+
+        with connection.cursor() as cursor:
+            for genre in genres:
                 cursor.execute("""
-                    SELECT judul
-                    FROM ALBUM 
-                    WHERE id = %s
-                """, [id_album])
-                nama_album = cursor.fetchone()[0]
+                    INSERT INTO GENRE (id_konten, genre)
+                    VALUES (%s, %s)
+                """, [id_konten, genre])
 
-            with connection.cursor() as cursor:
+        with connection.cursor() as cursor:
+            for songwriter in songwriters:
                 cursor.execute("""
-                    SELECT A.id
-                    FROM ARTIST A
-                    
-                    JOIN AKUN AK ON AK.email = A.email_akun     
-                    WHERE email_akun = %s
-                """, [label_email])
-                id_artist = cursor.fetchone()[0]
-
-            with connection.cursor() as cursor:
-                cursor.execute("""
-                    SELECT S.id
-                    FROM SONGWRITER S
-                    JOIN AKUN AK ON AK.email = S.email_akun     
-                    WHERE email_akun = %s
-                """, [label_email])
-                id_songwriter = cursor.fetchone()[0]
-
-            if request.method == 'POST':
-
-                judul_lagu = request.POST.get("Judul")
-                songwriters = request.POST.getlist("songwriters")
-                genres = request.POST.getlist("genre")
-                durasi = request.POST.get("durasi")
-                id_konten = uuid.uuid4()
-                current_datetime = datetime.now()
-                formatted_datetime = current_datetime.strftime('%Y-%m-%d %H:%M:%S')
-
-                with connection.cursor() as cursor:
+                    SELECT S.id 
+                    FROM SONGWRITER S 
+                    JOIN AKUN A ON S.email_akun = A.email
+                    WHERE A.nama = %s
+                """, [songwriter])
+                result = cursor.fetchone()
+                if result:
+                    id_songwriter = result[0]
                     cursor.execute("""
-                        INSERT INTO KONTEN (id, judul, tanggal_rilis, tahun, durasi)
-                        VALUES (%s, %s, %s, %s, %s)
-                    """, [id_konten, judul_lagu, formatted_datetime, current_datetime.year, durasi])
+                        INSERT INTO SONGWRITER_SONG (id_songwriter, id_song)
+                        VALUES (%s, %s)
+                    """, [id_songwriter, id_konten])
+                else:
+                    return HttpResponse(f"Songwriter {songwriter} not found", status=404)
 
-                with connection.cursor() as cursor:
-                    cursor.execute("""
-                        INSERT INTO SONG (id_konten, id_artist, id_album, total_play, total_download)
-                        VALUES (%s, %s, %s, %s, %s)
-                    """, [id_konten, id_artist, id_album, 0, 0])
+        return redirect('kelola_album_song:list_album')
 
-                with connection.cursor() as cursor:
-                    for genre in genres:
-                        cursor.execute("""
-                            INSERT INTO GENRE (id_konten, genre)
-                            VALUES (%s, %s)
-                        """, [id_konten, genre])
+    # For GET request, fetch necessary data for the form
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT nama FROM LABEL")
+        nama_label = cursor.fetchall()
 
-                with connection.cursor() as cursor:
-                    for songwriter in songwriters:
-                        cursor.execute("""
-                            SELECT S.id 
-                            FROM SONGWRITER S 
-                            JOIN AKUN A ON S.email_akun = A.email
-                            WHERE nama = %s
-                        """, [songwriter])
-                        id_songwriter = cursor.fetchone()[0]
-                        cursor.execute("""
-                            INSERT INTO SONGWRITER_SONG (id_songwriter, id_song)
-                            VALUES (%s, %s)
-                        """, [id_songwriter, id_konten])
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT DISTINCT genre FROM GENRE")
+        data_genre = cursor.fetchall()
 
-                return redirect('kelola_album_song:list_album')
+    artist_data, songwriter_data = [], []
+    if 'Artis' in roles and id_artist:
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT nama FROM AKUN WHERE email = %s", [label_email])
+            artist_data = cursor.fetchall()
 
-            else:
-                label_email = request.session.get('email', None)
-                if label_email:
-                    with connection.cursor() as cursor:
-                        cursor.execute("SELECT nama FROM LABEL")
-                        nama_label = cursor.fetchall()
+    if 'Songwriter' in roles and id_songwriter:
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT nama FROM AKUN WHERE email = %s", [label_email])
+            songwriter_data = cursor.fetchall()
 
-                    with connection.cursor() as cursor:
-                        cursor.execute("SELECT genre FROM GENRE")
-                        data_genre = cursor.fetchall()
+    if not id_artist:
+        with connection.cursor() as cursor:
+            cursor.execute("""
+                SELECT AK.nama 
+                FROM AKUN AK
+                JOIN ARTIST A ON AK.email = A.email_akun 
+            """)
+            artist_data = cursor.fetchall()
 
-                    if id_artist :
+    if not id_songwriter:
+        with connection.cursor() as cursor:
+            cursor.execute("""
+                SELECT AK.nama 
+                FROM AKUN AK
+                JOIN SONGWRITER S ON AK.email = S.email_akun
+            """)
+            songwriter_data = cursor.fetchall()
 
-                        with connection.cursor() as cursor:
-                            cursor.execute("""
-                                SELECT nama FROM AKUN WHERE email = %s
-                            """, [label_email])
-                            artist_data = cursor.fetchall()
+    aos_data = {
+        'artists': [artist[0] for artist in artist_data],
+        'songwriters': [songwriter[0] for songwriter in songwriter_data],
+        'labels': [label[0] for label in nama_label],
+        'user_role': roles,
+        'genres': [genre[0] for genre in data_genre],
+        'album': nama_album,
+        'id_album': id_album  # Pass id_album to the template
+    }
 
-                    if not id_artist :
-                        with connection.cursor() as cursor:
-                            cursor.execute("""
-                                SELECT AK.nama 
-                                FROM AKUN AK
-                                JOIN ARTIST A ON AK.email = A.email_akun 
-                            """, [label_email])
-                            artist_data = cursor.fetchall()
-                    if id_songwriter :
-                          with connection.cursor() as cursor:
-                            cursor.execute("""
-                                SELECT nama FROM AKUN WHERE email = %s
-                            """, [label_email])
-                            songwriter_data = cursor.fetchall()
-
-                    if not id_songwriter :
-                        with connection.cursor() as cursor:
-                            cursor.execute("""SELECT nama 
-                                        FROM AKUN A
-                                        JOIN SONGWRITER S ON A.email = S.email_akun """)
-                            songwriter_data = cursor.fetchall()
-
-                    aos_data = {
-                        'artists': [artist[0] for artist in artist_data],
-                        'songwriters': [songwriter[0] for songwriter in songwriter_data],
-                        'labels': [label[0] for label in nama_label],
-                        'user_role': roles,
-                        'genres': [genre[0] for genre in data_genre],
-                        'album' :nama_album
-                    }
-
-                    return render(request, "create_lagu_artist.html", {'aos_data': aos_data})
+    return render(request, "create_lagu_artist.html", {'aos_data': aos_data})
 
 
 def daftar_lagu(request, id_album):
@@ -410,8 +422,9 @@ def daftar_lagu(request, id_album):
             "id": song[0],
             'Judul': song[1],
             'Durasi': song[2],
-            'Total Play': song[3],
-            'Total Download': song[4]
+            'Total_Play': song[3],
+            'Total_Download': song[4],
+            'id_album': id_album
         })
 
     return render(request, "daftar_lagu.html", {'songs': song_data, 'judul': judul_album, 'id': id_album})
@@ -501,27 +514,39 @@ def cek_royalti(request):
 def hapus_album(request, id_album):
     roles = request.session.get('roles', [])
     if 'Artis' in roles or 'Songwriter' in roles or 'Label' in roles:
-         if request.method == 'POST':
+        if request.method == 'POST':
             label_email = request.session.get('email', None)
             if label_email:
                 with connection.cursor() as cursor:
                     cursor.execute("""
-                        DELETE FROM ALBUM WHERE id_album = %s;
+                        DELETE FROM ALBUM WHERE id = %s;
                     """, [id_album])
                 if 'Label' in roles:
-                    return redirect("list_album_label")
-                if 'Artis' in roles or 'Songwriter' in roles :
-                      return redirect("list_album")
+                    return redirect("kelola_album_song:list_album_label")
+                if 'Artis' in roles or 'Songwriter' in roles:
+                    return redirect("kelola_album_song:list_album")
+        
+        # If request method is not POST, return a 405 Method Not Allowed response
+        return HttpResponse("Method not allowed", status=405)
+    
+    # If user does not have the required roles, return a 401 Unauthorized response
+    return HttpResponse("Unauthorized", status=401)
                      
 def hapus_lagu(request, id_song):
     roles = request.session.get('roles', [])
     if 'Artis' in roles or 'Songwriter' in roles or 'Label' in roles:
-          if request.method == 'POST':
+        if request.method == 'POST':
             label_email = request.session.get('email', None)
+            id_album = request.POST.get('id_album')
             if label_email:
                 with connection.cursor() as cursor:
                     cursor.execute("""
-                        DELETE FROM KONTEN WHERE judul = %s;
+                        DELETE FROM KONTEN WHERE id = %s;
                     """, [id_song])
-                return redirect("daftar_lagu")
-                
+                return redirect("kelola_album_song:daftar_lagu", id_album=id_album)
+
+        # If request method is not POST, return a 405 Method Not Allowed response
+        return HttpResponse("Method not allowed", status=405)
+
+    # If user does not have the required roles, return a 401 Unauthorized response
+    return HttpResponse("Unauthorized", status=401)
