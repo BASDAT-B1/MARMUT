@@ -437,7 +437,7 @@ def cek_royalti(request):
     if 'Artis' in roles or 'Songwriter' in roles:
         with connection.cursor() as cursor:
             cursor.execute("""
-            SELECT
+            SELECT DISTINCT
                 k.judul AS judul_lagu,
                 a.judul AS judul_album,
                 s.total_play,
@@ -482,7 +482,7 @@ def cek_royalti(request):
     if "Label" in roles:
         with connection.cursor() as cursor:
             cursor.execute("""
-                SELECT
+                SELECT DISTINCT
                     k.judul AS judul_lagu,
                     a.judul AS judul_album,
                     s.total_play,

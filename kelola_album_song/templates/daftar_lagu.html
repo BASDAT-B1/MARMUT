@@ -110,9 +110,9 @@
                 </div>
                 <div class="modal-body">
                     <p><strong>Judul:</strong> {{ song.Judul }}</p>
-                    <p><strong>Durasi:</strong> {{ song.Durasi }}</p>
-                    <p><strong>Total Play:</strong> {{ song.Total_Play|default_if_none:"0" }}</p>
-                    <p><strong>Total Download:</strong> {{ song.Total_Download|default_if_none:"0" }}</p>
+                    <p><strong>Durasi:</strong> {{ song.Durasi }} menit</p>
+                    <p><strong>Total Play:</strong> {{ song.Total_Play|default_if_none:"0" }} times</p>
+                    <p><strong>Total Download:</strong> {{ song.Total_Download|default_if_none:"0" }} times</p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
