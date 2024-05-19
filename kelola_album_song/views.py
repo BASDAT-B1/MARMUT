@@ -197,7 +197,7 @@ def create_album(request):
                     nama_label = cursor.fetchall()
 
                 with connection.cursor() as cursor:
-                    cursor.execute("SELECT genre FROM GENRE")
+                    cursor.execute("SELECT DISTINCT genre FROM GENRE")
                     data_genre = cursor.fetchall()
 
                 aos_data = {
