@@ -1,1 +1,1 @@
-web: gunicorn marmut.wsgi --log-file -
+web: python manage.py migrate && gunicorn marmut.wsgi
