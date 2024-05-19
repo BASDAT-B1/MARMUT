@@ -384,7 +384,7 @@ def create_lagu_artist(request, id_album):
         'user_role': roles,
         'genres': [genre[0] for genre in data_genre],
         'album': nama_album,
-        'id_album': id_album  # Pass id_album to the template
+        'id_album': id_album  
     }
 
     return render(request, "create_lagu_artist.html", {'aos_data': aos_data})
@@ -433,6 +433,7 @@ def cek_royalti(request):
     roles = request.session.get('roles')
     label_email = request.session.get('email')
     royalti_data = []
+    
     if 'Artis' in roles or 'Songwriter' in roles:
         with connection.cursor() as cursor:
             cursor.execute("""
@@ -454,7 +455,7 @@ def cek_royalti(request):
                 pemilik_hak_cipta phc ON r.id_pemilik_hak_cipta = phc.id
             WHERE
                 phc.id IN (
-                    SELECT DISTINCT phc.id
+                    SELECT phc.id
                     FROM
                         pemilik_hak_cipta phc
                     LEFT JOIN
@@ -468,7 +469,7 @@ def cek_royalti(request):
                 )
             """, [label_email])
             royaltis = cursor.fetchall()
-            print(royaltis)
+            
         for royalti in royaltis:
             royalti_data.append({
                 'Judul_Lagu': royalti[0],
@@ -477,27 +478,31 @@ def cek_royalti(request):
                 'Total_Download': royalti[3],
                 'Total_Royalti_Didapat': royalti[4]
             })
-            print(royalti)
-
 
     if "Label" in roles:
         with connection.cursor() as cursor:
             cursor.execute("""
                 SELECT
-                    konten.judul AS judul_lagu,
-                    album.judul AS judul_album,
-                    song.total_play,
-                    song.total_download,
+                    k.judul AS judul_lagu,
+                    a.judul AS judul_album,
+                    s.total_play,
+                    s.total_download,
                     r.jumlah
-                FROM song
-                JOIN album ON song.id_album = album.id
-                JOIN konten ON song.id_konten = konten.id
-                JOIN label ON album.id_label = label.id
-                JOIN pemilik_hak_cipta phc ON label.id_pemilik_hak_cipta = phc.id
-                WHERE label.email = %s
-            """,[label_email])
+                FROM
+                    song s
+                JOIN
+                    album a ON s.id_album = a.id
+                JOIN
+                    konten k ON s.id_konten = k.id
+                JOIN
+                    royalti r ON r.id_song = s.id_konten
+                JOIN
+                    label l ON a.id_label = l.id
+                WHERE
+                    l.email = %s
+            """, [label_email])
             royaltis = cursor.fetchall()
-            print(royaltis)
+
         for royalti in royaltis:
             royalti_data.append({
                 'Judul_Lagu': royalti[0],
@@ -506,11 +511,8 @@ def cek_royalti(request):
                 'Total_Download': royalti[3],
                 'Total_Royalti_Didapat': royalti[4]
             })
-            print(royalti)
-    
 
     return render(request, "cek_royalti.html", {'royalti': royalti_data})
-    
 def hapus_album(request, id_album):
     roles = request.session.get('roles', [])
     if 'Artis' in roles or 'Songwriter' in roles or 'Label' in roles:
@@ -526,10 +528,10 @@ def hapus_album(request, id_album):
                 if 'Artis' in roles or 'Songwriter' in roles:
                     return redirect("kelola_album_song:list_album")
         
-        # If request method is not POST, return a 405 Method Not Allowed response
+       
         return HttpResponse("Method not allowed", status=405)
     
-    # If user does not have the required roles, return a 401 Unauthorized response
+    
     return HttpResponse("Unauthorized", status=401)
                      
 def hapus_lagu(request, id_song):
@@ -545,8 +547,8 @@ def hapus_lagu(request, id_song):
                     """, [id_song])
                 return redirect("kelola_album_song:daftar_lagu", id_album=id_album)
 
-        # If request method is not POST, return a 405 Method Not Allowed response
+       
         return HttpResponse("Method not allowed", status=405)
 
-    # If user does not have the required roles, return a 401 Unauthorized response
+   
     return HttpResponse("Unauthorized", status=401)
