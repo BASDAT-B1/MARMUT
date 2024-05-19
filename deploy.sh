@@ -3,6 +3,9 @@
 # Exit on first error
 set -e
 
+# Ensure script is executable
+chmod +x deploy.sh
+
 # Install dependencies
 python -m pip install -r requirements.txt
 
